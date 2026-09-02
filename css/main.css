@@ -1,0 +1,645 @@
+/* ============================================================
+   main.css — critical CSS, <head> (render-blocking навмисно)
+   Токени, reset, глобальні utility, layout, хедер.
+   Усе, що нижче першого екрана — у css/styles.css (кінець <body>).
+   ============================================================ */
+
+:root {
+  /* ---- Color ----
+     Заготовка без палітри: рівно стільки значень, щоб каркас рендерився.
+     Палітру проєкту додавай сюди — решта файлу читає лише ці токени. */
+  --c-page: #ffffff;
+  --c-ink:  #111111;
+
+  /* приглушений текст і бордери — від --c-ink через color-mix, без власних hex */
+  --c-ink-mute: color-mix(in srgb, var(--c-ink) 62%, transparent);
+  --c-line:     color-mix(in srgb, var(--c-ink) 12%, transparent);
+
+  /* ---- Type ----
+     Дві ролі (тіло / заголовки-лейбли) на випадок двох гарнітур у проєкті.
+     Поки обидві — системна: підстав свої @font-face і зміни лише тут. */
+  --font-body:    system-ui, sans-serif;
+  --font-display: system-ui, sans-serif;
+
+  --fw-reg: 400;
+  --fw-med: 500;
+  --fw-sb:  600;
+
+  /* line-height & tracking */
+  --lh-display: 0.95;   /* hero / display H1-H2 — щільно */
+  --lh-tight:   1.12;   /* H3, великі підзаголовки */
+  --lh-body:    1.6;    /* базовий текст */
+  --tracking-tight: -0.02em;  /* великі заголовки */
+  --tracking-mono:   0.14em;  /* uppercase лейбли/лічильники */
+
+  /* fluid display sizes */
+  --fs-xs:      0.72rem;
+  --fs-sm:      0.875rem;
+  --fs-body:    1rem;
+  --fs-lead:    clamp(1.05rem, 1.0136rem + 0.1553vw, 1.2rem);
+  --fs-h5:      clamp(1.125rem, 1.0893rem + 0.2589vw, 1.4rem);
+  --fs-h4:      clamp(1.25rem, 1.165rem + 0.3625vw, 1.6rem);
+  --fs-h3:      clamp(1.35rem, 1.168rem + 0.7767vw, 2.1rem);
+  --fs-h2:      clamp(2rem, 1.6117rem + 1.657vw, 3.6rem);
+  --fs-hero:    clamp(2.6rem, 1.6777rem + 3.9353vw, 6.4rem);
+  --fs-display: clamp(2.2rem, 0.7922rem + 6.0065vw, 8rem);
+  --fs-mega:    clamp(3.4rem, 1.5553rem + 7.8706vw, 11rem);
+
+  /* ---- Spacing ----
+     Дрібні кроки фіксовані (кілька px — плавність не видно), кроки
+     лейаут-ритму fluid за методом Utopia: лінійна інтерполяція між
+     мобільним і десктопним розміром, а не clamp(min, Xvw, max) навмання. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: clamp(1.5rem, 1.3786rem + 0.5178vw, 2rem);
+  --sp-7: clamp(2rem, 1.7573rem + 1.0356vw, 3rem);
+  --sp-8: clamp(3rem, 2.7573rem + 1.0356vw, 4rem);
+  --sp-9: clamp(4rem, 3.5146rem + 2.0712vw, 6rem);
+  --sp-10: clamp(6rem, 5.5146rem + 2.0712vw, 8rem);
+
+  --section-py: clamp(4rem, 3.0291rem + 4.1424vw, 8rem);
+
+  --container:        1760px;
+  --container-narrow: 1120px;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
+  --gutter:           clamp(1rem, 0.1505rem + 3.6246vw, 4.5rem);
+
+  /* ---- Radius ---- */
+  --r-chip:  10px;    /* дрібна плашка, тег */
+  --r-card:  20px;    /* картка */
+  --r-block: 40px;    /* великий блок / медіа */
+  --r-pill:  999px;   /* кнопки */
+
+  --header-h: 86px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-reg);
+  line-height: 1.3;
+  color: var(--c-ink);
+  background: var(--c-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; text-align: inherit; }
+
+::selection { background: var(--c-ink); color: var(--c-page); }
+main { overflow: clip; }
+
+/* ============================================================
+   Utility: .icon — спрайтова іконка (assets/icons/sprite.svg).
+   Контур і колір задає сам symbol через currentColor.
+   ============================================================ */
+.icon { width: 20px; height: 20px; flex: none; }
+.icon--sm { width: 16px; height: 16px; }
+
+/* ============================================================
+   Utility: text — size via --fs-* tokens, colour via modifier
+   ============================================================ */
+.text--xs { font-size: var(--fs-xs); }
+.text--sm { font-size: var(--fs-sm); }
+.text--body { font-size: var(--fs-body); }
+.text--lead { font-size: var(--fs-lead); }
+.text--muted { color: var(--c-ink-mute); }
+
+/* ============================================================
+   Utility: spacing (mt / mb / pt / pb)
+   ============================================================ */
+.mt-section { margin-top: var(--section-py) !important; }
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: var(--sp-1) !important; }
+.mt-2 { margin-top: var(--sp-2) !important; }
+.mt-3 { margin-top: var(--sp-3) !important; }
+.mt-4 { margin-top: var(--sp-4) !important; }
+.mt-5 { margin-top: var(--sp-5) !important; }
+.mt-6 { margin-top: var(--sp-6) !important; }
+.mt-7 { margin-top: var(--sp-7) !important; }
+.mt-8 { margin-top: var(--sp-8) !important; }
+.mt-9 { margin-top: var(--sp-9) !important; }
+.mt-10 { margin-top: var(--sp-10) !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: var(--sp-1) !important; }
+.mb-2 { margin-bottom: var(--sp-2) !important; }
+.mb-3 { margin-bottom: var(--sp-3) !important; }
+.mb-4 { margin-bottom: var(--sp-4) !important; }
+.mb-5 { margin-bottom: var(--sp-5) !important; }
+.mb-6 { margin-bottom: var(--sp-6) !important; }
+.mb-7 { margin-bottom: var(--sp-7) !important; }
+.mb-8 { margin-bottom: var(--sp-8) !important; }
+.mb-9 { margin-bottom: var(--sp-9) !important; }
+.mb-10 { margin-bottom: var(--sp-10) !important; }
+
+.pt-0 { padding-top: 0 !important; }
+.pt-1 { padding-top: var(--sp-1) !important; }
+.pt-2 { padding-top: var(--sp-2) !important; }
+.pt-3 { padding-top: var(--sp-3) !important; }
+.pt-4 { padding-top: var(--sp-4) !important; }
+.pt-5 { padding-top: var(--sp-5) !important; }
+.pt-6 { padding-top: var(--sp-6) !important; }
+.pt-7 { padding-top: var(--sp-7) !important; }
+.pt-8 { padding-top: var(--sp-8) !important; }
+.pt-9 { padding-top: var(--sp-9) !important; }
+.pt-10 { padding-top: var(--sp-10) !important; }
+
+.pb-0 { padding-bottom: 0 !important; }
+.pb-1 { padding-bottom: var(--sp-1) !important; }
+.pb-2 { padding-bottom: var(--sp-2) !important; }
+.pb-3 { padding-bottom: var(--sp-3) !important; }
+.pb-4 { padding-bottom: var(--sp-4) !important; }
+.pb-5 { padding-bottom: var(--sp-5) !important; }
+.pb-6 { padding-bottom: var(--sp-6) !important; }
+.pb-7 { padding-bottom: var(--sp-7) !important; }
+.pb-8 { padding-bottom: var(--sp-8) !important; }
+.pb-9 { padding-bottom: var(--sp-9) !important; }
+.pb-10 { padding-bottom: var(--sp-10) !important; }
+
+@media (max-width: 1080px) {
+  .mt-md-0 { margin-top: 0 !important; }
+  .mt-md-1 { margin-top: var(--sp-1) !important; }
+  .mt-md-2 { margin-top: var(--sp-2) !important; }
+  .mt-md-3 { margin-top: var(--sp-3) !important; }
+  .mt-md-4 { margin-top: var(--sp-4) !important; }
+  .mt-md-5 { margin-top: var(--sp-5) !important; }
+  .mt-md-6 { margin-top: var(--sp-6) !important; }
+  .mt-md-7 { margin-top: var(--sp-7) !important; }
+  .mt-md-8 { margin-top: var(--sp-8) !important; }
+
+  .mb-md-0 { margin-bottom: 0 !important; }
+  .mb-md-1 { margin-bottom: var(--sp-1) !important; }
+  .mb-md-2 { margin-bottom: var(--sp-2) !important; }
+  .mb-md-3 { margin-bottom: var(--sp-3) !important; }
+  .mb-md-4 { margin-bottom: var(--sp-4) !important; }
+  .mb-md-5 { margin-bottom: var(--sp-5) !important; }
+  .mb-md-6 { margin-bottom: var(--sp-6) !important; }
+  .mb-md-7 { margin-bottom: var(--sp-7) !important; }
+  .mb-md-8 { margin-bottom: var(--sp-8) !important; }
+
+  .pt-md-0 { padding-top: 0 !important; }
+  .pt-md-5 { padding-top: var(--sp-5) !important; }
+  .pt-md-6 { padding-top: var(--sp-6) !important; }
+  .pt-md-7 { padding-top: var(--sp-7) !important; }
+
+  .pb-md-0 { padding-bottom: 0 !important; }
+  .pb-md-5 { padding-bottom: var(--sp-5) !important; }
+  .pb-md-6 { padding-bottom: var(--sp-6) !important; }
+  .pb-md-7 { padding-bottom: var(--sp-7) !important; }
+}
+
+@media (max-width: 768px) {
+  .mt-sm-0 { margin-top: 0 !important; }
+  .mt-sm-1 { margin-top: var(--sp-1) !important; }
+  .mt-sm-2 { margin-top: var(--sp-2) !important; }
+  .mt-sm-3 { margin-top: var(--sp-3) !important; }
+  .mt-sm-4 { margin-top: var(--sp-4) !important; }
+  .mt-sm-5 { margin-top: var(--sp-5) !important; }
+  .mt-sm-6 { margin-top: var(--sp-6) !important; }
+  .mt-sm-7 { margin-top: var(--sp-7) !important; }
+
+  .mb-sm-0 { margin-bottom: 0 !important; }
+  .mb-sm-1 { margin-bottom: var(--sp-1) !important; }
+  .mb-sm-2 { margin-bottom: var(--sp-2) !important; }
+  .mb-sm-3 { margin-bottom: var(--sp-3) !important; }
+  .mb-sm-4 { margin-bottom: var(--sp-4) !important; }
+  .mb-sm-5 { margin-bottom: var(--sp-5) !important; }
+  .mb-sm-6 { margin-bottom: var(--sp-6) !important; }
+  .mb-sm-7 { margin-bottom: var(--sp-7) !important; }
+
+  .pt-sm-0 { padding-top: 0 !important; }
+  .pt-sm-4 { padding-top: var(--sp-4) !important; }
+  .pt-sm-5 { padding-top: var(--sp-5) !important; }
+  .pt-sm-6 { padding-top: var(--sp-6) !important; }
+
+  .pb-sm-0 { padding-bottom: 0 !important; }
+  .pb-sm-4 { padding-bottom: var(--sp-4) !important; }
+  .pb-sm-5 { padding-bottom: var(--sp-5) !important; }
+  .pb-sm-6 { padding-bottom: var(--sp-6) !important; }
+
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+}
+
+/* ============================================================
+   Layout helpers
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--narrow { max-width: var(--container-narrow); }
+/* герой, CTA, панелі, полотна */
+.container--full { max-width: none; }
+
+.section { padding-block: var(--section-py); z-index: 1; position: relative; }
+
+/* дві секції поспіль — прибрати подвоєний вертикальний відступ,
+   лишити один section-py між ними */
+.section + .section { padding-top: 0; }
+
+/* utility: вертикальний падінг секції через токен шкали */
+.section--pad-sm { padding-block: var(--sp-7); }
+.section--pad-lg { padding-block: var(--sp-10); }
+
+/* modifier: секція як плаваюча картка — inset --sp-3 з усіх боків +
+   заокруглення --r-block + кліп. Фон стає окремою карткою, а не
+   full-bleed смугою. margin, а не padding: інакше background заллє
+   відступ і inset зникне. */
+.section--panel {
+  margin: var(--sp-3);
+  border-radius: var(--r-block);
+  overflow: hidden;
+}
+.container .section--panel { margin: 0; }
+@media (max-width: 767px) {
+  .section--panel { margin: 0; }
+  .section--panel + .section--panel { margin-top: var(--sp-3); }
+  .container:has(.section--panel) { padding-inline: 0; }
+}
+
+/* GSAP fromTo(scale) рендерить старт інлайн-стилем щойно твін створюється —
+   якщо елемент до цього був без transform, це сам собою стрибок (браузер
+   рендерить "без scale" один кадр, тоді GSAP підставляє translate3d+scale).
+   Той самий стан у CSS наперед — рендер одразу масштабований, стрибка немає.
+   Лише десктоп (min-width: 1081px): scrub там і вмикається (js/main.js) — на
+   мобілці/планшеті твіна немає, і без медіа-запиту секція лишилась би
+   назавжди зменшеною до scale(0.85). */
+@media (min-width: 1081px) {
+  [data-anim="zoom-in"] { transform: scale(0.85); transform-origin: center top; }
+}
+
+/* ============================================================
+   Accessibility: skip link
+   ============================================================ */
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -100px;
+  z-index: 200;
+  background: var(--c-ink);
+  color: var(--c-page);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-chip);
+  transition: top .2s var(--ease);
+}
+.skip-link:focus { top: var(--sp-4); }
+
+/* ============================================================
+   Reveal — scroll-in animation (transform/opacity only)
+   ============================================================ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity .7s var(--ease),
+    transform .7s var(--ease);
+  transition-delay: calc(var(--reveal-i, 0) * 90ms);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Варіант "lines" — заголовок зʼявляється по словах з-під маски.
+   Чистий CSS: спостерігач лише додає .is-visible, окремої JS-логіки немає.
+   Слова — авто-врап у main.js (Reveal "lines"), стагер лічить їх самостійно
+   через --word-i (інлайн, розставляє JS), ручна розмітка теж підтримується. */
+[data-reveal="lines"] { opacity: 1; transform: none; }
+/* padding+негативний margin: маска мусить лишитись overflow:hidden, але при
+   --lh-display (0.95) line-box нижчий за гліфи — виносні елементи (Ї, Й, é)
+   обрізаються зверху. Падінг дає масці запас, margin компенсує його назад,
+   тож ритм рядків не змінюється. inline-block, не block: маска по слову —
+   слова мають текти в рядок, а не кожне зі свого рядка. */
+[data-reveal="lines"] .word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-top: 0.14em;
+  margin-top: -0.14em;
+}
+[data-reveal="lines"] .word-mask > * {
+  display: block;
+  transform: translateY(100%);
+  transition: transform .9s var(--ease);
+  transition-delay: calc(var(--word-i, 0) * 40ms);
+  will-change: transform;
+}
+[data-reveal="lines"].is-visible .word-mask > * { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  [data-reveal="lines"] .word-mask > * { transform: none; transition: none; }
+}
+
+/* ============================================================
+   Motion — Lenis + GSAP scrub/pin
+   Lenis-стилі інлайнимо (191 байт) замість окремого запиту.
+   ============================================================ */
+/* Нативний smooth-скрол несумісний зі ScrollTrigger: щоб виміряти позиції
+   тригерів, ST скидає скрол у 0 через window.scrollTo(), міряє
+   getBoundingClientRect() і повертає скрол назад. З scroll-behavior: smooth
+   ці записи стають анімованими й не застосовуються синхронно — ST міряє по
+   ще не зрушеній сторінці, start/end кожного тригера з'їжджають на поточний
+   scrollY, усі виглядають пройденими й scrub застрягає на progress=1 після
+   кожного refresh, тобто після кожного ресайзу. Гасимо саме там, де Lenis
+   піднявся (клас .lenis на <html> ставить сам Lenis) — плавність там і так
+   його, а не браузерна. */
+html.lenis { scroll-behavior: auto; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* data-anim="words" — JS ріже текст на .word, GSAP скрабить opacity.
+   Базовий стан приглушений; без JS слова лишаються повністю видимими. */
+[data-anim="words"] .word {
+  opacity: .22;
+  transition: opacity .3s var(--ease);
+  display: inline-block;
+  overflow: hidden;
+  padding-top: 0.14em;
+  margin-top: -0.14em;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-anim="words"] .word { opacity: 1; }
+}
+
+/* ============================================================
+   Typography helpers — section-head, label
+   ============================================================ */
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-8);
+  align-items: flex-start;
+}
+
+
+@media (max-width: 768px) {
+  .section-head { margin-bottom: var(--sp-7); }
+}
+
+/* ============================================================
+   Header — одна плаваюча таблетка (.site-header__row), fixed поверх контенту
+   (мобільне меню й пошук — .mobile-menu та .search-modal — навмисно тут
+   не живуть: обидва мають атрибут hidden у розмітці, тож браузер ховає
+   їх ще до завантаження CSS — повна стилізація в css/styles.css)
+   ============================================================ */
+.header-fixed {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+}
+
+/* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
+   після нього резервує цей простір, щоб контент не ліз під хедер. */
+.header-spacer { height: var(--header-h); }
+
+.site-header__row {
+  height: calc(var(--header-h) - var(--sp-4));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-2) var(--sp-3) 0;
+  padding-inline: calc(var(--sp-4) + 10px) calc(var(--sp-3) + 10px);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--c-page) 82%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
+  transition: background-color .25s var(--ease);
+}
+.is-scrolled .site-header__row { background: color-mix(in srgb, var(--c-page) 60%, transparent); }
+@media (max-width: 768px) {
+  :root { --header-h: 78px; }
+  .site-header__row { padding-inline: var(--sp-4) var(--sp-3); }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-sb);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+@media (max-width: 399px) {
+  .site-header__row { gap: var(--sp-2); }
+  .brand { font-size: var(--fs-body); }
+}
+
+.main-nav__list { display: flex; align-items: center; gap: clamp(var(--sp-2), 1vw, var(--sp-3)); }
+.main-nav__item { position: relative; }
+.main-nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  color: var(--c-ink);
+  white-space: nowrap;
+  padding-block: var(--sp-2);
+  padding-inline: clamp(var(--sp-2), 0.9vw, var(--sp-4));
+  border-radius: var(--r-pill);
+  transition: background-color .25s var(--ease), color .25s var(--ease);
+}
+/* шеврон дропдауна — CSS-фігура, той самий прийом, що й .accordion__icon */
+.main-nav__caret {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-left: var(--sp-2);
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform .2s var(--ease);
+}
+.main-nav__item.has-children:focus-within .main-nav__caret {
+  transform: translateY(25%) rotate(-135deg);
+}
+@media (min-width: 1081px) {
+  .main-nav__item.has-children:hover .main-nav__caret {
+    transform: translateY(25%) rotate(-135deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-nav__caret { transition: none; }
+}
+.main-nav a:focus-visible,
+.main-nav__item.has-children:focus-within > a {
+  background-color: color-mix(in srgb, var(--c-ink) 8%, transparent);
+}
+@media (min-width: 1081px) {
+  .main-nav a:hover,
+  .main-nav__item.has-children:hover > a {
+    background-color: color-mix(in srgb, var(--c-ink) 8%, transparent);
+  }
+}
+/* активний пункт — крапка-маркер, а не заливка: пігулка всередині
+   капсули-пігулки читалась би як вкладена форма.
+   .is-active — батько групи на сторінці-дитині (header.php, nav_link) */
+.main-nav a[aria-current="page"],
+.main-nav a.is-active { font-weight: var(--fw-sb); }
+.main-nav a[aria-current="page"]::after,
+.main-nav a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-nav a { transition-duration: .01ms; }
+}
+
+/* Вкладене підменю (dropdown), відкривається на hover/focus — без JS */
+.main-nav__submenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: var(--sp-3);
+  min-width: 180px;
+  padding: var(--sp-2);
+  /* той самий рецепт, що й у капсули — дропдаун має читатись як її продовження */
+  background: color-mix(in srgb, var(--c-page) 92%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-card);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--c-ink) 14%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 4px);
+  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility .2s;
+}
+/* місток до батьківського пункту: без нього курсор проходить крізь
+   margin-top і підменю закривається на півдорозі */
+.main-nav__submenu::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: var(--sp-4);
+}
+.main-nav__item.has-children:focus-within .main-nav__submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+@media (min-width: 1081px) {
+  .main-nav__item.has-children:hover .main-nav__submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+}
+.main-nav__submenu li + li { margin-top: 2px; }
+.main-nav__submenu a {
+  display: block;
+  padding-block: var(--sp-2);
+  padding-inline: var(--sp-3);
+  margin-inline: 0;
+  border-radius: var(--r-card);
+  text-align: center;
+}
+
+.site-header__actions { display: flex; align-items: center; gap: clamp(var(--sp-2), 0.8vw, var(--sp-4)); }
+
+/* Hamburger */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 0;
+}
+.nav-toggle__bar {
+  width: 24px; height: 2px;
+  background: var(--c-ink);
+  margin-inline: auto;
+  transition: transform .3s var(--ease), opacity .2s var(--ease);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+/* Lang switch — 36px tall */
+.lang-switch {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-card);
+  background: color-mix(in srgb, var(--c-ink) 6%, transparent);
+}
+.lang-switch__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-inline: var(--sp-2);
+  border: 0;
+  border-radius: calc(var(--r-card) - 4px);
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-sb);
+  color: var(--c-ink-mute);
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .lang-switch__btn:hover { color: var(--c-ink); }
+}
+.lang-switch__btn.is-active {
+  background: var(--c-ink);
+  color: var(--c-page);
+}
+@media (max-width: 620px) {
+  .lang-switch__btn { padding: 4px 6px; font-size: var(--fs-xs); }
+  .lang-switch { height: 32px; }
+}
+/* <400px (iPhone SE і менші) — бренд + UA/EN + пошук + гамбургер разом
+   ширші за viewport, якщо тримати ті самі відступи, що й на планшеті */
+@media (max-width: 399px) {
+  .site-header__actions { gap: var(--sp-2); }
+  .search-toggle { width: 32px; height: 32px; }
+  .nav-toggle { width: 32px; height: 32px; }
+}
+
+@media (max-width: 1080px) {
+  .main-nav { display: none; }
+  .nav-toggle { display: flex; }
+}

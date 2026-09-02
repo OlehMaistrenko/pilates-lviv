@@ -1,0 +1,331 @@
+/* ============================================================
+   styles.css — deferred CSS, підключається в кінці <body>
+   Секції нижче першого екрана + повна стилізація модалок/мобільного меню/
+   пошуку (усі мають hidden у розмітці — сховані ще до завантаження CSS).
+   Critical CSS (токени, reset, utility, хедер) — у css/main.css.
+   ============================================================ */
+
+/* ============================================================
+   Modal overlay — спільна оболонка для AJAX-модалок (partials/modals/*).
+   Один візуальний каркас (.modal-overlay__panel + .modal__*) для всіх —
+   контент конкретної модалки вантажиться в #modal-overlay-content.
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+}
+.modal-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c-ink) 55%, transparent);
+}
+.modal-overlay__panel {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: min(80vh, 720px);
+  overflow-y: auto;
+  border-radius: var(--r-card);
+  background: var(--c-page);
+  padding: var(--sp-7);
+}
+.modal-overlay__close {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  z-index: 2;
+  background: color-mix(in srgb, var(--c-ink) 6%, transparent);
+}
+.modal__head { margin-bottom: var(--sp-5); }
+.modal__title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-sb);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-tight);
+}
+.modal__body { display: flex; flex-direction: column; gap: var(--sp-4); }
+.modal__body--wide { max-width: none; }
+.modal__foot { margin-top: var(--sp-6); display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+
+@media (max-width: 560px) {
+  .modal-overlay__panel { padding: var(--sp-5); border-radius: var(--r-card); }
+}
+
+/* ============================================================
+   Form — .form/.form__row поля
+   ============================================================ */
+.form { display: flex; flex-direction: column; gap: var(--sp-4); }
+.form__row { display: flex; flex-direction: column; gap: var(--sp-2); }
+.form__label { font-size: var(--fs-sm); font-weight: var(--fw-med); }
+.form__input,
+.form__textarea {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-chip);
+  font: inherit;
+  color: var(--c-ink);
+  background: var(--c-page);
+  transition: border-color .2s var(--ease);
+}
+.form__input:focus,
+.form__textarea:focus {
+  outline: none;
+  border-color: var(--c-ink);
+}
+.form__textarea { resize: vertical; min-height: 120px; }
+.form__error { font-size: var(--fs-xs); color: #c0392b; }
+
+/* ============================================================
+   Mobile menu overlay — приховано атрибутом hidden у розмітці
+   ============================================================ */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+}
+.mobile-menu__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c-ink) 45%, transparent);
+}
+.mobile-menu__panel {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  bottom: var(--sp-3);
+  width: min(360px, calc(100vw - var(--sp-3) * 2));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  padding: var(--sp-7) var(--sp-5);
+  border-radius: var(--r-block);
+  background: var(--c-page);
+}
+.mobile-menu__list { display: flex; flex-direction: column; gap: var(--sp-2); }
+.mobile-menu__list > li > a {
+  display: block;
+  padding-block: var(--sp-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-sb);
+  text-transform: uppercase;
+}
+.mobile-menu__submenu { padding-left: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-1); }
+.mobile-menu__submenu a { display: block; padding-block: var(--sp-2); font-size: var(--fs-body); }
+.mobile-menu__foot { margin-top: var(--sp-6); }
+
+/* ============================================================
+   Search toggle + modal (Spotlight-style) — так само приховано
+   ============================================================ */
+.search-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  padding-top: 12vh;
+}
+.search-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c-ink) 45%, transparent);
+}
+.search-modal__panel {
+  position: relative;
+  width: min(640px, calc(100vw - var(--sp-5) * 2));
+  margin-inline: auto;
+  border-radius: var(--r-card);
+  background: var(--c-page);
+  overflow: hidden;
+}
+.search-modal__input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--c-line);
+}
+.search-modal__icon { flex: none; color: var(--c-ink-mute); }
+.search-modal__input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  font: inherit;
+  font-size: var(--fs-h5);
+  background: transparent;
+  color: var(--c-ink);
+}
+.search-modal__esc {
+  flex: none;
+  padding: 2px var(--sp-2);
+  border: 1px solid var(--c-line);
+  border-radius: 4px;
+  font-size: var(--fs-xs);
+  color: var(--c-ink-mute);
+}
+.search-modal__suggestions { padding: var(--sp-4) var(--sp-5) var(--sp-6); }
+.search-modal__group + .search-modal__group { margin-top: var(--sp-4); }
+.search-modal__group-title { margin-bottom: var(--sp-2); }
+.search-modal__group a {
+  display: block;
+  padding-block: var(--sp-2);
+  color: var(--c-ink-mute);
+  transition: color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .search-modal__group a:hover { color: var(--c-ink); }
+}
+
+/* ============================================================
+   Vendor: Swiper — базові оверрайди (усі каруцелі сайту, гейт
+   $vendor_swiper у partials/footer.php)
+   ============================================================ */
+.swiper-pagination-bullet { background: var(--c-ink); opacity: .3; }
+.swiper-pagination-bullet-active { opacity: 1; }
+.swiper-prev, .swiper-next { color: var(--c-ink); }
+
+/* ============================================================
+   Component: .simple-text — WP-редаговуваний rich-текст (CMS-контент).
+   Підтримує: p h2 h3 h4 ul ol li blockquote cite figure figcaption img
+   table thead tbody tr th td hr strong em a video iframe.
+   ============================================================ */
+.simple-text { display: flex; flex-direction: column; gap: var(--sp-5); max-width: 72ch; }
+.simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-sb); }
+.simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-sb); }
+.simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-sb); }
+.simple-text p, .simple-text li { line-height: var(--lh-body); }
+.simple-text ul, .simple-text ol { padding-left: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-2); }
+.simple-text ul { list-style: disc; }
+.simple-text ol { list-style: decimal; }
+.simple-text blockquote {
+  padding-left: var(--sp-5);
+  border-left: 2px solid var(--c-line);
+  font-size: var(--fs-lead);
+}
+.simple-text cite { display: block; margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--c-ink-mute); }
+.simple-text figure { display: flex; flex-direction: column; gap: var(--sp-2); }
+.simple-text figcaption { font-size: var(--fs-sm); color: var(--c-ink-mute); }
+.simple-text img { border-radius: var(--r-card); width: 100%; height: auto; }
+.simple-text hr { border: 0; border-top: 1px solid var(--c-line); }
+.simple-text a { text-decoration: underline; }
+.simple-text strong { font-weight: var(--fw-sb); }
+.simple-text em { font-style: italic; }
+
+.simple-text__video-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.simple-text__video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.simple-text__table-wrap { overflow-x: auto; }
+.simple-text table { width: 100%; border-collapse: collapse; }
+.simple-text th, .simple-text td {
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--c-line);
+  text-align: left;
+}
+.simple-text th { font-weight: var(--fw-sb); }
+
+/* ============================================================
+   Component: Accordion — звичайні div, стан і ексклюзивність рахує
+   main.js (initAccordions); клас .accordion--open + max-height на
+   .accordion__body для плавної анімації.
+   ============================================================ */
+.accordion { border-top: 1px solid var(--c-line); }
+.accordion:last-child { border-bottom: 1px solid var(--c-line); }
+.accordion__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  cursor: pointer;
+}
+.accordion__title { font-family: var(--font-display); font-weight: var(--fw-sb); font-size: var(--fs-h5); }
+.accordion__icon {
+  flex: none;
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.accordion__icon::before, .accordion__icon::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: transform .25s var(--ease);
+}
+.accordion__icon::before { width: 14px; height: 2px; }
+.accordion__icon::after { width: 2px; height: 14px; }
+.accordion--open .accordion__icon::after { transform: translate(-50%, -50%) rotate(90deg) scale(0); }
+.accordion__body { overflow: hidden; max-height: 0; }
+.accordion__body-inner { padding-bottom: var(--sp-4); }
+
+/* ============================================================
+   Footer — скелет; кольори/градієнт/бренд-декор проєкт додає сам
+   ============================================================ */
+.site-footer {
+  margin: var(--sp-3);
+  border-radius: var(--r-block);
+  overflow: hidden;
+  background: var(--c-ink);
+  color: var(--c-page);
+  padding: var(--sp-9) var(--gutter) var(--sp-6);
+  --c-line: color-mix(in srgb, var(--c-page) 15%, transparent);
+}
+@media (max-width: 767px) {
+  .site-footer { margin: 0; margin-top: var(--sp-3); border-radius: 0; }
+}
+.site-footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(var(--sp-7), 5vw, var(--sp-9));
+  padding-bottom: var(--sp-8);
+  border-bottom: 1px solid var(--c-line);
+}
+.site-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.site-footer__nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); }
+.site-footer__col ul { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-4); }
+.site-footer__col a { color: color-mix(in srgb, var(--c-page) 70%, transparent); transition: color .2s var(--ease); }
+@media (min-width: 1081px) {
+  .site-footer__col a:hover { color: var(--c-page); }
+}
+.site-footer__head {
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-sb);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mono);
+}
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-top: var(--sp-6);
+}
+.site-footer__bottom a { color: color-mix(in srgb, var(--c-page) 70%, transparent); transition: color .2s var(--ease); }
+@media (min-width: 1081px) {
+  .site-footer__bottom a:hover { color: var(--c-page); }
+}
+/* бренд-колонка тісна вже ~1200px — раніше складаємо бренд над нав-меню */
+@media (max-width: 1200px) {
+  .site-footer__top { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
+}
+@media (max-width: 620px) {
+  .site-footer__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6) var(--sp-4); }
+  .site-footer__nav > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .site-footer__bottom { flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); }
+}
