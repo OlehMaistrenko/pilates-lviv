@@ -6,21 +6,36 @@
 
 :root {
   /* ---- Color ----
-     Заготовка без палітри: рівно стільки значень, щоб каркас рендерився.
-     Палітру проєкту додавай сюди — решта файлу читає лише ці токени. */
-  --c-page: #ffffff;
-  --c-ink:  #111111;
+     Палітра брендбуку (Moss / Beige Sand / Burnt Umber / Deep Black) плюс
+     золото: воно є в застосуванні логотипа, але як фарба в брендбуку не
+     описане. Основний фон сайту — беж; мох і умбра лише як рідкісні поля. */
+  --c-page: #EAE5DF;   /* Beige Sand — PANTONE 9043 C */
+  --c-ink:  #22251B;   /* темний мох замість чистого чорного: на бежі
+                          #000 дає різкий, «екранний» контраст */
+
+  --c-moss:      #4A4F3C;   /* PANTONE 5743 C — герой, футер */
+  --c-moss-deep: #3A3E2F;
+  --c-umber:     #84412F;   /* PANTONE 7594 C — тільки блок запису */
+  --c-black:     #000000;
+
+  --c-gold:     #C2A15C;   /* лінії, лев, деталі */
+  --c-gold-lt:  #DCC58E;   /* золото на темному полі */
+  --c-gold-ink: #8A6A28;   /* золото як ТЕКСТ на бежі: світле не читається */
 
   /* приглушений текст і бордери — від --c-ink через color-mix, без власних hex */
   --c-ink-mute: color-mix(in srgb, var(--c-ink) 62%, transparent);
   --c-line:     color-mix(in srgb, var(--c-ink) 12%, transparent);
 
   /* ---- Type ----
-     Дві ролі (тіло / заголовки-лейбли) на випадок двох гарнітур у проєкті.
-     Поки обидві — системна: підстав свої @font-face і зміни лише тут. */
-  --font-body:    system-ui, sans-serif;
-  --font-display: system-ui, sans-serif;
+     Одна гарнітура на весь сайт — Geologica, варіативна. --font-display
+     лишається окремим токеном (а не просто скрізь --font-body), бо CSS
+     проєкту й далі розрізняє «заголовок / інтерфейс» за роллю; обидва
+     токени зараз указують на той самий файл. Курсиву в наборі немає:
+     ні font-style: italic, ні окремої гарнітури для нього. */
+  --font-body:    "Geologica", "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-body);
 
+  --fw-lt:  200;
   --fw-reg: 400;
   --fw-med: 500;
   --fw-sb:  600;
@@ -66,15 +81,44 @@
   --container-narrow: 1120px;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
   --gutter:           clamp(1rem, 0.1505rem + 3.6246vw, 4.5rem);
 
-  /* ---- Radius ---- */
-  --r-chip:  10px;    /* дрібна плашка, тег */
-  --r-card:  20px;    /* картка */
-  --r-block: 40px;    /* великий блок / медіа */
+  /* ---- Radius ----
+     Бренд надрукований висічкою й сліпим тиском — заокруглень майже немає.
+     Пігулка лишається тільки для кнопок, арка — фірмова форма кадру. */
+  --r-chip:  2px;     /* дрібна плашка, тег */
+  --r-card:  2px;     /* картка */
+  --r-block: 2px;     /* великий блок / медіа */
   --r-pill:  999px;   /* кнопки */
+  --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
 
   --header-h: 86px;
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ============================================================
+   Fonts — самохост, ОДНА гарнітура на весь сайт (2 файли, ~41 КБ)
+   Geologica: варіативна вага 200–700, геометрична форма (плоска вершина
+   «A», кругле «O») близька до шрифтової частини логотипа — тому й обрана
+   замість другої, «заголовкової» гарнітури. Курсиву в наборі немає
+   взагалі: ні окремим файлом, ні font-style — на сайті його не буває.
+   Кирилиця й латиниця окремими сабсетами: unicode-range тягне кириличний
+   файл лише тоді, коли на сторінці справді є кирилиця.
+   ============================================================ */
+@font-face {
+  font-family: "Geologica";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("../assets/fonts/geologica-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Geologica";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("../assets/fonts/geologica-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ============================================================
@@ -97,7 +141,24 @@ body {
 }
 
 h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
-h1, h2, h3 { font-family: var(--font-display); }
+/* Один шрифт, ніякого курсиву. Ієрархія заголовків тримається на розмірі,
+   вазі (--fw-lt на великих, --fw-med на дрібних) і трекінгу, а не на
+   зміні гарнітури чи нахилу — саме тому тут вистачає варіативної Geologica. */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+/* Дефолтні розміри: без них заголовок без власного класу успадковує
+   --fs-body і візуально зникає. Компонент за потреби перебиває
+   (напр. .hero__title — --fs-hero). */
+h1 { font-size: var(--fs-hero); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h4); }
+h4 { font-size: var(--fs-h5); }
+h3, h4 { font-family: var(--font-body); font-weight: var(--fw-med); line-height: var(--lh-tight); }
 ul, ol { padding: 0; list-style: none; }
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -121,6 +182,109 @@ main { overflow: clip; }
 .text--body { font-size: var(--fs-body); }
 .text--lead { font-size: var(--fs-lead); }
 .text--muted { color: var(--c-ink-mute); }
+
+/* ============================================================
+   Utility: .label — дрібний службовий напис у розрядку
+   Розрядка взята з локапа лого («EST. 2015», «LVIV»). Це НЕ кікер над
+   кожним заголовком: ставиться тільки там, де напис несе інформацію,
+   якої немає в заголовку поруч.
+   ============================================================ */
+.label {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   Buttons
+   --btn-c / --btn-bg — локальні змінні, щоб модифікатор міняв дві
+   величини замість дублювання всього правила.
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 48px;
+  padding-inline: var(--sp-6);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  line-height: 1.2;
+  text-align: center;
+  color: var(--btn-c, var(--c-page));
+  background: var(--btn-bg, var(--c-ink));
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+.btn--umber { --btn-bg: var(--c-umber); --btn-c: var(--c-page); }
+.btn--sand  { --btn-bg: var(--c-page);  --btn-c: var(--c-ink); }
+/* контурна: фон прозорий, колір успадковується від поля, на якому лежить */
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-c: currentColor;
+  border-color: color-mix(in srgb, currentColor 38%, transparent);
+}
+.btn--sm { min-height: 40px; padding-inline: var(--sp-5); }
+
+@media (min-width: 1081px) {
+  .btn:hover { --btn-bg: var(--c-moss); --btn-c: var(--c-page); }
+  .btn--umber:hover { --btn-bg: var(--c-moss); }
+  .btn--sand:hover  { --btn-bg: var(--c-gold-lt); --btn-c: var(--c-ink); }
+  .btn--ghost:hover { --btn-bg: transparent; --btn-c: currentColor; border-color: currentColor; }
+}
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  color: inherit;
+  transition: background-color .2s var(--ease);
+}
+.btn-icon--sm { width: 36px; height: 36px; }
+@media (min-width: 1081px) {
+  .btn-icon:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+}
+
+/* ============================================================
+   .ph — плейсхолдер медіа (поки немає фото/відео)
+   Лев водяним знаком + підпис із очікуваним іменем файлу. Заміна на
+   реальне фото — це рівно один рядок розмітки, лейаут не змінюється.
+   Промпти на генерацію: info/media-prompts.md
+   ============================================================ */
+.ph {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--c-ink) 10%, var(--c-page));
+  color: var(--c-ink-mute);
+  text-align: center;
+}
+.ph__name {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  opacity: .7;
+}
+.ph__note { font-size: var(--fs-sm); max-width: 34ch; line-height: var(--lh-body); }
+/* на моховому/умбровому полі плейсхолдер має бути світлішим за фон, а не темнішим */
+.ph--on-dark {
+  background: color-mix(in srgb, var(--c-page) 12%, transparent);
+  color: color-mix(in srgb, var(--c-page) 70%, transparent);
+}
 
 /* ============================================================
    Utility: spacing (mt / mb / pt / pb)
@@ -404,53 +568,92 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ============================================================
-   Header — одна плаваюча таблетка (.site-header__row), fixed поверх контенту
-   (мобільне меню й пошук — .mobile-menu та .search-modal — навмисно тут
-   не живуть: обидва мають атрибут hidden у розмітці, тож браузер ховає
-   їх ще до завантаження CSS — повна стилізація в css/styles.css)
+   Header — суцільна смуга, fixed поверх контенту. Над моховим героєм
+   прозора (.header-fixed--over), після скролу — бежева з золотою волосиною.
+   (Мобільне меню .mobile-menu тут навмисно не живе: воно має атрибут
+   hidden у розмітці, тож браузер ховає його ще до завантаження CSS —
+   повна стилізація в css/styles.css)
    ============================================================ */
 .header-fixed {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
+  background: var(--c-page);
+  color: var(--c-ink);
+  border-bottom: 1px solid var(--c-line);
+  transition: background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+/* Над моховим героєм хедер прозорий і піщаний. Клас ставить сторінка
+   ($header_over_hero перед include), а не JS — щоб не було кадру, у якому
+   темний текст стоїть на темному фоні до першого спрацювання скрипта. */
+.header-fixed--over {
+  background: transparent;
+  color: var(--c-page);
+  border-bottom-color: transparent;
+}
+/* .is-scrolled ставить js/main.js на <body> */
+.is-scrolled .header-fixed--over {
+  background: var(--c-page);
+  color: var(--c-ink);
+  border-bottom-color: color-mix(in srgb, var(--c-gold) 45%, transparent);
+}
+.is-scrolled .header-fixed { border-bottom-color: color-mix(in srgb, var(--c-gold) 45%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .header-fixed { transition: none; }
 }
 
 /* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
-   після нього резервує цей простір, щоб контент не ліз під хедер. */
+   після нього резервує цей простір, щоб контент не ліз під хедер.
+   На сторінці з прозорим хедером спейсера немає навмисно: герой має
+   починатись під хедером, а не після нього. */
 .header-spacer { height: var(--header-h); }
 
 .site-header__row {
-  height: calc(var(--header-h) - var(--sp-4));
+  height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--sp-3);
-  margin: var(--sp-2) var(--sp-3) 0;
-  padding-inline: calc(var(--sp-4) + 10px) calc(var(--sp-3) + 10px);
-  border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--c-page) 82%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
-  transition: background-color .25s var(--ease);
+  gap: var(--sp-4);
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
-.is-scrolled .site-header__row { background: color-mix(in srgb, var(--c-page) 60%, transparent); }
 @media (max-width: 768px) {
-  :root { --header-h: 78px; }
-  .site-header__row { padding-inline: var(--sp-4) var(--sp-3); }
+  :root { --header-h: 72px; }
 }
 
+/* Логотип — готові файли assets/logo/*.svg у <img>. Пропорція локапа
+   464 × 303; задаємо висоту, ширину рахує aspect-ratio. */
 .brand {
+  position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--font-display);
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-sb);
-  letter-spacing: var(--tracking-tight);
-  text-transform: uppercase;
+  flex: none;
+}
+.brand__logo {
+  height: 52px;
+  width: auto;
+  aspect-ratio: 464 / 303;
+}
+/* Світлий і темний варіанти лежать один на одному: <img> не успадковує
+   колір, а перефарбовувати логотип фільтром брендбук забороняє. */
+.brand__logo--dark { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
+.header-fixed .brand__logo--light { opacity: 0; }
+.header-fixed .brand__logo--dark  { opacity: 1; }
+.header-fixed--over .brand__logo--light { opacity: 1; }
+.header-fixed--over .brand__logo--dark  { opacity: 0; }
+.is-scrolled .header-fixed--over .brand__logo--light { opacity: 0; }
+.is-scrolled .header-fixed--over .brand__logo--dark  { opacity: 1; }
+.brand__logo { transition: opacity .3s var(--ease); }
+@media (prefers-reduced-motion: reduce) { .brand__logo { transition: none; } }
+
+@media (max-width: 768px) {
+  .brand__logo { height: 44px; }
 }
 @media (max-width: 399px) {
-  .site-header__row { gap: var(--sp-2); }
-  .brand { font-size: var(--fs-body); }
+  .site-header__row { gap: var(--sp-2); padding-inline: var(--sp-4); }
+  .brand__logo { height: 40px; }
 }
 
 .main-nav__list { display: flex; align-items: center; gap: clamp(var(--sp-2), 1vw, var(--sp-3)); }
@@ -460,8 +663,8 @@ html.lenis, html.lenis body { height: auto; }
   display: flex;
   align-items: center;
   font-size: var(--fs-sm);
-  font-weight: var(--fw-med);
-  color: var(--c-ink);
+  font-weight: var(--fw-reg);
+  color: currentColor;   /* успадковує стан хедера: піщаний над героєм, темний далі */
   white-space: nowrap;
   padding-block: var(--sp-2);
   padding-inline: clamp(var(--sp-2), 0.9vw, var(--sp-4));
@@ -492,12 +695,12 @@ html.lenis, html.lenis body { height: auto; }
 }
 .main-nav a:focus-visible,
 .main-nav__item.has-children:focus-within > a {
-  background-color: color-mix(in srgb, var(--c-ink) 8%, transparent);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
 }
 @media (min-width: 1081px) {
   .main-nav a:hover,
   .main-nav__item.has-children:hover > a {
-    background-color: color-mix(in srgb, var(--c-ink) 8%, transparent);
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
   }
 }
 /* активний пункт — крапка-маркер, а не заливка: пігулка всередині
@@ -527,15 +730,16 @@ html.lenis, html.lenis body { height: auto; }
   top: 100%;
   left: 50%;
   margin-top: var(--sp-3);
-  min-width: 180px;
-  padding: var(--sp-2);
-  /* той самий рецепт, що й у капсули — дропдаун має читатись як її продовження */
-  background: color-mix(in srgb, var(--c-page) 92%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
-  border: 1px solid var(--c-line);
+  min-width: 260px;
+  padding: var(--sp-3);
+  /* суцільний беж, без blur: бренд надрукований на папері, скла в системі немає.
+     Колір тексту фіксуємо — дропдаун може відкриватись із прозорого хедера,
+     де currentColor піщаний, а лежить він уже на бежевому полі. */
+  background: var(--c-page);
+  color: var(--c-ink);
+  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
   border-radius: var(--r-card);
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--c-ink) 14%, transparent);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--c-ink) 16%, transparent);
   opacity: 0;
   visibility: hidden;
   transform: translate(-50%, 4px);
@@ -566,11 +770,12 @@ html.lenis, html.lenis body { height: auto; }
 .main-nav__submenu li + li { margin-top: 2px; }
 .main-nav__submenu a {
   display: block;
-  padding-block: var(--sp-2);
+  padding-block: var(--sp-3);
   padding-inline: var(--sp-3);
   margin-inline: 0;
   border-radius: var(--r-card);
-  text-align: center;
+  text-align: left;
+  white-space: normal;
 }
 
 .site-header__actions { display: flex; align-items: center; gap: clamp(var(--sp-2), 0.8vw, var(--sp-4)); }
@@ -587,59 +792,141 @@ html.lenis, html.lenis body { height: auto; }
   border: 0;
 }
 .nav-toggle__bar {
-  width: 24px; height: 2px;
-  background: var(--c-ink);
+  width: 24px; height: 1px;
+  background: currentColor;
   margin-inline: auto;
   transition: transform .3s var(--ease), opacity .2s var(--ease);
 }
 .nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) { transform: translateY(4px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
 
-/* Lang switch — 36px tall */
+/* Lang switch — без плашки: активна мова позначена вагою і золотою
+   рискою, а не заливкою. Заливка мусила б знати колір фону, а хедер
+   міняє його між прозорим і бежевим станом. */
 .lang-switch {
   display: flex;
   align-items: center;
-  height: 36px;
-  gap: 2px;
-  padding: 3px;
-  border-radius: var(--r-card);
-  background: color-mix(in srgb, var(--c-ink) 6%, transparent);
+  gap: var(--sp-1);
 }
 .lang-switch__btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 36px;
   padding-inline: var(--sp-2);
   border: 0;
-  border-radius: calc(var(--r-card) - 4px);
   background: transparent;
-  font-family: var(--font-display);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-sb);
-  color: var(--c-ink-mute);
-  transition: background .2s var(--ease), color .2s var(--ease);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  letter-spacing: var(--tracking-mono);
+  color: color-mix(in srgb, currentColor 55%, transparent);
+  transition: color .2s var(--ease);
 }
 @media (min-width: 1081px) {
-  .lang-switch__btn:hover { color: var(--c-ink); }
+  .lang-switch__btn:hover { color: currentColor; }
 }
-.lang-switch__btn.is-active {
-  background: var(--c-ink);
-  color: var(--c-page);
+.lang-switch__btn.is-active { color: currentColor; font-weight: var(--fw-sb); }
+.lang-switch__btn.is-active::after {
+  content: "";
+  position: absolute;
+  left: var(--sp-2); right: var(--sp-2);
+  bottom: 7px;
+  height: 1px;
+  background: var(--c-gold);
 }
-@media (max-width: 620px) {
-  .lang-switch__btn { padding: 4px 6px; font-size: var(--fs-xs); }
-  .lang-switch { height: 32px; }
+
+/* телефон у хедері: іконка завжди, цифри — від 1200px, далі не влазять */
+.header-phone { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); }
+@media (max-width: 1200px) { .header-phone__num { display: none; } }
+
+@media (max-width: 1080px) {
+  /* кнопка запису лишається — це головна дія; решта ховається в меню */
+  .header-phone, .lang-switch { display: none; }
 }
-/* <400px (iPhone SE і менші) — бренд + UA/EN + пошук + гамбургер разом
-   ширші за viewport, якщо тримати ті самі відступи, що й на планшеті */
+/* <400px (iPhone SE і менші) — бренд + дії разом ширші за viewport,
+   якщо тримати ті самі відступи, що й на планшеті */
 @media (max-width: 399px) {
-  .site-header__actions { gap: var(--sp-2); }
-  .search-toggle { width: 32px; height: 32px; }
+  .site-header__actions { gap: var(--sp-1); }
   .nav-toggle { width: 32px; height: 32px; }
+  .site-header__cta { display: none; }
 }
 
 @media (max-width: 1080px) {
   .main-nav { display: none; }
   .nav-toggle { display: flex; }
+}
+
+/* ============================================================
+   Hero — перший екран головної, тому лежить у main.css, а не в styles.css
+   Єдине мохове поле у верхній частині сторінки. Хедер над ним прозорий,
+   тож паддінг зверху враховує --header-h.
+   ============================================================ */
+.hero {
+  position: relative;
+  background: var(--c-moss);
+  color: var(--c-page);
+  padding-top: calc(var(--header-h) + var(--sp-9));
+  padding-bottom: var(--sp-9);
+}
+.hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+  gap: clamp(var(--sp-7), 5vw, var(--sp-10));
+  align-items: center;
+  min-height: min(74vh, 680px);
+}
+.hero__title { font-size: var(--fs-hero); }
+/* «пілатесу» золотим — одне акцентне слово на екран, більше ніде */
+.hero__title em { font-style: normal; color: var(--c-gold-lt); }
+
+.hero__lead {
+  margin-top: var(--sp-6);
+  max-width: 46ch;
+  color: color-mix(in srgb, var(--c-page) 76%, transparent);
+  line-height: var(--lh-body);
+}
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-7);
+}
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-6);
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-5);
+  /* єдина лінія на весь герой — відділяє реквізити від обіцянки */
+  border-top: 1px solid color-mix(in srgb, var(--c-page) 20%, transparent);
+  color: color-mix(in srgb, var(--c-page) 64%, transparent);
+}
+.hero__meta a { display: inline-flex; align-items: center; gap: var(--sp-2); }
+@media (min-width: 1081px) {
+  .hero__meta a:hover { color: var(--c-page); }
+}
+
+/* Медіа-кадр героя — арка. Зараз .ph, далі сюди стає <video>/<img>. */
+.hero__media {
+  border-radius: var(--r-arch);
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  max-height: 620px;
+  margin-inline: auto;
+  width: 100%;
+}
+.hero__media > img,
+.hero__media > video,
+.hero__media > .ph { width: 100%; height: 100%; object-fit: cover; }
+
+@media (max-width: 1080px) {
+  .hero__inner { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); min-height: 0; }
+  /* на вузькому екрані спершу обіцянка, потім кадр */
+  .hero__media { order: 2; max-width: 420px; aspect-ratio: 4 / 5; }
+}
+@media (max-width: 768px) {
+  .hero { padding-top: calc(var(--header-h) + var(--sp-7)); }
+  .hero__meta { margin-top: var(--sp-7); }
 }

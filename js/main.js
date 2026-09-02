@@ -25,8 +25,16 @@
       let i = 0;
       el.childNodes.forEach((node) => {
         if (node.nodeName === 'BR') { html.push('<br>'); return; }
+        /* Інлайн-теги всередині заголовка (<em> для акцентного слова) треба
+           перенести на кожне слово: innerHTML нижче переписує вміст цілком,
+           і без цього тег просто зникав би разом із акцентом.
+           Вкладеність глибше одного рівня схлопується — заголовку вистачає. */
+        const tag = node.nodeType === 1 ? node.tagName.toLowerCase() : '';
+        const attrs = tag ? [...node.attributes].map((a) => ` ${a.name}="${a.value}"`).join('') : '';
+        const open = tag ? `<${tag}${attrs}>` : '';
+        const close = tag ? `</${tag}>` : '';
         (node.textContent || '').split(/\s+/).filter(Boolean).forEach((word) => {
-          html.push(`<span class="word-mask" style="--word-i: ${i++}"><span>${word}</span></span>`);
+          html.push(`<span class="word-mask" style="--word-i: ${i++}"><span>${open}${word}${close}</span></span>`);
         });
       });
       el.innerHTML = html.join(' ');
@@ -270,6 +278,24 @@
 
  
 
+  /* ---- Header state: .is-scrolled на <body> --------------------------
+     Прозорий хедер над героєм мусить стати непрозорим, щойно під ним
+     починається світлий контент. Поріг 8px, а не 0: на iOS bounce-скрол
+     дає дрібні від'ємні значення, і клас блимав би на кожен дотик. */
+  (() => {
+    let ticking = false;
+    const apply = () => {
+      document.body.classList.toggle('is-scrolled', window.scrollY > 8);
+      ticking = false;
+    };
+    addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(apply);
+    }, { passive: true });
+    apply();   // перезавантаження посеред сторінки зберігає позицію скролу
+  })();
+
   /* ---- Mobile menu -------------------------------------------------- */
   (() => {
     const toggle = document.querySelector('.nav-toggle');
@@ -286,7 +312,13 @@
       menu.classList.remove('is-open');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
-      const done = () => { menu.hidden = true; menu.removeEventListener('transitionend', done); };
+      // transitionend спливає і з панелі, і з кнопок усередині — реагуємо
+      // лише на власний перехід кореня, інакше меню ховається завчасно
+      const done = (e) => {
+        if (e.target !== menu) return;
+        menu.hidden = true;
+        menu.removeEventListener('transitionend', done);
+      };
       menu.addEventListener('transitionend', done);
     };
 
@@ -317,7 +349,14 @@
     const close = () => {
       overlay.classList.remove('is-open');
       document.body.style.overflow = '';
-      const done = () => { overlay.hidden = true; content.innerHTML = ''; overlay.removeEventListener('transitionend', done); };
+      // те саме, що й у мобільного меню: transitionend спливає з панелі
+      // та з елементів форми всередині, слухаємо тільки корінь
+      const done = (e) => {
+        if (e.target !== overlay) return;
+        overlay.hidden = true;
+        content.innerHTML = '';
+        overlay.removeEventListener('transitionend', done);
+      };
       overlay.addEventListener('transitionend', done);
       trigger?.focus();
     };

@@ -1,31 +1,101 @@
   </main>
 
+  <?php
+  // $contact приходить із header.php (він завжди включається першим).
+  // Фолбек — щоб футер не падав, якщо колись знадобиться окремо.
+  $contact = $contact ?? [
+    'phone'      => '+38 (063) 015-05-17',
+    'phone_href' => 'tel:+380630150517',
+    'address'    => 'м. Львів, вул. Б. Романицького, 24а',
+    'map'        => '#',
+    'instagram'  => '#',
+    'facebook'   => '#',
+  ];
+
+  // Повна мапа сайту. Хедер показує 7 пунктів; сюди виходять усі розділи,
+  // включно з тими, яких у хедері немає (кабінет, політика, галерея).
+  $sitemap = [
+    'Тренування' => [
+      ['Пілатес Springtone', 'training-pilates.php'],
+      ['Йога', 'training-yoga.php'],
+      ['Функціональне відновлення', 'training-recovery.php'],
+      ['Танці', 'training-dance.php'],
+      ['Консультація фізіолога', 'training-physio.php'],
+      ['Навчальний центр', 'academy.php'],
+    ],
+    'Студія' => [
+      ['Про студію', 'about.php'],
+      ['Наша команда', 'team.php'],
+      ['Брюховичі', 'location-bryukhovychi.php'],
+      ['Чупринки', 'location-chuprynky.php'],
+      ['Сихів', 'location-sykhiv.php'],
+      ['Події', 'events.php'],
+    ],
+    'Клієнтам' => [
+      ['Розклад', 'schedule.php'],
+      ['Ціни', 'prices.php'],
+      ['Кабінет клієнта', 'account.php'],
+      ['Питання та відповіді', 'faq.php'],
+      ['Політика конфіденційності', 'privacy.php'],
+    ],
+    'Ще' => [
+      ['Співпраця', 'partnership.php'],
+      ['Блог', 'blog.php'],
+      ['Контакти', 'contacts.php'],
+    ],
+  ];
+  ?>
+
   <footer class="site-footer">
     <div class="container">
       <div class="site-footer__top">
         <div class="site-footer__brand">
-          <p class="label">Site</p>
+          <!-- золотий логотип на моховому полі — дозволений варіант із брендбуку -->
+          <a class="brand brand--footer" href="index.php" aria-label="Пілатес Львів — на головну">
+            <img class="brand__logo" src="assets/logo/pilates-lviv-gold.svg" alt="Pilates Lviv" width="464" height="303" loading="lazy">
+          </a>
+
+          <address class="site-footer__contacts">
+            <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
+              <?= $contact['address'] ?>
+            </a>
+            <a href="<?= $contact['phone_href'] ?>">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
+              <?= $contact['phone'] ?>
+            </a>
+          </address>
+
+          <button type="button" class="btn btn--sand btn--sm" data-modal="callback">Замовити дзвінок</button>
+
+          <div class="site-footer__social">
+            <a class="btn-icon btn-icon--sm" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
+            </a>
+            <a class="btn-icon btn-icon--sm" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
+            </a>
+          </div>
         </div>
 
-        <nav class="site-footer__nav" aria-label="Footer navigation">
-          <div class="site-footer__col">
-            <p class="site-footer__head">Column 1</p>
-            <ul>
-              <li><a href="page-1.php">Page 1</a></li>
-              <li><a href="page-2.php">Page 2</a></li>
-            </ul>
-          </div>
-          <div class="site-footer__col">
-            <p class="site-footer__head">Column 2</p>
-            <ul>
-              <li><a href="page-3.php">Page 3</a></li>
-            </ul>
-          </div>
+        <nav class="site-footer__nav" aria-label="Мапа сайту">
+          <?php foreach ($sitemap as $head => $links): ?>
+            <div class="site-footer__col">
+              <p class="site-footer__head"><?= $head ?></p>
+              <ul>
+                <?php foreach ($links as [$label, $href]): ?>
+                  <li><a href="<?= $href ?>"><?= $label ?></a></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          <?php endforeach; ?>
         </nav>
       </div>
 
       <div class="site-footer__bottom">
-        <p class="text text--sm">© <?= date('Y') ?> Site. All rights reserved.</p>
+        <!-- «est. 2015» повторювати тут не треба — воно вже є в самому логотипі -->
+        <p class="text text--sm">© 2015–<?= date('Y') ?> Студія «Пілатес Львів»</p>
+        <p class="text text--sm"><a href="privacy.php">Політика конфіденційності</a></p>
       </div>
     </div>
   </footer>
@@ -34,7 +104,7 @@
   <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-overlay-title" data-lenis-prevent hidden>
     <div class="modal-overlay__backdrop" data-modal-close></div>
     <div class="modal-overlay__panel">
-      <button type="button" class="btn-icon btn-icon--sm modal-overlay__close" data-modal-close aria-label="Close">
+      <button type="button" class="btn-icon btn-icon--sm modal-overlay__close" data-modal-close aria-label="Закрити">
         <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
       </button>
       <div class="modal-overlay__content" id="modal-overlay-content"></div>
@@ -42,9 +112,9 @@
   </div>
 
   <!-- Deferred CSS: секції нижче першого екрана + повна стилізація модалок/
-       мобільного меню/пошуку. Вендорські стилі — перед цим лінком, за тією
-       самою логікою. Swiper/Mapbox вантажаться лише там, де сторінка
-       виставила $vendor_swiper/$vendor_map (до include цього партіалу). -->
+       мобільного меню. Вендорські стилі — перед цим лінком, за тією самою
+       логікою. Swiper/Mapbox вантажаться лише там, де сторінка виставила
+       $vendor_swiper/$vendor_map (до include цього партіалу). -->
   <?php if (!empty($vendor_swiper)): ?>
     <link rel="stylesheet" href="css/vendor/swiper/swiper-bundle.min.css">
   <?php endif; ?>

@@ -1,7 +1,7 @@
 /* ============================================================
    styles.css — deferred CSS, підключається в кінці <body>
-   Секції нижче першого екрана + повна стилізація модалок/мобільного меню/
-   пошуку (усі мають hidden у розмітці — сховані ще до завантаження CSS).
+   Секції нижче першого екрана + повна стилізація модалок і мобільного
+   меню (обидва мають hidden у розмітці — сховані ще до завантаження CSS).
    Critical CSS (токени, reset, utility, хедер) — у css/main.css.
    ============================================================ */
 
@@ -10,6 +10,13 @@
    Один візуальний каркас (.modal-overlay__panel + .modal__*) для всіх —
    контент конкретної модалки вантажиться в #modal-overlay-content.
    ============================================================ */
+/* Протокол відкриття (js/main.js): hidden=false → rAF → клас .is-open;
+   на закритті клас знімається, а hidden повертається аж на transitionend.
+   Звідси два обов'язкові правила:
+   1) [hidden] мусить перемагати display:flex — інакше атрибут ігнорується
+      і оверлей видно завжди;
+   2) на самому .modal-overlay мусить бути transition — без нього
+      transitionend не настане й hidden не повернеться ніколи. */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -18,7 +25,11 @@
   align-items: center;
   justify-content: center;
   padding: var(--sp-4);
+  opacity: 0;
+  transition: opacity .3s var(--ease);
 }
+.modal-overlay[hidden] { display: none; }
+.modal-overlay.is-open { opacity: 1; }
 .modal-overlay__backdrop {
   position: absolute;
   inset: 0;
@@ -32,7 +43,10 @@
   border-radius: var(--r-card);
   background: var(--c-page);
   padding: var(--sp-7);
+  transform: translateY(12px);
+  transition: transform .3s var(--ease);
 }
+.modal-overlay.is-open .modal-overlay__panel { transform: none; }
 .modal-overlay__close {
   position: absolute;
   top: var(--sp-3);
@@ -43,7 +57,7 @@
 .modal__head { margin-bottom: var(--sp-5); }
 .modal__title {
   font-family: var(--font-display);
-  font-weight: var(--fw-sb);
+  font-weight: var(--fw-lt);
   font-size: var(--fs-h4);
   line-height: var(--lh-tight);
 }
@@ -83,11 +97,15 @@
 /* ============================================================
    Mobile menu overlay — приховано атрибутом hidden у розмітці
    ============================================================ */
+/* Той самий протокол, що й у модалки, з тією ж вимогою transition на корені */
 .mobile-menu {
   position: fixed;
   inset: 0;
   z-index: 150;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
 }
+.mobile-menu.is-open { opacity: 1; }
 .mobile-menu__backdrop {
   position: absolute;
   inset: 0;
@@ -95,90 +113,66 @@
 }
 .mobile-menu__panel {
   position: absolute;
-  top: var(--sp-3);
-  right: var(--sp-3);
-  bottom: var(--sp-3);
-  width: min(360px, calc(100vw - var(--sp-3) * 2));
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 100vw);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: var(--sp-7);
   overflow-y: auto;
-  padding: var(--sp-7) var(--sp-5);
-  border-radius: var(--r-block);
-  background: var(--c-page);
+  padding: calc(var(--header-h) + var(--sp-5)) var(--gutter) var(--sp-7);
+  background: var(--c-moss);
+  color: var(--c-page);
+  transform: translateX(100%);
+  transition: transform .4s var(--ease);
 }
-.mobile-menu__list { display: flex; flex-direction: column; gap: var(--sp-2); }
+.mobile-menu.is-open .mobile-menu__panel { transform: none; }
+
+/* Тривалість на корені лишається ненульовою навмисно: JS чекає на
+   transitionend, щоб повернути hidden. transition: none тут означав би
+   меню, яке більше ніколи не закриється. */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu, .modal-overlay { transition-duration: .01ms; }
+  .mobile-menu__panel, .modal-overlay__panel { transition: none; transform: none; }
+}
+.mobile-menu__list { display: flex; flex-direction: column; }
 .mobile-menu__list > li > a {
   display: block;
   padding-block: var(--sp-3);
   font-family: var(--font-display);
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-sb);
-  text-transform: uppercase;
+  font-weight: var(--fw-lt);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-tight);
 }
-.mobile-menu__submenu { padding-left: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-1); }
-.mobile-menu__submenu a { display: block; padding-block: var(--sp-2); font-size: var(--fs-body); }
-.mobile-menu__foot { margin-top: var(--sp-6); }
-
-/* ============================================================
-   Search toggle + modal (Spotlight-style) — так само приховано
-   ============================================================ */
-.search-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 150;
-  padding-top: 12vh;
-}
-.search-modal__backdrop {
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, var(--c-ink) 45%, transparent);
-}
-.search-modal__panel {
-  position: relative;
-  width: min(640px, calc(100vw - var(--sp-5) * 2));
-  margin-inline: auto;
-  border-radius: var(--r-card);
-  background: var(--c-page);
-  overflow: hidden;
-}
-.search-modal__input-row {
+.mobile-menu__list > li > a[aria-current="page"],
+.mobile-menu__list > li > a.is-active { color: var(--c-gold-lt); }
+.mobile-menu__submenu {
+  padding-left: var(--sp-4);
+  margin-bottom: var(--sp-3);
   display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-5);
-  border-bottom: 1px solid var(--c-line);
+  flex-direction: column;
+  border-left: 1px solid color-mix(in srgb, var(--c-gold) 40%, transparent);
 }
-.search-modal__icon { flex: none; color: var(--c-ink-mute); }
-.search-modal__input {
-  flex: 1;
-  border: 0;
-  outline: none;
-  font: inherit;
-  font-size: var(--fs-h5);
-  background: transparent;
-  color: var(--c-ink);
-}
-.search-modal__esc {
-  flex: none;
-  padding: 2px var(--sp-2);
-  border: 1px solid var(--c-line);
-  border-radius: 4px;
-  font-size: var(--fs-xs);
-  color: var(--c-ink-mute);
-}
-.search-modal__suggestions { padding: var(--sp-4) var(--sp-5) var(--sp-6); }
-.search-modal__group + .search-modal__group { margin-top: var(--sp-4); }
-.search-modal__group-title { margin-bottom: var(--sp-2); }
-.search-modal__group a {
+.mobile-menu__submenu a {
   display: block;
   padding-block: var(--sp-2);
-  color: var(--c-ink-mute);
-  transition: color .2s var(--ease);
+  font-size: var(--fs-sm);
+  color: color-mix(in srgb, var(--c-page) 72%, transparent);
 }
-@media (min-width: 1081px) {
-  .search-modal__group a:hover { color: var(--c-ink); }
+.mobile-menu__submenu a[aria-current="page"] { color: var(--c-gold-lt); }
+
+.mobile-menu__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  padding-top: var(--sp-6);
+  border-top: 1px solid color-mix(in srgb, var(--c-page) 18%, transparent);
 }
+.mobile-menu__account { font-size: var(--fs-sm); text-decoration: underline; text-underline-offset: 4px; }
+.mobile-menu__addr { font-size: var(--fs-sm); color: color-mix(in srgb, var(--c-page) 62%, transparent); }
 
 /* ============================================================
    Vendor: Swiper — базові оверрайди (усі каруцелі сайту, гейт
@@ -213,7 +207,8 @@
 .simple-text hr { border: 0; border-top: 1px solid var(--c-line); }
 .simple-text a { text-decoration: underline; }
 .simple-text strong { font-weight: var(--fw-sb); }
-.simple-text em { font-style: italic; }
+/* курсиву на сайті немає ніде — виділення через колір, а не нахил */
+.simple-text em { font-style: normal; color: var(--c-gold-ink); }
 
 .simple-text__video-wrap {
   position: relative;
@@ -247,7 +242,8 @@
   padding-block: var(--sp-4);
   cursor: pointer;
 }
-.accordion__title { font-family: var(--font-display); font-weight: var(--fw-sb); font-size: var(--fs-h5); }
+/* питання FAQ — гротеск: серифний курсив у розмірі h5 читається як декор */
+.accordion__title { font-family: var(--font-body); font-weight: var(--fw-med); font-size: var(--fs-h5); }
 .accordion__icon {
   flex: none;
   position: relative;
@@ -268,20 +264,147 @@
 .accordion__body { overflow: hidden; max-height: 0; }
 .accordion__body-inner { padding-bottom: var(--sp-4); }
 
+
 /* ============================================================
-   Footer — скелет; кольори/градієнт/бренд-декор проєкт додає сам
+   Home 02 — Напрямки занять (стрічка арок)
+   ============================================================ */
+.directions__intro { max-width: 46ch; }
+
+/* стрічка виїжджає за правий край контейнера — видно, що вона тягнеться далі */
+.directions__wrap { margin-right: calc(var(--gutter) * -1); }
+.directions .swiper { overflow: visible; clip-path: inset(-100vh -100vw -100vh 0); }
+.direction { width: clamp(232px, 24vw, 300px); height: auto; }
+
+.direction__link { display: flex; flex-direction: column; gap: var(--sp-4); height: 100%; }
+.direction__media {
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-arch);
+  overflow: hidden;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color .3s var(--ease);
+}
+.direction__media > .ph,
+.direction__media > img { width: 100%; height: 100%; object-fit: cover; }
+
+.direction__body { display: flex; flex-direction: column; gap: var(--sp-2); }
+.direction__title {
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+  line-height: var(--lh-tight);
+}
+.direction__note {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--c-ink-mute);
+}
+/* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
+@media (min-width: 1081px) {
+  .direction__link:hover .direction__media { outline-color: var(--c-gold); }
+  .direction__link:hover .direction__title { color: var(--c-gold-ink); }
+}
+.direction__link:focus-visible .direction__media { outline-color: var(--c-gold); }
+@media (prefers-reduced-motion: reduce) { .direction__media { transition: none; } }
+
+@media (max-width: 768px) {
+  .direction { width: clamp(200px, 62vw, 260px); }
+}
+
+/* ============================================================
+   Home 03 — Записатись / розклад
+   ЄДИНЕ умброве поле на сторінці: умбра = колір вуличної вивіски,
+   тому означає «двері». Другого такого блоку бути не може.
+   ============================================================ */
+.booking {
+  background: var(--c-umber);
+  color: var(--c-page);
+  padding-block: var(--section-py);
+}
+.booking__head { max-width: 46rem; }
+.booking__lead {
+  margin-top: var(--sp-5);
+  max-width: 52ch;
+  line-height: var(--lh-body);
+  color: color-mix(in srgb, var(--c-page) 80%, transparent);
+}
+.booking__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-7); }
+
+.booking__studios {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-7);
+  margin-top: var(--sp-9);
+}
+.studio { display: flex; flex-direction: column; gap: var(--sp-2); align-items: flex-start; }
+.studio__name {
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+}
+.studio__addr,
+.studio__hours {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: color-mix(in srgb, var(--c-page) 74%, transparent);
+}
+.studio__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  border-bottom: 1px solid color-mix(in srgb, var(--c-page) 40%, transparent);
+  padding-bottom: 2px;
+  transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .studio__link:hover { color: var(--c-gold-lt); border-bottom-color: var(--c-gold-lt); }
+}
+/* локації без даних — приглушені, і головне, без посилання: воно вело б у нікуди */
+.studio--empty { color: color-mix(in srgb, var(--c-page) 58%, transparent); }
+.studio--empty .studio__name { font-weight: var(--fw-reg); }
+
+@media (max-width: 900px) {
+  .booking__studios { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6); }
+}
+@media (max-width: 560px) {
+  .booking__studios { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ============================================================
+   Home 04 — Чому саме ми
+   Три текстові колонки: без іконок, без рамок, без hover —
+   тут немає нічого клікабельного.
+   ============================================================ */
+.why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(var(--sp-6), 4vw, var(--sp-9));
+}
+.why__title {
+  font-size: var(--fs-h5);
+  margin-bottom: var(--sp-4);
+}
+.why__text {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--c-ink-mute);
+  max-width: 42ch;
+}
+@media (max-width: 900px) {
+  .why__grid { grid-template-columns: minmax(0, 1fr); }
+}
+/* ============================================================
+   Footer — друге і останнє мохове поле сторінки
    ============================================================ */
 .site-footer {
-  margin: var(--sp-3);
-  border-radius: var(--r-block);
-  overflow: hidden;
-  background: var(--c-ink);
+  background: var(--c-moss);
   color: var(--c-page);
-  padding: var(--sp-9) var(--gutter) var(--sp-6);
-  --c-line: color-mix(in srgb, var(--c-page) 15%, transparent);
-}
-@media (max-width: 767px) {
-  .site-footer { margin: 0; margin-top: var(--sp-3); border-radius: 0; }
+  /* тільки вертикальний паддінг: горизонтальний дає .container всередині,
+     інакше на вузьких екранах гуттер подвоювався б */
+  padding-block: var(--sp-10) var(--sp-6);
+  /* локальний перевизначений --c-line: на моховому полі лінія від --c-ink невидима */
+  --c-line: color-mix(in srgb, var(--c-page) 16%, transparent);
 }
 .site-footer__top {
   display: grid;
@@ -293,20 +416,35 @@
 .site-footer__brand {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  align-items: flex-start;
+  gap: var(--sp-5);
 }
-.site-footer__nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); }
-.site-footer__col ul { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-4); }
-.site-footer__col a { color: color-mix(in srgb, var(--c-page) 70%, transparent); transition: color .2s var(--ease); }
+.brand--footer .brand__logo { height: 104px; }
+.site-footer__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-style: normal;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+}
+.site-footer__contacts a { display: inline-flex; align-items: flex-start; gap: var(--sp-2); }
+.site-footer__contacts .icon { margin-top: 1px; color: var(--c-gold); }
+.site-footer__social { display: flex; gap: var(--sp-2); }
+
+.site-footer__nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-6); }
+.site-footer__col ul { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-5); }
+.site-footer__col a { color: color-mix(in srgb, var(--c-page) 70%, transparent); font-size: var(--fs-sm); transition: color .2s var(--ease); }
 @media (min-width: 1081px) {
   .site-footer__col a:hover { color: var(--c-page); }
 }
 .site-footer__head {
-  font-family: var(--font-display);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-sb);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
   text-transform: uppercase;
   letter-spacing: var(--tracking-mono);
+  color: var(--c-gold);
 }
 .site-footer__bottom {
   display: flex;
@@ -315,6 +453,7 @@
   justify-content: space-between;
   gap: var(--sp-4);
   padding-top: var(--sp-6);
+  color: color-mix(in srgb, var(--c-page) 60%, transparent);
 }
 .site-footer__bottom a { color: color-mix(in srgb, var(--c-page) 70%, transparent); transition: color .2s var(--ease); }
 @media (min-width: 1081px) {
@@ -324,8 +463,11 @@
 @media (max-width: 1200px) {
   .site-footer__top { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
 }
+@media (max-width: 900px) {
+  .site-footer__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-7) var(--sp-5); }
+}
 @media (max-width: 620px) {
-  .site-footer__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6) var(--sp-4); }
+  .site-footer { padding-block-start: var(--sp-9); }
   .site-footer__nav > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   .site-footer__bottom { flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); }
 }
