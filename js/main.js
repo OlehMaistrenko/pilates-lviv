@@ -1,5 +1,5 @@
 /* ============================================================
-   Reveal · motion (Lenis + GSAP) · header state · mobile menu
+   Reveal · motion (Lenis + GSAP) · header state · fullscreen menu
    ============================================================ */
 (() => {
   'use strict';
@@ -296,21 +296,24 @@
     apply();   // перезавантаження посеред сторінки зберігає позицію скролу
   })();
 
-  /* ---- Mobile menu -------------------------------------------------- */
+  /* ---- Fullscreen menu — body.menu-open перемикає хедер у світлий стан
+     (css/main.css, Header) ---------------------------------------------- */
   (() => {
     const toggle = document.querySelector('.nav-toggle');
-    const menu = document.getElementById('mobile-menu');
+    const menu = document.getElementById('menu');
     if (!toggle || !menu) return;
 
     const open = () => {
       menu.hidden = false;
       requestAnimationFrame(() => menu.classList.add('is-open'));
       toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
       document.body.style.overflow = 'hidden';
     };
     const close = () => {
       menu.classList.remove('is-open');
       toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
       document.body.style.overflow = '';
       // transitionend спливає і з панелі, і з кнопок усередині — реагуємо
       // лише на власний перехід кореня, інакше меню ховається завчасно

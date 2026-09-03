@@ -1,6 +1,6 @@
 /* ============================================================
    styles.css — deferred CSS, підключається в кінці <body>
-   Секції нижче першого екрана + повна стилізація модалок і мобільного
+   Секції нижче першого екрана + повна стилізація модалок і фулскрін-
    меню (обидва мають hidden у розмітці — сховані ще до завантаження CSS).
    Critical CSS (токени, reset, utility, хедер) — у css/main.css.
    ============================================================ */
@@ -69,6 +69,14 @@
   .modal-overlay__panel { padding: var(--sp-5); border-radius: var(--r-card); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  /* тривалість на корені лишається ненульовою: JS чекає на transitionend,
+     щоб повернути hidden — transition: none означало б модалку, яка
+     більше ніколи не закриється */
+  .modal-overlay { transition-duration: .01ms; }
+  .modal-overlay__panel { transition: none; transform: none; }
+}
+
 /* ============================================================
    Form — .form/.form__row поля
    ============================================================ */
@@ -95,84 +103,125 @@
 .form__error { font-size: var(--fs-xs); color: #c0392b; }
 
 /* ============================================================
-   Mobile menu overlay — приховано атрибутом hidden у розмітці
+   Menu — фулскрін, одне на всі екрани; приховано атрибутом hidden
+   у розмітці. Мохове поле під хедером (хедер z-index 100 лишається
+   зверху й перемикається в світлий стан через body.menu-open).
    ============================================================ */
-/* Той самий протокол, що й у модалки, з тією ж вимогою transition на корені */
-.mobile-menu {
+/* Той самий протокол, що й у модалки: ненульова тривалість на корені —
+   JS чекає на transitionend, щоб повернути hidden */
+.menu {
   position: fixed;
   inset: 0;
-  z-index: 150;
-  opacity: 0;
-  transition: opacity .3s var(--ease);
-}
-.mobile-menu.is-open { opacity: 1; }
-.mobile-menu__backdrop {
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, var(--c-ink) 45%, transparent);
-}
-.mobile-menu__panel {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: min(420px, 100vw);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--sp-7);
+  z-index: 90;
   overflow-y: auto;
-  padding: calc(var(--header-h) + var(--sp-5)) var(--gutter) var(--sp-7);
   background: var(--c-moss);
   color: var(--c-page);
-  transform: translateX(100%);
-  transition: transform .4s var(--ease);
+  opacity: 0;
+  transition: opacity .35s var(--ease);
 }
-.mobile-menu.is-open .mobile-menu__panel { transform: none; }
+.menu.is-open { opacity: 1; }
 
-/* Тривалість на корені лишається ненульовою навмисно: JS чекає на
-   transitionend, щоб повернути hidden. transition: none тут означав би
-   меню, яке більше ніколи не закриється. */
+.menu__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "list groups"
+    "foot foot";
+  gap: var(--sp-8) var(--sp-9);
+  align-content: space-between;
+  min-height: 100%;
+  padding-top: calc(var(--header-h) + var(--sp-7));
+  padding-bottom: var(--sp-7);
+}
+
+/* Поява блоків знизу вгору з малим стагером; --i задає розмітка */
+.menu__list li,
+.menu__group,
+.menu__foot {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .4s var(--ease), transform .5s var(--ease);
+  transition-delay: calc(60ms + var(--i, 0) * 35ms);
+}
+.menu.is-open .menu__list li,
+.menu.is-open .menu__group,
+.menu.is-open .menu__foot { opacity: 1; transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .mobile-menu, .modal-overlay { transition-duration: .01ms; }
-  .mobile-menu__panel, .modal-overlay__panel { transition: none; transform: none; }
+  .menu { transition-duration: .01ms; }
+  .menu__list li, .menu__group, .menu__foot { transition: none; transform: none; opacity: 1; }
 }
-.mobile-menu__list { display: flex; flex-direction: column; }
-.mobile-menu__list > li > a {
-  display: block;
-  padding-block: var(--sp-3);
-  font-family: var(--font-display);
-  font-weight: var(--fw-lt);
-  font-size: var(--fs-h4);
-  line-height: var(--lh-tight);
-}
-.mobile-menu__list > li > a[aria-current="page"],
-.mobile-menu__list > li > a.is-active { color: var(--c-gold-lt); }
-.mobile-menu__submenu {
-  padding-left: var(--sp-4);
-  margin-bottom: var(--sp-3);
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid color-mix(in srgb, var(--c-gold) 40%, transparent);
-}
-.mobile-menu__submenu a {
-  display: block;
-  padding-block: var(--sp-2);
-  font-size: var(--fs-sm);
-  color: color-mix(in srgb, var(--c-page) 72%, transparent);
-}
-.mobile-menu__submenu a[aria-current="page"] { color: var(--c-gold-lt); }
 
-.mobile-menu__foot {
+.menu__list { grid-area: list; }
+.menu__list a {
+  display: inline-block;
+  padding-block: var(--sp-2);
+  font-weight: var(--fw-lt);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-tight);
+  transition: color .25s var(--ease);
+}
+@media (min-width: 1081px) {
+  .menu__list a:hover { color: var(--c-gold-lt); }
+}
+.menu__list a[aria-current="page"],
+.menu__list a.is-active { color: var(--c-gold-lt); }
+
+.menu__groups {
+  grid-area: groups;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-4);
-  padding-top: var(--sp-6);
-  border-top: 1px solid color-mix(in srgb, var(--c-page) 18%, transparent);
+  gap: var(--sp-6);
+  /* підгрупи стоять на рівні першого великого пункту, а не по центру колонки */
+  padding-top: var(--sp-3);
 }
-.mobile-menu__account { font-size: var(--fs-sm); text-decoration: underline; text-underline-offset: 4px; }
-.mobile-menu__addr { font-size: var(--fs-sm); color: color-mix(in srgb, var(--c-page) 62%, transparent); }
+.menu__group .label { display: inline-block; color: var(--c-gold-lt); margin-bottom: var(--sp-2); }
+.menu__group ul { display: flex; flex-direction: column; }
+.menu__group li a {
+  display: inline-block;
+  padding-block: 3px;
+  font-size: var(--fs-body);
+  color: color-mix(in srgb, var(--c-page) 78%, transparent);
+  transition: color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .menu__group li a:hover { color: var(--c-page); }
+}
+.menu__group li a[aria-current="page"] { color: var(--c-gold-lt); }
+
+.menu__foot {
+  grid-area: foot;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-7);
+  padding-top: var(--sp-6);
+  /* єдина лінія в меню — відділяє навігацію від реквізитів */
+  border-top: 1px solid color-mix(in srgb, var(--c-page) 18%, transparent);
+  font-size: var(--fs-sm);
+}
+.menu__contacts { display: flex; flex-direction: column; gap: var(--sp-1); }
+.menu__contacts a:last-child { color: color-mix(in srgb, var(--c-page) 62%, transparent); }
+.menu__links { display: flex; flex-wrap: wrap; gap: var(--sp-5); }
+@media (min-width: 1081px) {
+  .menu__foot a:hover { color: var(--c-gold-lt); }
+}
+
+@media (max-width: 1080px) {
+  .menu__panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "list" "groups" "foot";
+    gap: var(--sp-7);
+    align-content: start;
+  }
+  .menu__list a { font-size: var(--fs-h3); }
+  .menu__groups { padding-top: 0; gap: var(--sp-5); }
+}
+@media (max-width: 560px) {
+  .menu__foot { flex-direction: column; align-items: flex-start; }
+}
 
 /* ============================================================
    Vendor: Swiper — базові оверрайди (усі каруцелі сайту, гейт

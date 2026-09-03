@@ -24,8 +24,8 @@ $contact = [
   'facebook'   => 'https://facebook.com/pilateslviv',
 ];
 
-// Праймері-меню (у хедері). key => [label, href, children?]
-// children — вкладений список [key => [label, href]] для випадаючого підменю.
+// Праймері-меню (фулскрін-меню). key => [label, href, children?]
+// children — вкладений список [key => [label, href]] — друга колонка меню.
 // Каталог напрямків — реальний, із діючого pilateslviv.com.
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
@@ -54,31 +54,6 @@ $primary = [
   'contacts'  => ['Контакти', 'contacts.php'],
 ];
 
-/** Друкує <li><a> пункту, з вкладеним підменю (якщо є) і aria-current, якщо активний.
- *  Батько групи лишається підсвіченим і на сторінках-дітях — але через клас
- *  .is-active, а не aria-current: «поточна сторінка» в дереві рівно одна. */
-function nav_link(string $key, array $item, string $active): void {
-  [$label, $href] = $item;
-  $children = $item[2] ?? null;
-  $cur = $key === $active ? ' aria-current="page"' : '';
-
-  if (!$children) {
-    echo '<li><a href="' . $href . '"' . $cur . '>' . $label . '</a></li>';
-    return;
-  }
-
-  $cls = ($cur || isset($children[$active])) ? ' class="is-active"' : '';
-  echo '<li class="main-nav__item has-children">';
-  echo '<a href="' . $href . '"' . $cls . $cur . '>' . $label . '<i class="main-nav__caret" aria-hidden="true"></i></a>';
-  echo '<ul class="main-nav__submenu">';
-  foreach ($children as $ck => $citem) {
-    [$clabel, $chref] = $citem;
-    $ccur = $ck === $active ? ' aria-current="page"' : '';
-    echo '<li><a href="' . $chref . '"' . $ccur . '>' . $clabel . '</a></li>';
-  }
-  echo '</ul>';
-  echo '</li>';
-}
 ?>
 <!DOCTYPE html>
 <html lang="uk">
@@ -113,42 +88,26 @@ function nav_link(string $key, array $item, string $active): void {
   <div class="header-fixed<?= $header_over_hero ? ' header-fixed--over' : '' ?>">
     <header class="site-header">
       <div class="site-header__row">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
+          <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+          <span class="nav-toggle__label">Меню</span>
+        </button>
+
         <!-- Логотип — реальний файл із брендбуку. Дві копії, бо <img> не
-             успадковує колір: над моховим героєм світла, на бежевій смузі
-             темна. Двоколірний або перефарбований логотип брендбук забороняє,
-             тому саме два готові файли, а не filter. -->
+             успадковує колір: над моховим героєм (і над відкритим меню)
+             світла, на бежевій смузі темна. Двоколірний або перефарбований
+             логотип брендбук забороняє, тому саме два готові файли, а не filter. -->
         <a class="brand" href="index.php" aria-label="Пілатес Львів — на головну">
           <img class="brand__logo brand__logo--light" src="assets/logo/pilates-lviv-light.svg" alt="Pilates Lviv" width="464" height="303">
           <img class="brand__logo brand__logo--dark" src="assets/logo/pilates-lviv-dark.svg" alt="" width="464" height="303">
         </a>
 
-        <nav class="main-nav" aria-label="Основна навігація">
-          <ul class="main-nav__list">
-            <?php foreach ($primary as $k => $item) nav_link($k, $item, $nav); ?>
-          </ul>
-        </nav>
-
         <div class="site-header__actions">
-          <div class="lang-switch" role="group" aria-label="Мова сайту">
-            <button type="button" class="lang-switch__btn is-active" data-lang="ua" aria-pressed="true">UA</button>
-            <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
-          </div>
-
           <a class="header-phone" href="<?= $contact['phone_href'] ?>">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
             <span class="header-phone__num"><?= $contact['phone'] ?></span>
           </a>
-
-          <button type="button" class="btn btn--sm btn--umber site-header__cta" data-modal="booking">Записатись</button>
-
-          <a class="btn-icon btn-icon--sm" href="account.php" aria-label="Кабінет клієнта">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
-          </a>
-
-          <button class="nav-toggle" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
-            <span class="nav-toggle__bar"></span>
-            <span class="nav-toggle__bar"></span>
-          </button>
+          <button type="button" class="btn btn--sm btn--ghost site-header__cta" data-modal="booking">Записатись</button>
         </div>
       </div>
     </header>
@@ -157,35 +116,45 @@ function nav_link(string $key, array $item, string $active): void {
     <div class="header-spacer"></div>
   <?php endif; ?>
 
-  <!-- Мобільне меню (усі пункти) -->
-  <div class="mobile-menu" id="mobile-menu" hidden>
-    <div class="mobile-menu__backdrop"></div>
-    <nav class="mobile-menu__panel" aria-label="Мобільна навігація">
-      <ul class="mobile-menu__list">
-        <?php foreach ($primary as $k => $item):
-          [$label, $href] = $item;
-          $children = $item[2] ?? null;
-        ?>
-          <li>
+  <!-- Фулскрін-меню — одне на всі екрани. Хедер лишається поверх нього
+       (z-index), тож лого й тумблер не дублюються всередині панелі. -->
+  <div class="menu" id="menu" hidden>
+    <nav class="menu__panel container" aria-label="Основна навігація">
+      <ul class="menu__list">
+        <?php $i = 0; foreach ($primary as $k => $item): [$label, $href] = $item; $children = $item[2] ?? null; ?>
+          <li style="--i: <?= $i++ ?>">
             <a href="<?= $href ?>"<?= $children && isset($children[$nav]) ? ' class="is-active"' : '' ?><?= $k === $nav ? ' aria-current="page"' : '' ?>><?= $label ?></a>
-            <?php if ($children): ?>
-              <ul class="mobile-menu__submenu">
-                <?php foreach ($children as $ck => $citem): [$clabel, $chref] = $citem; ?>
-                  <li><a href="<?= $chref ?>"<?= $ck === $nav ? ' aria-current="page"' : '' ?>><?= $clabel ?></a></li>
-                <?php endforeach; ?>
-              </ul>
-            <?php endif; ?>
           </li>
         <?php endforeach; ?>
       </ul>
 
-      <div class="mobile-menu__foot">
-        <a class="btn btn--sand" href="<?= $contact['phone_href'] ?>">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-          <?= $contact['phone'] ?>
-        </a>
-        <a class="mobile-menu__account" href="account.php">Кабінет клієнта</a>
-        <p class="mobile-menu__addr"><?= $contact['address'] ?></p>
+      <div class="menu__groups">
+        <?php foreach ($primary as $k => $item): if (empty($item[2])) continue; [$label, $href, $children] = $item; ?>
+          <div class="menu__group" style="--i: <?= $i++ ?>">
+            <a class="label" href="<?= $href ?>"><?= $label ?></a>
+            <ul>
+              <?php foreach ($children as $ck => $citem): [$clabel, $chref] = $citem; ?>
+                <li><a href="<?= $chref ?>"<?= $ck === $nav ? ' aria-current="page"' : '' ?>><?= $clabel ?></a></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endforeach; ?>
+      </div>
+
+      <div class="menu__foot" style="--i: <?= $i ?>">
+        <div class="menu__contacts">
+          <a href="<?= $contact['phone_href'] ?>"><?= $contact['phone'] ?></a>
+          <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener"><?= $contact['address'] ?></a>
+        </div>
+        <div class="menu__links">
+          <a href="account.php">Кабінет клієнта</a>
+          <a href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener">Instagram</a>
+          <a href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener">Facebook</a>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Мова сайту">
+          <button type="button" class="lang-switch__btn is-active" data-lang="ua" aria-pressed="true">UA</button>
+          <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
       </div>
     </nav>
   </div>
