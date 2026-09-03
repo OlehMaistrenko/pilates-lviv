@@ -202,11 +202,15 @@
   border-top: 1px solid color-mix(in srgb, var(--c-page) 18%, transparent);
   font-size: var(--fs-sm);
 }
-.menu__contacts { display: flex; flex-direction: column; gap: var(--sp-1); }
-.menu__contacts a:last-child { color: color-mix(in srgb, var(--c-page) 62%, transparent); }
-.menu__links { display: flex; flex-wrap: wrap; gap: var(--sp-5); }
+.menu__foot a { transition: color .2s var(--ease); }
+.menu__locations { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-7); }
+.menu__location { display: flex; flex-direction: column; gap: var(--sp-1); }
+.menu__location .label { margin-bottom: var(--sp-1); color: color-mix(in srgb, var(--c-page) 62%, transparent); }
+.menu__location a:last-child { color: color-mix(in srgb, var(--c-page) 62%, transparent); }
+.menu__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-5); }
 @media (min-width: 1081px) {
   .menu__foot a:hover { color: var(--c-gold-lt); }
+  .menu__links .btn-icon:hover { background: color-mix(in srgb, var(--c-page) 12%, transparent); color: var(--c-gold-lt); }
 }
 
 @media (max-width: 1080px) {

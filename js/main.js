@@ -129,7 +129,10 @@
     const lenis = new Lenis({
       lerp: 0.1,
       smoothWheel: true,
-      prevent: (node) => zoomMod && node.hasAttribute?.('data-lenis-prevent-zoom'),
+      // кастомний prevent перебиває дефолтний Lenis-пошук data-lenis-prevent,
+      // тож він мусить сам його перевірити (closest — модалка/меню
+      // скроляться нативно, без lerp Lenis) поверх зум-гейта карти
+      prevent: (node) => node.closest?.('[data-lenis-prevent]') || (zoomMod && node.hasAttribute?.('data-lenis-prevent-zoom')),
     });
     lenisInstance = lenis;              // якір-скрол, див. блок нижче
     lenis.on('scroll', ScrollTrigger.update);

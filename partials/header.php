@@ -7,12 +7,18 @@
  *   $header_over_hero  — true на сторінках, що починаються з мохового героя:
  *                        хедер стає прозорим і лягає ПОВЕРХ героя, тому
  *                        .header-spacer не друкується.
+ *   $header_theme      — 'light' (за замовчуванням) | 'dark'. Колір хедера
+ *                        на сторінках БЕЗ героя (header_over_hero=false),
+ *                        де перший екран сам темний (напр. мохова секція
+ *                        одразу під хедером) — 'dark' тримає бежевий
+ *                        текст/контроли на такому фоні.
  * Усі опційні.
  */
 $nav = $nav ?? '';
 $page_title = $page_title ?? 'Студія «Пілатес Львів»';
 $page_description = $page_description ?? '';
 $header_over_hero = $header_over_hero ?? false;
+$header_theme = $header_theme ?? 'light';
 
 // Контакти студії — одне джерело правди на весь сайт (хедер, футер, модалки)
 $contact = [
@@ -22,6 +28,13 @@ $contact = [
   'map'        => 'https://maps.google.com/?q=Львів,+вулиця+Богдана+Романицького,+24а',
   'instagram'  => 'https://instagram.com/pilates_lviv',
   'facebook'   => 'https://facebook.com/pilateslviv',
+  // 3 локації студії. Брюховичі — реальні дані з діючого сайту; Чупринки
+  // й Сихів — плейсхолдер, контакти для них ще треба отримати від клієнта.
+  'locations'  => [
+    ['label' => 'Брюховичі', 'address' => 'м. Львів, вул. Б. Романицького, 24а', 'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
+    ['label' => 'Чупринки',  'address' => 'м. Львів, вул. Чупринки, __',          'phone' => '+38 (0__) ___-__-__',   'phone_href' => 'tel:+380000000000'],
+    ['label' => 'Сихів',     'address' => 'м. Львів, просп. Червоної Калини, __', 'phone' => '+38 (0__) ___-__-__',   'phone_href' => 'tel:+380000000000'],
+  ],
 ];
 
 // Праймері-меню (фулскрін-меню). key => [label, href, children?]
@@ -87,11 +100,11 @@ $primary = [
 <body>
   <a class="skip-link" href="#main">Перейти до вмісту</a>
 
-  <div class="header-fixed<?= $header_over_hero ? ' header-fixed--over' : '' ?>">
+  <div class="header-fixed<?= $header_over_hero ? ' header-fixed--over' : '' ?><?= (!$header_over_hero && $header_theme === 'dark') ? ' header-fixed--dark' : '' ?>">
     <header class="site-header">
       <div class="site-header__row">
         <div class="site-header__lead">
-          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
+          <button class="btn btn--ghost btn--sm nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
             <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i></span>
             <span class="nav-toggle__label">Меню</span>
           </button>
@@ -100,7 +113,7 @@ $primary = [
                кнопки — від браузера. JS (js/main.js) додає лише закриття
                кліком повз і по Escape, чого <details> сам не вміє. -->
           <details class="lang dropdown">
-            <summary class="lang__current" aria-label="Мова сайту: українська">
+            <summary class="btn btn--ghost btn--sm" aria-label="Мова сайту: українська">
               UA<i class="dropdown__caret" aria-hidden="true"></i>
             </summary>
             <ul class="lang__list dropdown__panel">
@@ -120,14 +133,16 @@ $primary = [
         </a>
 
         <div class="site-header__actions">
-          <a class="btn-icon header-phone" href="<?= $contact['phone_href'] ?>" aria-label="Зателефонувати: <?= $contact['phone'] ?>">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-            <span class="header-phone__num"><?= $contact['phone'] ?></span>
-          </a>
-          <button type="button" class="btn btn--sm btn--ghost btn-icon site-header__cta" data-modal="booking" aria-label="Записатись на заняття">
-            <svg class="icon icon--sm site-header__cta-icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-calendar"></use></svg>
-            <span class="site-header__cta-label">Записатись</span>
-          </button>
+          <details class="dropdown account">
+            <summary class="btn btn--ghost btn--sm" aria-label="Кабінет клієнта">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
+              <span class="account__label">Ірина</span>
+            </summary>
+            <ul class="dropdown__panel">
+              <li><a class="lang__opt" href="account.php">Кабінет клієнта</a></li>
+              <li><a class="lang__opt" href="account.php?login">Увійти</a></li>
+            </ul>
+          </details>
         </div>
       </div>
     </header>
@@ -138,7 +153,7 @@ $primary = [
 
   <!-- Фулскрін-меню — одне на всі екрани. Хедер лишається поверх нього
        (z-index), тож лого й тумблер не дублюються всередині панелі. -->
-  <div class="menu" id="menu" hidden>
+  <div class="menu" id="menu" data-lenis-prevent hidden>
     <nav class="menu__panel container" aria-label="Основна навігація">
       <ul class="menu__list">
         <?php $i = 0; foreach ($primary as $k => $item): [$label, $href] = $item; $children = $item[2] ?? null; ?>
@@ -162,14 +177,21 @@ $primary = [
       </div>
 
       <div class="menu__foot" style="--i: <?= $i ?>">
-        <div class="menu__contacts">
-          <a href="<?= $contact['phone_href'] ?>"><?= $contact['phone'] ?></a>
-          <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener"><?= $contact['address'] ?></a>
+        <div class="menu__locations">
+          <?php foreach ($contact['locations'] as $loc): ?>
+            <div class="menu__location">
+              <a href="<?= $loc['phone_href'] ?>"><?= $loc['phone'] ?></a>
+              <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener"><?= $loc['address'] ?></a>
+            </div>
+          <?php endforeach; ?>
         </div>
         <div class="menu__links">
-          <a href="account.php">Кабінет клієнта</a>
-          <a href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener">Instagram</a>
-          <a href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener">Facebook</a>
+          <a class="btn-icon btn-icon--sm btn-icon--ghost" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
+          </a>
+          <a class="btn-icon btn-icon--sm btn-icon--ghost" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
+          </a>
         </div>
       </div>
     </nav>

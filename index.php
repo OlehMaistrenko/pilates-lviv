@@ -71,37 +71,26 @@ include 'partials/header.php';
          autoplay muted loop playsinline aria-hidden="true"></video>
   <div class="hero__tint" aria-hidden="true"></div>
 
-  <div class="container">
+  <div class="container container--full">
     <div class="hero__inner">
-      <div class="hero__text">
-        <h1 class="hero__title" data-reveal="lines">Студія <em>пілатесу</em> у Львові</h1>
+      <div></div>
+      <!-- Лінія ділить перший екран навпіл: над нею — саме відео, під нею
+           заголовок. Підписи — результат, за яким приходять: конкретна
+           вигода, яку людина впізнає в собі, без гасел про «мистецтво руху». -->
+      <p class="hero__rule label" data-reveal>
+        <span>Енергія</span>
+        <span>Легкість</span>
+        <span>Контроль</span>
+      </p>
 
-        <p class="hero__lead text--lead" data-reveal>
-          Cadillac і Reformer, йога, танці та функціональне відновлення.
-          Працюємо з 2015 року.
-        </p>
+      <div class="hero__bottom">
+        <h1 class="hero__title" data-reveal="lines"><em>ПІЛАТЕС</em> У ЛЬВОВІ</h1>
 
         <div class="hero__actions" data-reveal style="--reveal-i: 1">
           <button type="button" class="btn btn--sand" data-modal="booking">Записатись на заняття</button>
           <a class="btn btn--ghost" href="schedule.php">Дивитись розклад</a>
         </div>
       </div>
-
-      <p class="hero__meta text--sm" data-reveal style="--reveal-i: 2">
-        <span class="hero__meta-item">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
-          <span>
-            <a href="location-chuprynky.php">Чупринки</a> ·
-            <a href="location-bryukhovychi.php">Брюховичі</a> ·
-            <a href="location-sykhiv.php">Сихів</a>
-          </span>
-        </span>
-        <a href="<?= $contact['phone_href'] ?>">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-          <?= $contact['phone'] ?>
-        </a>
-        <span>Пн–Нд, 08:00–21:00</span>
-      </p>
     </div>
   </div>
 </section>

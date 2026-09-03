@@ -50,7 +50,7 @@
   --fw-sb:  600;
 
   /* line-height & tracking */
-  --lh-display: 0.95;   /* hero / display H1-H2 — щільно */
+  --lh-display: 1.1;   /* hero / display H1-H2 — щільно, але рядки не злипаються */
   --lh-tight:   1.12;   /* H3, великі підзаголовки */
   --lh-body:    1.6;    /* базовий текст */
   --tracking-tight: -0.02em;  /* великі заголовки */
@@ -67,7 +67,7 @@
   --fs-h2:      clamp(2rem, 1.6117rem + 1.657vw, 3.6rem);
   --fs-hero:    clamp(2.6rem, 1.6777rem + 3.9353vw, 6.4rem);
   --fs-display: clamp(2.2rem, 0.7922rem + 6.0065vw, 8rem);
-  --fs-mega:    clamp(3.4rem, 1.5553rem + 7.8706vw, 11rem);
+  --fs-mega:    clamp(3.4rem, 1.9727rem + 5.8562vw, 9rem);
 
   /* ---- Spacing ----
      Дрібні кроки фіксовані (кілька px — плавність не видно), кроки
@@ -99,7 +99,7 @@
   --r-pill:  999px;   /* кнопки */
   --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
 
-  --header-h-max: 150px;
+  --header-h-max: 120px;
   --header-h-min: 80px;   /* після скролу, див. Header */
   --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
@@ -183,8 +183,8 @@ main { overflow: clip; }
    Utility: .icon — спрайтова іконка (assets/icons/sprite.svg).
    Контур і колір задає сам symbol через currentColor.
    ============================================================ */
-.icon { width: 20px; height: 20px; flex: none; }
-.icon--sm { width: 16px; height: 16px; }
+.icon { width: 24px; height: 24px; flex: none; }
+.icon--sm { width: 20px; height: 20px; }
 
 /* ============================================================
    Utility: text — size via --fs-* tokens, colour via modifier
@@ -240,13 +240,16 @@ main { overflow: clip; }
   --btn-c: currentColor;
   border-color: color-mix(in srgb, currentColor 38%, transparent);
 }
-.btn--sm { min-height: 40px; padding-inline: var(--sp-5); }
+.btn--sm { min-height: 40px; padding-inline: var(--sp-4); }
 
 @media (min-width: 1081px) {
   .btn:hover { --btn-bg: var(--c-moss); --btn-c: var(--c-page); }
   .btn--umber:hover { --btn-bg: var(--c-moss); }
   .btn--sand:hover  { --btn-bg: var(--c-gold-lt); --btn-c: var(--c-ink); }
-  .btn--ghost:hover { --btn-bg: transparent; --btn-c: currentColor; border-color: currentColor; }
+  /* .btn:hover вище перемикає --btn-c на світлий (для суцільних кнопок) —
+     ghost мусить його повернути назад, інакше текст стає --c-page на
+     власному ж бежевому/прозорому фоні й губиться */
+  .btn--ghost:hover { --btn-c: currentColor; background: color-mix(in srgb, currentColor 12%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
 
@@ -254,13 +257,15 @@ main { overflow: clip; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid transparent;
   border-radius: var(--r-pill);
   color: inherit;
   transition: background-color .2s var(--ease);
 }
-.btn-icon--sm { width: 36px; height: 36px; }
+.btn-icon--sm { width: 2.5rem; height: 2.5rem; }
+.btn-icon--ghost { border-color: color-mix(in srgb, currentColor 38%, transparent); }
 @media (min-width: 1081px) {
   .btn-icon:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 }
@@ -607,20 +612,24 @@ html.lenis, html.lenis body { height: auto; }
    не було кадру, у якому темний текст стоїть на темному фоні до першого
    спрацювання скрипта. */
 .header-fixed--over { background: transparent; color: var(--c-page); }
+/* Сторінка без героя, але з темним (моховим) першим екраном під хедером:
+   $header_theme='dark' — той самий світлий текст, що й --over, але фон
+   лишається непрозорим (немає героя, що просвічував би крізь нього) */
+.header-fixed--dark { background: var(--c-moss-deep); color: var(--c-page); }
 /* .is-scrolled / .menu-open ставить js/main.js на <body>; порядок правил
    значущий — відкрите меню важливіше за стан скролу */
-.is-scrolled .header-fixed--over { background: var(--c-page); color: var(--c-ink); }
+.is-scrolled .header-fixed--over,
+.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); }
 .menu-open .header-fixed { background: transparent; color: var(--c-page); }
 
 /* --header-h — «поточна» висота: за замовчуванням = --header-h-max,
-   .is-scrolled стискає до --header-h-min, .menu-open повертає назад до
-   максимуму (порядок правил значущий — відкрите меню важливіше за стан
-   скролу, тому його правило нижче). Усе, що має РЕАГУВАТИ на скрол
-   (рядок хедера, лого), рахує висоту від --header-h; усе, що має
-   лишатись незмінним (спейсер, паддінг героя — інакше контент стрибав
-   би на порозі скролу), береться прямо від --header-h-max. */
+   .is-scrolled стискає до --header-h-min. Відкрите меню висоту не чіпає —
+   хедер лишається таким, яким був до відкриття (маленьким, якщо сторінку
+   вже проскролено). Усе, що має РЕАГУВАТИ на скрол (рядок хедера, лого),
+   рахує висоту від --header-h; усе, що має лишатись незмінним (спейсер,
+   паддінг героя — інакше контент стрибав би на порозі скролу), береться
+   прямо від --header-h-max. */
 .is-scrolled { --header-h: var(--header-h-min); }
-.menu-open   { --header-h: var(--header-h-max); }
 
 /* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
    після нього резервує цей простір, щоб контент не ліз під хедер. */
@@ -632,8 +641,8 @@ html.lenis, html.lenis body { height: auto; }
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--sp-4);
-  max-width: var(--container);
-  margin-inline: auto;
+  /* без max-width — контроли хедера стоять на тих самих краях, що й
+     контент героя (.container--full): лише --gutter, без ліміту 1760px */
   padding-inline: var(--gutter);
   /* height анімує лейаут, але хедер fixed — перерахунок не виходить за
      його межі, сторінка під ним не рухається */
@@ -657,16 +666,25 @@ html.lenis, html.lenis body { height: auto; }
   height: calc(var(--header-h) - 16px);
   width: auto;
   aspect-ratio: 464 / 303;
-  transition: height .5s var(--ease), opacity .5s var(--ease);
+  
+  transform: translateY(10%) scale(1.2);
+  transform-origin: top;
+  transition: height .5s var(--ease), opacity .5s var(--ease), transform .5s var(--ease);
+
 }
+.is-scrolled .brand__logo{ transform: scale(1); }
 /* Світлий і темний варіанти лежать один на одному: <img> не успадковує
    колір, а перефарбовувати логотип фільтром брендбук забороняє. */
 .brand__logo--dark { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
 .brand__logo--light { opacity: 0; }
-.header-fixed--over .brand__logo--light { opacity: 1; }
-.header-fixed--over .brand__logo--dark  { opacity: 0; }
-.is-scrolled .header-fixed--over .brand__logo--light { opacity: 0; }
-.is-scrolled .header-fixed--over .brand__logo--dark  { opacity: 1; }
+.header-fixed--over .brand__logo--light,
+.header-fixed--dark .brand__logo--light { opacity: 1; }
+.header-fixed--over .brand__logo--dark,
+.header-fixed--dark .brand__logo--dark  { opacity: 0; }
+.is-scrolled .header-fixed--over .brand__logo--light,
+.is-scrolled .header-fixed--dark .brand__logo--light { opacity: 0; }
+.is-scrolled .header-fixed--over .brand__logo--dark,
+.is-scrolled .header-fixed--dark .brand__logo--dark  { opacity: 1; }
 .menu-open .header-fixed .brand__logo--light { opacity: 1; }
 .menu-open .header-fixed .brand__logo--dark  { opacity: 0; }
 
@@ -684,24 +702,14 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* Тумблер меню: дві риски + слово. Слово потрібне — без нього
-   мінімалістичний хедер із самими рисками читається як декор. */
-.nav-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-3);
-  height: 44px;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  color: currentColor;
-  font-family: var(--font-body);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-med);
-}
+   мінімалістичний хедер із самими рисками читається як декор.
+   Розмір іконки й gap — як у .icon--sm/.btn, щоб контрол не відрізнявся
+   від сусіднього дропдауна кабінету. */
 .nav-toggle__icon {
   position: relative;
-  width: 24px;
+  width: 20px;
   height: 12px;
+  flex: none;
 }
 .nav-toggle__icon i {
   position: absolute;
@@ -723,67 +731,41 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: var(--sp-5);
 }
-/* Телефон і запис — обидва .btn-icon: без підпису це рівно той самий
-   круглий контрол, що й деінде на сайті, тож розмір і hover беремо з
-   компонента. Ширші екрани, де підпис є, просто знімають фіксовану
-   ширину — решта (min-height, паддінги, контур) лишається від .btn. */
-.header-phone { font-size: var(--fs-sm); }
-@media (min-width: 1081px) {
-  /* з підписом .btn-icon-hover (заливка) мусить мати куди лягти */
-  .header-phone { width: auto; height: auto; gap: var(--sp-2); padding-inline: var(--sp-3); }
-}
-@media (max-width: 1080px) { .header-phone__num { display: none; } }
-
-.site-header__cta-icon { display: none; }
-@media (min-width: 769px) {
-  .site-header__cta { width: auto; height: auto; }
-}
-@media (min-width: 1081px) {
-  /* hover від .btn-icon — заливка; контурній кнопці з підписом лишаємо
-     ghost-поведінку: підсвічується контур, а не фон */
-  .site-header__cta:hover { background: transparent; }
-}
-@media (max-width: 768px) {
-  .site-header__cta-label { display: none; }
-  .site-header__cta-icon { display: block; }
-  /* паддінги .btn ширші за 44px кола — без цього іконка вилазить за край */
-  .site-header__cta { padding-inline: 0; }
-}
+/* Без підписів контроли лишаються самими іконками — паддінг .btn--sm
+   (--sp-5 з кожного боку) розтягував би їх у зайво широкі пігулки, тож
+   тут вони стають колом сталої ширини, як .btn-icon деінде. */
 @media (max-width: 560px) {
-  .nav-toggle__label { display: none; }
-  .site-header__lead { gap: var(--sp-3); }
-  .site-header__actions { gap: var(--sp-3); }
+  .nav-toggle__label, .account__label { display: none; }
+  .site-header__lead { gap: var(--sp-2); }
+  .site-header__actions { gap: var(--sp-2); }
+  .nav-toggle,
+  .lang > summary,
+  .account > summary {
+    width: 40px;
+    padding-inline: 0;
+    justify-content: center;
+  }
+  /* без каретки «UA» стає таким самим колом, як сусідні контроли */
+  .lang .dropdown__caret { display: none; }
 }
 /* <400px (iPhone SE і менші): лого + два контроли по краях не влазять */
 @media (max-width: 399px) {
   .site-header__row { padding-inline: var(--sp-4); }
-  .header-phone { display: none; }
 }
 
 /* Dropdown — нативний <details>. Панель абсолютна, тож на висоту
    хедера не впливає; колір фіксований (беж/темний), бо відкриватись
    може з прозорого хедера, де currentColor піщаний. */
 .dropdown { position: relative; }
+/* Спільне для будь-якого <summary>-тумблера дропдауна: сам вигляд
+   контрола (border, паддінги, hover) — від .btn/.btn--ghost на кнопці,
+   тут лишається тільки те, що знімає нативний <details>-вигляд. */
 .dropdown > summary {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  height: 36px;
-  padding-inline: var(--sp-3);
-  border-radius: var(--r-pill);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-med);
-  letter-spacing: var(--tracking-mono);
   cursor: pointer;
   list-style: none;   /* Firefox */
-  transition: background-color .2s var(--ease);
 }
 .dropdown > summary::-webkit-details-marker { display: none; }
-.dropdown > summary:focus-visible,
-.dropdown[open] > summary { background: color-mix(in srgb, currentColor 10%, transparent); }
-@media (min-width: 1081px) {
-  .dropdown > summary:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
-}
+.dropdown[open] > .btn { background: color-mix(in srgb, currentColor 12%, transparent); }
 /* шеврон — CSS-фігура, той самий прийом, що й .accordion__icon */
 .dropdown__caret {
   width: 5px;
@@ -794,6 +776,7 @@ html.lenis, html.lenis body { height: auto; }
   transition: transform .2s var(--ease);
 }
 .dropdown[open] .dropdown__caret { transform: translateY(25%) rotate(-135deg); }
+.account .dropdown__panel { left: auto; right: 0; }
 .dropdown__panel {
   position: absolute;
   top: calc(100% + var(--sp-2));
@@ -846,10 +829,11 @@ html.lenis, html.lenis body { height: auto; }
 .hero {
   position: relative;
   display: flex;
-  align-items: flex-end;
   min-height: min(100svh, 960px);
-  padding-top: calc(var(--header-h-max) + var(--sp-9));
-  padding-bottom: var(--sp-9);
+  /* --sp-10 зверху ставить лінію приблизно на половину екрана — далі
+     заголовок іде одразу під нею, тож знизу вистачає меншого кроку */
+  padding-top: calc(var(--header-h-max) + var(--sp-7));
+  padding-bottom: var(--sp-7);
   background: var(--c-moss);
   color: var(--c-page);
   overflow: hidden;
@@ -866,53 +850,88 @@ html.lenis, html.lenis body { height: auto; }
 .hero__tint {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--c-moss-deep) 74%, transparent);
+  background: color-mix(in srgb, black 60%, transparent);
 }
-.hero .container { position: relative; }
+.hero .container { position: relative; display: flex; }
+/* Лінію на місце (близько до половини екрана) виштовхує верхній паддінг
+   .hero, а не space-between: тоді відстань до заголовка лишається сталою
+   --sp-7, а не розтягується на всю вільну висоту вікна. */
 .hero__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
-  gap: var(--sp-7) clamp(var(--sp-7), 5vw, var(--sp-10));
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: var(--sp-7);
 }
-.hero__title { font-size: var(--fs-hero); max-width: 12ch; }
+.hero__rule {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  margin: 0;
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px dashed color-mix(in srgb, var(--c-page) 45%, transparent);
+}
+/* Ліве й праве слово тиснуться до країв, середнє лишається по центру
+   рядка — тому саме text-align, а не justify-content на кожному span. */
+.hero__rule span:first-child { flex: 1; }
+.hero__rule span:last-child  { flex: 1; text-align: right; }
+
+.hero__bottom {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-8);
+}
+/* flex: 1 + min-width: 0 — заголовок віддає кнопкам рівно їхню ширину
+   й переносить рядки сам; без min-width довге слово розпирало б флекс
+   і кнопки все одно з'їхали б за край.
+   Від'ємний margin-left гасить бокову напівапрош гліфа: без нього літера
+   стоїть правіше за край кнопки на ширину порожнього поля в шрифті.
+   margin-bottom опускає заголовок до рівня кнопок: при --lh-display
+   line-box нижчий за гліфи, тож flex-end ставить текст вище кнопок.
+   Саме margin, а не transform — [data-reveal="lines"] тримає власний
+   transform і перебив би зсув. Обидва в em: кегль fluid. */
+.hero__title {
+  flex: 1;
+  min-width: 0;
+  margin-left: -0.06em;
+  margin-bottom: -0.15em;
+  font-size: var(--fs-mega);
+}
 /* «пілатесу» золотим — одне акцентне слово на екран, більше ніде */
 .hero__title em { font-style: normal; color: var(--c-gold-lt); }
 
-.hero__lead {
-  margin-top: var(--sp-6);
-  max-width: 44ch;
-  color: color-mix(in srgb, var(--c-page) 80%, transparent);
-  line-height: var(--lh-body);
-}
+/* Кнопки в стовпчик: поруч із заголовком у --fs-mega рядок із двох кнопок
+   тягнув би --sp-8 зайвої ширини, а стовпчик лишається в межах його
+   останнього рядка — герой стає нижчим, лінія піднімається до центру. */
 .hero__actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-  margin-top: var(--sp-7);
-}
-/* реквізити — праворуч, у стовпчик; єдина лінія на весь герой */
-.hero__meta {
-  display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
+  flex: none;
   gap: var(--sp-3);
-  padding-top: var(--sp-5);
-  border-top: 1px solid color-mix(in srgb, var(--c-page) 24%, transparent);
-  color: color-mix(in srgb, var(--c-page) 70%, transparent);
 }
-.hero__meta a { display: inline-flex; align-items: center; gap: var(--sp-2); transition: color .2s var(--ease); }
-.hero__meta-item { display: inline-flex; align-items: center; gap: var(--sp-2); }
-@media (min-width: 1081px) {
-  .hero__meta a:hover { color: var(--c-page); }
+/* 1081–1400px: поруч зі стовпчиком кнопок заголовку лишається ~966px, а
+   --fs-mega у версалах вимагає більше й ламає його на два рядки. Власний
+   clamp за Utopia (1081→1400) тримає рядок цілим; ширші екрани — --fs-mega. */
+@media (min-width: 1081px) and (max-width: 1400px) {
+  .hero__title { font-size: clamp(5rem, 0.2557rem + 7.0219vw, 6.4rem); }
 }
-
 @media (max-width: 1080px) {
   .hero { min-height: min(92svh, 820px); }
-  .hero__inner { grid-template-columns: minmax(0, 1fr); }
-  .hero__meta { max-width: 44ch; }
 }
 @media (max-width: 768px) {
-  .hero { padding-top: calc(var(--header-h-max) + var(--sp-8)); padding-bottom: var(--sp-8); }
-  .hero__meta { padding-top: var(--sp-4); }
+  .hero { padding-top: calc(var(--header-h-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
+  .hero__rule { gap: var(--sp-3); }
+  /* кнопки поруч із заголовком тут уже не влазять — під нього, у рядок */
+  .hero__bottom { flex-direction: column; align-items: stretch; gap: var(--sp-6); }
+  .hero__actions { flex-direction: row; flex-wrap: wrap; }
+}
+/* Усі три слова лишаються й на найвужчому екрані: тримає їх зняте
+   трекінгове розрідження .label плюс мінімальний gap, а не приховування
+   середнього. */
+@media (max-width: 560px) {
+  .hero__rule {
+    gap: var(--sp-2);
+    letter-spacing: 0.04em;
+  }
 }
