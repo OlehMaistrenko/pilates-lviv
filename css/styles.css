@@ -398,23 +398,45 @@
 }
 
 /* ============================================================
-   Home 03 — Напрямки: нумерований список рядків, не картки.
-   Лінії між рядками — той виняток, де розділювач розв'язує задачу:
-   шість однотипних рядків без них зливаються в один текст.
+   Home 03 — Напрямки: рядок = напрямок, але у дві колонки. В один
+   стовпець рядок розтягувався на всю ширину контейнера й праворуч від
+   тексту лишалось порожнє поле; дві колонки закривають його й удвічі
+   вкорочують секцію. Це все ще список, не сітка карток — кадр і текст
+   стоять поруч у рядку, і рядки розділені лініями.
    ============================================================ */
-.direction { border-top: 1px solid var(--c-line); }
-.direction:last-child { border-bottom: 1px solid var(--c-line); }
+.directions__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(var(--sp-7), 4vw, var(--sp-9));
+  /* звідки починається текст усередині рядка — тим самим числом зсунуті
+     лінії правої колонки, тож розділювач завжди збігається з сіткою */
+  --row-text-x: calc(3rem + clamp(160px, 13vw, 240px) + var(--sp-5) * 2);
+}
+/* Лінія над рядком — той виняток, де розділювач розв'язує задачу: шість
+   однотипних рядків без нього зливаються в один текст. Але однакова лінія
+   в обох колонках робила б із секції таблицю, тому в правій вона
+   починається від тексту, а не від краю. */
+.direction::before,
+.direction:nth-last-child(-n + 2)::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--c-line);
+  margin-left: var(--line-x, 0);
+}
+.direction:nth-child(even) { --line-x: var(--row-text-x); }
+
 .direction__link {
   display: grid;
-  grid-template-columns: 3rem 72px minmax(0, 1fr) auto;
+  /* кадр — чверть рядка, а не мініатюра: у 132px сюжет фото не читався */
+  grid-template-columns: 1rem clamp(160px, 13vw, 240px) minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--sp-5);
-  padding-block: var(--sp-5);
+  padding-block: var(--sp-6);
 }
-.direction__num { color: var(--c-gold-ink); }
+.direction__num { color: var(--c-gold-ink); align-self: start; padding-top: 0.4em; }
 .direction__media {
   display: block;
-  width: 72px;
   aspect-ratio: 3 / 4;
   border-radius: var(--r-arch);
   overflow: hidden;
@@ -422,43 +444,49 @@
   outline-offset: -1px;
   transition: outline-color .3s var(--ease);
 }
-.direction__media > .ph,
-.direction__media > img { width: 100%; height: 100%; object-fit: cover; }
-/* у мініатюрі ім'я файлу не вміщається — лишається лише тон плейсхолдера */
-.direction__media .ph > * { display: none; }
-
-.direction__body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--sp-2) var(--sp-7);
-  align-items: baseline;
+.direction__media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: bottom left;
+  transition: transform .5s var(--ease);
 }
+
+.direction__body { display: block; }
 .direction__title {
-  font-size: var(--fs-h3);
+  display: block;
+  font-size: var(--fs-h4);
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
   transition: color .25s var(--ease);
 }
-.direction__note { max-width: 44ch; line-height: var(--lh-body); }
+.direction__note { display: block; margin-top: var(--sp-3); max-width: 38ch; line-height: var(--lh-body); }
 .direction__arrow { transition: transform .3s var(--ease); }
 /* рядок — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
   .direction__link:hover .direction__title { color: var(--c-gold-ink); }
   .direction__link:hover .direction__media { outline-color: var(--c-gold); }
   .direction__link:hover .direction__arrow { transform: translateX(6px); }
+  /* зум від нижнього лівого кута: кадр наїжджає всередині своєї арки,
+     overflow:hidden тримає його там, тож заголовок поруч не зачіпає */
+  .direction__link:hover .direction__media > img { transform: scale(1.06); }
 }
 .direction__link:focus-visible .direction__media { outline-color: var(--c-gold); }
 @media (prefers-reduced-motion: reduce) {
-  .direction__title, .direction__media, .direction__arrow { transition: none; }
+  .direction__title, .direction__media, .direction__media > img, .direction__arrow { transition: none; }
 }
-@media (max-width: 900px) {
-  .direction__body { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1080px) {
+  /* на планшеті ширини на дві колонки вже немає — список знову в один
+     стовпець, і закриває його одна лінія, а не дві */
+  .directions__list { grid-template-columns: minmax(0, 1fr); }
+  .direction:nth-last-child(-n + 2)::after { display: none; }
+  .direction:last-child::after { display: block; }
 }
 @media (max-width: 560px) {
-  .direction__link { grid-template-columns: 56px minmax(0, 1fr); gap: var(--sp-4); padding-block: var(--sp-4); }
+  .directions__list { --row-text-x: calc(120px + var(--sp-4)); }
+  .direction__link { grid-template-columns: 120px minmax(0, 1fr); gap: var(--sp-4); padding-block: var(--sp-5); }
   .direction__num, .direction__arrow { display: none; }
-  .direction__media { width: 56px; }
 }
 
 /* ============================================================

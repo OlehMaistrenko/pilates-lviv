@@ -144,7 +144,7 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     03 · Напрямки — нумерований список, а не картки: рядок = напрямок
+     03 · Напрямки — рядок = напрямок, кадр-арка на всю висоту рядка
      ============================================================ -->
 <section class="section directions">
   <div class="container">
@@ -162,7 +162,7 @@ include 'partials/header.php';
           <a class="direction__link" href="<?= $href ?>">
             <span class="direction__num label"><?= sprintf('%02d', $i + 1) ?></span>
             <span class="direction__media">
-              <img src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="72" height="96" loading="lazy">
+              <img src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
