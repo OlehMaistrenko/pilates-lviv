@@ -82,7 +82,7 @@
    ============================================================ */
 .form { display: flex; flex-direction: column; gap: var(--sp-4); }
 .form__row { display: flex; flex-direction: column; gap: var(--sp-2); }
-.form__label { font-size: var(--fs-sm); font-weight: var(--fw-med); }
+.form__label { font-size: var(--fs-sm); font-weight: var(--fw-reg); }
 .form__input,
 .form__textarea {
   width: 100%;
@@ -236,9 +236,9 @@
    table thead tbody tr th td hr strong em a video iframe.
    ============================================================ */
 .simple-text { display: flex; flex-direction: column; gap: var(--sp-5); max-width: 72ch; }
-.simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-sb); }
-.simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-sb); }
-.simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-sb); }
+.simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-reg); }
+.simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-reg); }
+.simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
 .simple-text p, .simple-text li { line-height: var(--lh-body); }
 .simple-text ul, .simple-text ol { padding-left: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-2); }
 .simple-text ul { list-style: disc; }
@@ -291,7 +291,7 @@
   cursor: pointer;
 }
 /* питання FAQ — гротеск: серифний курсив у розмірі h5 читається як декор */
-.accordion__title { font-family: var(--font-body); font-weight: var(--fw-med); font-size: var(--fs-h5); }
+.accordion__title { font-family: var(--font-body); font-weight: var(--fw-reg); font-size: var(--fs-h5); }
 .accordion__icon {
   flex: none;
   position: relative;
@@ -438,7 +438,7 @@
 .booking__steps .label { color: var(--c-gold-lt); }
 .booking__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-8); }
 
-.booking__aside-title { font-size: var(--fs-h5); font-weight: var(--fw-med); margin-bottom: var(--sp-4); }
+.booking__aside-title { font-size: var(--fs-h5); font-weight: var(--fw-reg); margin-bottom: var(--sp-4); }
 .studio {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
