@@ -229,7 +229,6 @@
    ============================================================ */
 .swiper-pagination-bullet { background: var(--c-ink); opacity: .3; }
 .swiper-pagination-bullet-active { opacity: 1; }
-.swiper-prev, .swiper-next { color: var(--c-ink); }
 
 /* ============================================================
    Component: .simple-text — WP-редаговуваний rich-текст (CMS-контент).
@@ -315,18 +314,45 @@
 
 
 /* ============================================================
-   Home 02 — Напрямки занять (стрічка арок)
+   Component: .link-arrow — текстове посилання зі стрілкою і волосиною.
+   Колір hover — --c-gold-ink; темні секції перевизначають цей токен
+   локально на світле золото, тож компонент один на обидва поля.
    ============================================================ */
-.directions__intro { max-width: 46ch; }
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-bottom: 2px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.link-arrow .icon { transition: transform .25s var(--ease); }
+@media (min-width: 1081px) {
+  .link-arrow:hover { color: var(--c-gold-ink); border-bottom-color: currentColor; }
+  .link-arrow:hover .icon { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) { .link-arrow, .link-arrow .icon { transition: none; } }
 
-/* стрічка виїжджає за правий край контейнера — видно, що вона тягнеться далі */
-.directions__wrap { margin-right: calc(var(--gutter) * -1); }
-.directions .swiper { overflow: visible; clip-path: inset(-100vh -100vw -100vh 0); }
-.direction { width: clamp(232px, 24vw, 300px); height: auto; }
-
-.direction__link { display: flex; flex-direction: column; gap: var(--sp-4); height: 100%; }
+/* ============================================================
+   Home 02 — Напрямки: нумерований список рядків, не картки.
+   Лінії між рядками — той виняток, де розділювач розв'язує задачу:
+   шість однотипних рядків без них зливаються в один текст.
+   ============================================================ */
+.direction { border-top: 1px solid var(--c-line); }
+.direction:last-child { border-bottom: 1px solid var(--c-line); }
+.direction__link {
+  display: grid;
+  grid-template-columns: 3rem 72px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-5);
+  padding-block: var(--sp-5);
+}
+.direction__num { color: var(--c-gold-ink); }
 .direction__media {
   display: block;
+  width: 72px;
   aspect-ratio: 3 / 4;
   border-radius: var(--r-arch);
   overflow: hidden;
@@ -336,115 +362,317 @@
 }
 .direction__media > .ph,
 .direction__media > img { width: 100%; height: 100%; object-fit: cover; }
+/* у мініатюрі ім'я файлу не вміщається — лишається лише тон плейсхолдера */
+.direction__media .ph > * { display: none; }
 
-.direction__body { display: flex; flex-direction: column; gap: var(--sp-2); }
+.direction__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-2) var(--sp-7);
+  align-items: baseline;
+}
 .direction__title {
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-med);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  transition: color .25s var(--ease);
 }
-.direction__note {
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  color: var(--c-ink-mute);
-}
-/* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
+.direction__note { max-width: 44ch; line-height: var(--lh-body); }
+.direction__arrow { transition: transform .3s var(--ease); }
+/* рядок — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
-  .direction__link:hover .direction__media { outline-color: var(--c-gold); }
   .direction__link:hover .direction__title { color: var(--c-gold-ink); }
+  .direction__link:hover .direction__media { outline-color: var(--c-gold); }
+  .direction__link:hover .direction__arrow { transform: translateX(6px); }
 }
 .direction__link:focus-visible .direction__media { outline-color: var(--c-gold); }
-@media (prefers-reduced-motion: reduce) { .direction__media { transition: none; } }
-
-@media (max-width: 768px) {
-  .direction { width: clamp(200px, 62vw, 260px); }
+@media (prefers-reduced-motion: reduce) {
+  .direction__title, .direction__media, .direction__arrow { transition: none; }
+}
+@media (max-width: 900px) {
+  .direction__body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .direction__link { grid-template-columns: 56px minmax(0, 1fr); gap: var(--sp-4); padding-block: var(--sp-4); }
+  .direction__num, .direction__arrow { display: none; }
+  .direction__media { width: 56px; }
 }
 
 /* ============================================================
-   Home 03 — Записатись / розклад
+   Home 03 — Записатись
    ЄДИНЕ умброве поле на сторінці: умбра = колір вуличної вивіски,
    тому означає «двері». Другого такого блоку бути не може.
+   Токени тексту/ліній перевизначені локально під темне поле — тому
+   utility .text--muted і .link-arrow тут працюють без власних правил.
    ============================================================ */
 .booking {
   background: var(--c-umber);
   color: var(--c-page);
   padding-block: var(--section-py);
+  --c-ink-mute: color-mix(in srgb, var(--c-page) 72%, transparent);
+  --c-line: color-mix(in srgb, var(--c-page) 22%, transparent);
+  --c-gold-ink: var(--c-gold-lt);
 }
-.booking__head { max-width: 46rem; }
-.booking__lead {
-  margin-top: var(--sp-5);
-  max-width: 52ch;
-  line-height: var(--lh-body);
-  color: color-mix(in srgb, var(--c-page) 80%, transparent);
-}
-.booking__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-7); }
-
-.booking__studios {
+.booking__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-7);
-  margin-top: var(--sp-9);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--sp-9) clamp(var(--sp-8), 8vw, 10rem);
+  align-items: start;
 }
-.studio { display: flex; flex-direction: column; gap: var(--sp-2); align-items: flex-start; }
-.studio__name {
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-med);
-}
-.studio__addr,
-.studio__hours {
-  font-size: var(--fs-sm);
+.booking__lead { margin-top: var(--sp-5); max-width: 46ch; line-height: var(--lh-body); color: var(--c-ink-mute); }
+.booking__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+  max-width: 46ch;
   line-height: var(--lh-body);
-  color: color-mix(in srgb, var(--c-page) 74%, transparent);
 }
-.studio__link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-top: var(--sp-2);
-  font-size: var(--fs-sm);
-  border-bottom: 1px solid color-mix(in srgb, var(--c-page) 40%, transparent);
-  padding-bottom: 2px;
-  transition: border-color .2s var(--ease), color .2s var(--ease);
+.booking__steps li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: baseline;
 }
-@media (min-width: 1081px) {
-  .studio__link:hover { color: var(--c-gold-lt); border-bottom-color: var(--c-gold-lt); }
-}
-/* локації без даних — приглушені, і головне, без посилання: воно вело б у нікуди */
-.studio--empty { color: color-mix(in srgb, var(--c-page) 58%, transparent); }
-.studio--empty .studio__name { font-weight: var(--fw-reg); }
+.booking__steps .label { color: var(--c-gold-lt); }
+.booking__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-8); }
 
-@media (max-width: 900px) {
-  .booking__studios { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-6); }
+.booking__aside-title { font-size: var(--fs-h5); font-weight: var(--fw-med); margin-bottom: var(--sp-4); }
+.studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-1) var(--sp-5);
+  align-items: center;
+  padding-block: var(--sp-5);
+  border-top: 1px solid var(--c-line);
 }
-@media (max-width: 560px) {
-  .booking__studios { grid-template-columns: minmax(0, 1fr); }
+.studio:last-child { border-bottom: 1px solid var(--c-line); }
+.studio > * { grid-column: 1; }
+.studio__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); margin-bottom: var(--sp-1); }
+.studio .link-arrow { grid-column: 2; grid-row: 1 / span 3; }
+/* локації без даних — приглушені, і головне, без посилання: воно вело б у нікуди */
+.studio--empty .studio__name { color: var(--c-ink-mute); }
+
+@media (max-width: 1080px) {
+  .booking__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-8); }
 }
 
 /* ============================================================
-   Home 04 — Чому саме ми
-   Три текстові колонки: без іконок, без рамок, без hover —
-   тут немає нічого клікабельного.
+   Home 04 — Чому саме ми: теза, чотири цифри, три аргументи
+   Без іконок, без рамок, без hover — тут немає нічого клікабельного.
    ============================================================ */
+.why__title { max-width: 24ch; }
+.why__title em { font-style: normal; color: var(--c-gold-ink); }
 .why__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(var(--sp-6), 4vw, var(--sp-9));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--sp-8) clamp(var(--sp-8), 8vw, 10rem);
+  align-items: start;
+  margin-top: var(--sp-8);
 }
-.why__title {
-  font-size: var(--fs-h5);
-  margin-bottom: var(--sp-4);
+.why__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-7) var(--sp-6);
+  margin: 0;
 }
-.why__text {
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--c-ink-mute);
-  max-width: 42ch;
+.why__facts dt {
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-lt);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  color: var(--c-gold-ink);
 }
+.why__facts dd { margin: var(--sp-3) 0 0; max-width: 18ch; line-height: var(--lh-body); }
+.why__list { display: flex; flex-direction: column; gap: var(--sp-7); }
+.why__item p { margin-top: var(--sp-3); max-width: 46ch; line-height: var(--lh-body); }
 @media (max-width: 900px) {
   .why__grid { grid-template-columns: minmax(0, 1fr); }
 }
+
 /* ============================================================
-   Footer — друге і останнє мохове поле сторінки
+   Home 05 — Про студію: портрет-арка і цитата засновниці
+   ============================================================ */
+.about__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  gap: var(--sp-8) clamp(var(--sp-8), 8vw, 10rem);
+  align-items: center;
+}
+.about__media { max-width: 460px; }
+.about__media > .ph,
+.about__media > img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r-arch);
+}
+.about__media figcaption { margin-top: var(--sp-3); }
+/* золота волосина зліва — єдиний акцент секції, позначає пряму мову */
+.about__quote {
+  margin-top: var(--sp-7);
+  padding-left: var(--sp-5);
+  border-left: 1px solid var(--c-gold);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  max-width: 24ch;
+}
+.about__text > p { margin-top: var(--sp-5); max-width: 52ch; line-height: var(--lh-body); }
+.about__text > .link-arrow { margin-top: var(--sp-7); }
+@media (max-width: 900px) {
+  .about__grid { grid-template-columns: minmax(0, 1fr); }
+  .about__media { max-width: 340px; }
+}
+
+/* ============================================================
+   Home 06 — Галерея: шість кадрів різного розміру на 12 колонках.
+   Порядок і пропорції задає nth-child — розмітка друкує кадри списком.
+   ============================================================ */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--sp-4);
+  /* верхній ряд притиснутий донизу, нижній — догори: між рядами рівна
+     лінія, а різна висота кадрів іде на зовнішні краї сітки */
+  align-items: end;
+}
+.gallery__item:nth-child(n + 4) { align-self: start; }
+.gallery__item { overflow: hidden; border-radius: var(--r-block); }
+.gallery__item > .ph,
+.gallery__item > img { width: 100%; height: 100%; object-fit: cover; }
+.gallery__item:nth-child(1) { grid-column: span 4; aspect-ratio: 3 / 4; border-radius: var(--r-arch); }
+.gallery__item:nth-child(2) { grid-column: span 5; aspect-ratio: 4 / 3; }
+.gallery__item:nth-child(3) { grid-column: span 3; aspect-ratio: 3 / 4; }
+.gallery__item:nth-child(4) { grid-column: span 3; aspect-ratio: 1; }
+.gallery__item:nth-child(5) { grid-column: span 5; aspect-ratio: 4 / 3; }
+.gallery__item:nth-child(6) { grid-column: span 4; aspect-ratio: 3 / 4; border-radius: var(--r-arch); }
+@media (max-width: 768px) {
+  .gallery__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+  .gallery__item:nth-child(n) { grid-column: auto; aspect-ratio: 3 / 4; }
+  .gallery__item:nth-child(even) { border-radius: var(--r-arch); }
+  .gallery__item:nth-child(odd) { border-radius: var(--r-block); }
+}
+
+/* ============================================================
+   Home 07 — Тренери: портрет-арка, ім'я, напрямок, цитата
+   ============================================================ */
+.team__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-8) var(--sp-5);
+}
+.trainer__link { display: flex; flex-direction: column; gap: var(--sp-1); height: 100%; }
+.trainer__media {
+  display: block;
+  aspect-ratio: 3 / 4;
+  margin-bottom: var(--sp-3);
+  border-radius: var(--r-arch);
+  overflow: hidden;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color .3s var(--ease);
+}
+.trainer__media > .ph,
+.trainer__media > img { width: 100%; height: 100%; object-fit: cover; }
+.trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
+.trainer__quote { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
+/* остання плитка — посилання на команду: порожня арка з золотим контуром */
+.trainer--all .trainer__media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  border: 1px solid var(--c-gold);
+  transition: border-color .3s var(--ease), color .25s var(--ease);
+}
+.trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); }
+@media (min-width: 1081px) {
+  .trainer__link:hover .trainer__media { outline-color: var(--c-gold); }
+  .trainer__link:hover .trainer__name { color: var(--c-gold-ink); }
+  .trainer--all .trainer__link:hover .trainer__media { color: var(--c-gold-ink); border-color: var(--c-gold-ink); }
+}
+.trainer__link:focus-visible .trainer__media { outline-color: var(--c-gold); }
+@media (prefers-reduced-motion: reduce) { .trainer__media, .trainer__name { transition: none; } }
+@media (max-width: 1080px) {
+  .team__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .team__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-7) var(--sp-4); }
+}
+
+/* ============================================================
+   Home 08 — Відгуки: третє і останнє мохове поле (герой, футер, це).
+   Один відгук на екран, великим світлим кеглем; керування знизу.
+   ============================================================ */
+.reviews {
+  background: var(--c-moss);
+  color: var(--c-page);
+  padding-block: var(--section-py);
+  --c-ink-mute: color-mix(in srgb, var(--c-page) 66%, transparent);
+  --c-gold-ink: var(--c-gold-lt);
+}
+.reviews__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--sp-8) var(--sp-9);
+  align-items: start;
+}
+.review { margin: 0; }
+.review__text {
+  max-width: 28ch;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+.review__text::before { content: "«"; }
+.review__text::after  { content: "»"; }
+.review__meta { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-6); }
+.review__name { font-weight: var(--fw-med); }
+.reviews__controls { display: flex; align-items: center; gap: var(--sp-4); margin-top: var(--sp-8); }
+.reviews .btn-icon { border: 1px solid color-mix(in srgb, currentColor 38%, transparent); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
+@media (min-width: 1081px) {
+  .reviews .btn-icon:hover { border-color: currentColor; }
+}
+/* у спрайті лише стрілка вправо — «назад» дзеркалимо */
+.reviews .swiper-prev .icon { transform: scaleX(-1); }
+.reviews .swiper-pagination { position: static; width: auto; display: flex; gap: var(--sp-2); }
+.reviews .swiper-pagination-bullet { margin: 0; background: var(--c-page); }
+.reviews .swiper-pagination-bullet-active { background: var(--c-gold-lt); }
+@media (max-width: 1080px) {
+  .reviews__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
+}
+
+/* ============================================================
+   Home 09 — FAQ: заголовок ліворуч, акордеон праворуч
+   ============================================================ */
+.faq__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: var(--sp-8) var(--sp-9);
+  align-items: start;
+}
+.faq__head { position: sticky; top: calc(var(--header-h-min) + var(--sp-6)); }
+.faq__head h2 { max-width: 14ch; }
+.faq__head p { margin-top: var(--sp-5); max-width: 30ch; line-height: var(--lh-body); }
+.faq__phone { color: var(--c-ink); border-bottom: 1px solid var(--c-gold); white-space: nowrap; }
+.faq__answer { max-width: 60ch; line-height: var(--lh-body); }
+@media (max-width: 900px) {
+  .faq__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
+  .faq__head { position: static; }
+}
+
+/* ============================================================
+   Home 10 — SEO-текст: довідковий стовпчик, тихіший за решту сторінки
+   ============================================================ */
+.seo__text p { color: var(--c-ink-mute); }
+
+/* ============================================================
+   Footer — останнє мохове поле сторінки (герой, відгуки, футер)
    ============================================================ */
 .site-footer {
   background: var(--c-moss);
@@ -454,6 +682,8 @@
   padding-block: var(--sp-10) var(--sp-6);
   /* локальний перевизначений --c-line: на моховому полі лінія від --c-ink невидима */
   --c-line: color-mix(in srgb, var(--c-page) 16%, transparent);
+  --c-ink-mute: color-mix(in srgb, var(--c-page) 62%, transparent);
+  --c-gold-ink: var(--c-gold-lt);
 }
 .site-footer__top {
   display: grid;

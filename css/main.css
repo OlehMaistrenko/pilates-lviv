@@ -562,6 +562,19 @@ html.lenis, html.lenis body { height: auto; }
   margin-bottom: var(--sp-8);
   align-items: flex-start;
 }
+/* заголовок ліворуч, лід або посилання праворуч, по нижній лінії */
+.section-head--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 42ch);
+  gap: var(--sp-5) var(--sp-9);
+  align-items: end;
+}
+.section-head--split > p { line-height: var(--lh-body); }
+.section-head--split > a { justify-self: start; margin-bottom: 0.35em; }
+@media (max-width: 900px) {
+  .section-head--split { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .section-head--split > a { margin-bottom: 0; }
+}
 
 
 @media (max-width: 768px) {
@@ -751,31 +764,52 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ============================================================
    Hero — перший екран головної, тому лежить у main.css, а не в styles.css
-   Єдине мохове поле у верхній частині сторінки. Хедер над ним прозорий,
+   Повноекранне відео під моховою плашкою: колір відео у зйомці різний
+   (біла стіна, денне світло), тож рівна напівпрозора заливка мохом
+   робить його єдиним темним полем, на якому читається піщаний текст.
+   Заливка суцільна, без градієнта — свідомо. Хедер над героєм прозорий,
    тож паддінг зверху враховує --header-h.
    ============================================================ */
 .hero {
   position: relative;
-  background: var(--c-moss);
-  color: var(--c-page);
+  display: flex;
+  align-items: flex-end;
+  min-height: min(100svh, 960px);
   padding-top: calc(var(--header-h) + var(--sp-9));
   padding-bottom: var(--sp-9);
+  background: var(--c-moss);
+  color: var(--c-page);
+  overflow: hidden;
 }
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* трохи приглушене й тепліше: не «стокове» яскраве відео, а тло під текст */
+  filter: saturate(.7) brightness(.85);
+}
+.hero__tint {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c-moss) 62%, transparent);
+}
+.hero .container { position: relative; }
 .hero__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
-  gap: clamp(var(--sp-7), 5vw, var(--sp-10));
-  align-items: center;
-  min-height: min(74vh, 680px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
+  gap: var(--sp-7) clamp(var(--sp-7), 5vw, var(--sp-10));
+  align-items: end;
 }
-.hero__title { font-size: var(--fs-hero); }
+.hero__title { font-size: var(--fs-hero); max-width: 12ch; }
 /* «пілатесу» золотим — одне акцентне слово на екран, більше ніде */
 .hero__title em { font-style: normal; color: var(--c-gold-lt); }
 
 .hero__lead {
   margin-top: var(--sp-6);
-  max-width: 46ch;
-  color: color-mix(in srgb, var(--c-page) 76%, transparent);
+  max-width: 44ch;
+  color: color-mix(in srgb, var(--c-page) 80%, transparent);
   line-height: var(--lh-body);
 }
 .hero__actions {
@@ -784,40 +818,27 @@ html.lenis, html.lenis body { height: auto; }
   gap: var(--sp-3);
   margin-top: var(--sp-7);
 }
+/* реквізити — праворуч, у стовпчик; єдина лінія на весь герой */
 .hero__meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-3) var(--sp-6);
-  margin-top: var(--sp-8);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
   padding-top: var(--sp-5);
-  /* єдина лінія на весь герой — відділяє реквізити від обіцянки */
-  border-top: 1px solid color-mix(in srgb, var(--c-page) 20%, transparent);
-  color: color-mix(in srgb, var(--c-page) 64%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--c-page) 24%, transparent);
+  color: color-mix(in srgb, var(--c-page) 70%, transparent);
 }
-.hero__meta a { display: inline-flex; align-items: center; gap: var(--sp-2); }
+.hero__meta a { display: inline-flex; align-items: center; gap: var(--sp-2); transition: color .2s var(--ease); }
 @media (min-width: 1081px) {
   .hero__meta a:hover { color: var(--c-page); }
 }
 
-/* Медіа-кадр героя — арка. Зараз .ph, далі сюди стає <video>/<img>. */
-.hero__media {
-  border-radius: var(--r-arch);
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  max-height: 620px;
-  margin-inline: auto;
-  width: 100%;
-}
-.hero__media > img,
-.hero__media > video,
-.hero__media > .ph { width: 100%; height: 100%; object-fit: cover; }
-
 @media (max-width: 1080px) {
-  .hero__inner { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); min-height: 0; }
-  /* на вузькому екрані спершу обіцянка, потім кадр */
-  .hero__media { order: 2; max-width: 420px; aspect-ratio: 4 / 5; }
+  .hero { min-height: min(92svh, 820px); }
+  .hero__inner { grid-template-columns: minmax(0, 1fr); }
+  .hero__meta { max-width: 44ch; }
 }
 @media (max-width: 768px) {
-  .hero { padding-top: calc(var(--header-h) + var(--sp-7)); }
-  .hero__meta { margin-top: var(--sp-7); }
+  .hero { padding-top: calc(var(--header-h) + var(--sp-8)); padding-bottom: var(--sp-8); }
+  .hero__meta { padding-top: var(--sp-4); }
 }
