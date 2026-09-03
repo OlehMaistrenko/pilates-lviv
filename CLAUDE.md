@@ -53,7 +53,7 @@ css/main.css             — critical CSS (<head>): токени, reset, utility
 css/styles.css           — deferred CSS (кінець <body>): секції, модалки, футер
 js/main.js               — reveal, motion (Lenis+GSAP), header-state, меню, tabs, accordion
 assets/                  — зображення, іконки (icons/sprite.svg)
-css/vendor/, js/vendor/  — swiper, mapbox, gsap, lenis (підключаються за гейтом)
+css/vendor/, js/vendor/  — swiper, mapbox (за гейтом); gsap, lenis (глобально)
 ```
 
 Кольорову палітру й шрифти для конкретного проєкту додавай у `:root`
@@ -182,8 +182,9 @@ css/vendor/, js/vendor/  — swiper, mapbox, gsap, lenis (підключають
 - **Анімації** — тільки через `transform`/`opacity`/`clip-path`, нічого що
   тригерить layout. Прості reveal-и — наявний `[data-reveal]`
   (IntersectionObserver + CSS, дешево для PageSpeed). GSAP ScrollTrigger — лише
-  там, де потрібен scrub або pin: `data-anim="words|pin|parallax|zoom"`.
-  Вендори (Lenis/GSAP) підключаються за гейтом `$vendor_motion`, `defer`.
+  там, де потрібен scrub або pin: `data-anim="words|pin|parallax|zoom|odometer|focus"`.
+  Вендори (Lenis/GSAP/ScrollTrigger) підключені глобально в `footer.php`,
+  `defer`, без гейта — плавний скрол є на всіх сторінках.
 - **JS** — vanilla, IIFE для локальної логіки, вже підключений `main.js` бере на себе все стандартне
 - **Нові inline-скрипти** — тільки якщо логіка специфічна для однієї сторінки
 - **Семантика** — `<article>` для новин, `<aside>` для сайдбару, `<nav>` для навігацій, `<figure>` для зображень з підписом

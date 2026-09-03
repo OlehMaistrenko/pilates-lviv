@@ -131,11 +131,11 @@
     <script defer src="js/vendor/mapbox/mapbox-gl.js"></script>
   <?php endif; ?>
 
-  <?php if (!empty($vendor_motion)): ?>
-    <script defer src="js/vendor/lenis/lenis.min.js"></script>
-    <script defer src="js/vendor/gsap/gsap.min.js"></script>
-    <script defer src="js/vendor/gsap/ScrollTrigger.min.js"></script>
-  <?php endif; ?>
+  <!-- Lenis + GSAP на всіх сторінках без гейта: плавний скрол — частина
+       відчуття сайту, а не фіча однієї секції -->
+  <script defer src="js/vendor/lenis/lenis.min.js"></script>
+  <script defer src="js/vendor/gsap/gsap.min.js"></script>
+  <script defer src="js/vendor/gsap/ScrollTrigger.min.js"></script>
 
   <script defer src="js/main.js"></script>
 </body>

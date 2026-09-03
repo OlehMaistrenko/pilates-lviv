@@ -106,8 +106,9 @@
   /* ---- Motion: Lenis smooth scroll + GSAP ScrollTrigger --------------
      Прості reveal-и лишаються на IntersectionObserver вище (дешевше й
      краще для PageSpeed). Сюди йде лише те, чого спостерігач не вміє:
-     scrub (привʼязка до позиції скролу) і pin. Вендори підключає лише
-     сторінка, що виставила $vendor_motion перед include footer.php. */
+     scrub (привʼязка до позиції скролу) і pin. Вендори підключає
+     footer.php на всіх сторінках (defer); typeof-гейт нижче лишається на
+     випадок, якщо скрипт не довантажився. */
   (() => {
     if (typeof window.Lenis === 'undefined' || typeof window.gsap === 'undefined') return;
     gsap.registerPlugin(ScrollTrigger);
@@ -133,16 +134,39 @@
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
-        /* matchMedia, не одноразовий desktop()-чек: інакше при resize через
-       1081px (згорнути/розгорнути devtools, повернути планшет) нічого не
-       переініціалізується — pin/zoom-секції так і лишаються в стані старої
-       ширини (напр. [data-anim="zoom-in"] — CSS-стартовий scale(.85) на
-       десктопі, main.css — залишається стиснутим без твіна, що поверне
-       scale(1)). matchMedia сам revert-ить твіни/ScrollTrigger-и й
-       інлайн-стилі при виході з умови і наново створює їх при вході —
-       без цього довелось би вручну відстежувати кожен tween/trigger на
-       resize. */
-    
+
+    /* Одометр і фокус живуть лише на десктопі (≥901px) без reduced-motion:
+       на вужчих екранах CSS ховає одометр і показує цифру в кожному кроці,
+       твінів там не треба. matchMedia, а не одноразовий чек: при resize
+       через брейкпоінт він сам revert-ить твіни/тригери й інлайн-стилі
+       та створює їх наново — без цього колонка застрягла б зі старим зсувом. */
+    gsap.matchMedia().add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
+      /* data-anim="odometer" — стовпчик із N цифр у масці висотою в одну
+         (CSS); скрол зсуває його на N-1 позицій уздовж списку з
+         data-odometer-for — від центру першого кроку до центру останнього,
+         щоб ціла цифра стояла рівно тоді, коли її крок посередині екрана. */
+      document.querySelectorAll('[data-anim="odometer"]').forEach((el) => {
+        const items = document.querySelector(el.dataset.odometerFor)?.children;
+        if (!items || items.length < 2) return;
+        gsap.to(el, {
+          yPercent: -100 * (items.length - 1) / items.length,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: items[0], start: 'center center',
+            endTrigger: items[items.length - 1], end: 'center center',
+            scrub: true,
+          },
+        });
+      });
+
+      /* data-anim="focus" — блок у повний колір, поки проходить центр
+         екрана; вище й нижче — приглушений */
+      document.querySelectorAll('[data-anim="focus"]').forEach((el) => {
+        gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 75%', end: 'bottom 25%', scrub: true } })
+          .fromTo(el, { opacity: 0.25 }, { opacity: 1, ease: 'none' })
+          .to(el, { opacity: 0.25, ease: 'none' });
+      });
+    });
 
     /* Рефреш не з нульової позиції: браузер відновлює скрол асинхронно —
        після defer-скриптів, шрифтів і завантаження зображень, коли висота
@@ -161,7 +185,7 @@
        сторінці зсувається — pin-треки (grants.php: "Як подати заявку")
        кешують позиції на останньому refresh(), без нового вони лишаються
        зміщеними на висоту акордеона. ScrollTrigger може бути не завантажений
-       (акордеон живе поза Motion-IIFE, є й на сторінках без $vendor_motion). */
+       (акордеон живе поза Motion-IIFE і не залежить від вендорів). */
     const refreshScroll = () => {
       if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
     };
@@ -262,8 +286,8 @@
   /* ---- In-page anchor scroll: Lenis lerp-easing (той самий плавний рух,
      що й решта сторінки). Lenis тепер один на всі ширини, тож і якір іде
      через нього; нативний smooth-scroll (html{scroll-behavior:smooth},
-     main.css) лишається фолбеком там, де Lenis не піднявся взагалі —
-     сторінка без $vendor_motion. -------------------- */
+     main.css) лишається фолбеком там, де Lenis не піднявся взагалі
+     (вендор не довантажився). -------------------- */
   (() => {
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href^="#"]');

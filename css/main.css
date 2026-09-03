@@ -99,8 +99,8 @@
   --r-pill:  999px;   /* кнопки */
   --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
 
-  --header-h-max: 104px;
-  --header-h-min: 76px;   /* після скролу, див. Header */
+  --header-h-max: 150px;
+  --header-h-min: 80px;   /* після скролу, див. Header */
   --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
