@@ -500,34 +500,29 @@ main { overflow: clip; }
   transform: none;
 }
 
-/* Варіант "lines" — заголовок зʼявляється по словах з-під маски.
+/* Варіант "lines" — заголовок набігає по словах зліва направо: фейд плюс
+   невеликий горизонтальний зсув, стагер по --word-i (інлайн, розставляє JS).
    Чистий CSS: спостерігач лише додає .is-visible, окремої JS-логіки немає.
-   Слова — авто-врап у main.js (Reveal "lines"), стагер лічить їх самостійно
-   через --word-i (інлайн, розставляє JS), ручна розмітка теж підтримується. */
+   Слова — авто-врап у main.js (Reveal "lines"), ручна розмітка теж
+   підтримується.
+
+   Ні маски, ні кліпу тут навмисно немає: при --lh-display (0.95) line-box
+   нижчий за гліфи, тож будь-яке обрізання по боксу слова зрізало б виносні
+   елементи (у, р, Ї, Й). Рухаємо лише opacity і transform — обрізати нічого. */
 [data-reveal="lines"] { opacity: 1; transform: none; }
-/* padding+негативний margin: маска мусить лишитись overflow:hidden, але при
-   --lh-display (0.95) line-box нижчий за гліфи — виносні елементи (Ї, Й, é)
-   обрізаються зверху. Падінг дає масці запас, margin компенсує його назад,
-   тож ритм рядків не змінюється. inline-block, не block: маска по слову —
-   слова мають текти в рядок, а не кожне зі свого рядка. */
 [data-reveal="lines"] .word-mask {
   display: inline-block;
-  overflow: hidden;
-  padding-top: 0.14em;
-  margin-top: -0.14em;
+  opacity: 0;
+  transform: translateX(-0.25em);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+  transition-delay: calc(var(--word-i, 0) * 55ms);
+  will-change: opacity, transform;
 }
-[data-reveal="lines"] .word-mask > * {
-  display: block;
-  transform: translateY(100%);
-  transition: transform .9s var(--ease);
-  transition-delay: calc(var(--word-i, 0) * 40ms);
-  will-change: transform;
-}
-[data-reveal="lines"].is-visible .word-mask > * { transform: none; }
+[data-reveal="lines"].is-visible .word-mask { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
-  [data-reveal="lines"] .word-mask > * { transform: none; transition: none; }
+  [data-reveal="lines"] .word-mask { opacity: 1; transform: none; transition: none; }
 }
 
 /* ============================================================
@@ -606,7 +601,7 @@ html.lenis, html.lenis body { height: auto; }
   z-index: 100;
   background: var(--c-page);
   color: var(--c-ink);
-  transition: background-color .3s var(--ease), color .3s var(--ease);
+  transition: background-color .5s var(--ease), color .5s var(--ease);
 }
 /* Клас ставить сторінка ($header_over_hero перед include), а не JS — щоб
    не було кадру, у якому темний текст стоїть на темному фоні до першого
@@ -642,7 +637,7 @@ html.lenis, html.lenis body { height: auto; }
   padding-inline: var(--gutter);
   /* height анімує лейаут, але хедер fixed — перерахунок не виходить за
      його межі, сторінка під ним не рухається */
-  transition: height .3s var(--ease);
+  transition: height .5s var(--ease);
 }
 @media (max-width: 768px) {
   :root { --header-h-max: 84px; --header-h-min: 64px; }
@@ -662,7 +657,7 @@ html.lenis, html.lenis body { height: auto; }
   height: calc(var(--header-h) - 16px);
   width: auto;
   aspect-ratio: 464 / 303;
-  transition: height .3s var(--ease), opacity .3s var(--ease);
+  transition: height .5s var(--ease), opacity .5s var(--ease);
 }
 /* Світлий і темний варіанти лежать один на одному: <img> не успадковує
    колір, а перефарбовувати логотип фільтром брендбук забороняє. */

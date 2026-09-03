@@ -16,8 +16,9 @@
   /* ---- Reveal "lines" — авто-врап тексту в .word-mask по словах ------ */
   (() => {
     /* <br> лишається в розмітці як реальний розрив. Кожне слово — окрема
-       .word-mask (не .line: маска тепер по слову, не по рядку). Ручна
-       розмітка (як у hero__title, де розрив не по словах) лишається
+       .word-mask (не .line: стагер по слову, не по рядку); показує його
+       фейд+зсув у main.css, тому обгортка одна, без вкладеного спана.
+       Ручна розмітка (як у hero__title, де розрив не по словах) лишається
        валідною — авто-врап її не чіпає. */
     document.querySelectorAll('[data-reveal="lines"]').forEach((el) => {
       if (el.querySelector('.word-mask')) return;
@@ -34,7 +35,7 @@
         const open = tag ? `<${tag}${attrs}>` : '';
         const close = tag ? `</${tag}>` : '';
         (node.textContent || '').split(/\s+/).filter(Boolean).forEach((word) => {
-          html.push(`<span class="word-mask" style="--word-i: ${i++}"><span>${open}${word}${close}</span></span>`);
+          html.push(`<span class="word-mask" style="--word-i: ${i++}">${open}${word}${close}</span>`);
         });
       });
       el.innerHTML = html.join(' ');

@@ -66,6 +66,8 @@ $primary = [
     <meta name="description" content="<?= htmlspecialchars($page_description) ?>">
   <?php endif; ?>
 
+  <link rel="icon" href="assets/logo/pilates-lviv-mark.svg" type="image/svg+xml">
+
   <!-- Один файл, одна гарнітура: кириличний сабсет Geologica несе і
        заголовок героя, і весь інтерфейс. Без preload браузер знайде його
        аж після парсингу CSS, і перший екран встигне блимнути системним

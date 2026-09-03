@@ -162,9 +162,7 @@ include 'partials/header.php';
           <a class="direction__link" href="<?= $href ?>">
             <span class="direction__num label"><?= sprintf('%02d', $i + 1) ?></span>
             <span class="direction__media">
-              <span class="ph" role="img" aria-label="<?= htmlspecialchars($title) ?>">
-                <span class="ph__name">assets/img/directions/<?= $slug ?>.jpg</span>
-              </span>
+              <img src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="72" height="96" loading="lazy">
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
@@ -330,10 +328,7 @@ include 'partials/header.php';
     <div class="gallery__grid">
       <?php foreach ($gallery as $i => $alt): ?>
         <figure class="gallery__item" data-reveal style="--reveal-i: <?= $i % 3 ?>">
-          <div class="ph" role="img" aria-label="<?= $alt ?>">
-            <span class="ph__name">assets/img/gallery/<?= sprintf('%02d', $i + 1) ?>.jpg</span>
-            <span class="ph__note"><?= $alt ?></span>
-          </div>
+          <img src="assets/img/gallery/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
         </figure>
       <?php endforeach; ?>
     </div>
