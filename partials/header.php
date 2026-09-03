@@ -88,10 +88,25 @@ $primary = [
   <div class="header-fixed<?= $header_over_hero ? ' header-fixed--over' : '' ?>">
     <header class="site-header">
       <div class="site-header__row">
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
-          <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i></span>
-          <span class="nav-toggle__label">Меню</span>
-        </button>
+        <div class="site-header__lead">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
+            <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+            <span class="nav-toggle__label">Меню</span>
+          </button>
+
+          <!-- Нативний <details>: відкриття/закриття, клавіатура і роль
+               кнопки — від браузера. JS (js/main.js) додає лише закриття
+               кліком повз і по Escape, чого <details> сам не вміє. -->
+          <details class="lang dropdown">
+            <summary class="lang__current" aria-label="Мова сайту: українська">
+              UA<i class="dropdown__caret" aria-hidden="true"></i>
+            </summary>
+            <ul class="lang__list dropdown__panel">
+              <li><button type="button" class="lang__opt is-active" data-lang="ua" aria-current="true">Українська</button></li>
+              <li><button type="button" class="lang__opt" data-lang="en">English</button></li>
+            </ul>
+          </details>
+        </div>
 
         <!-- Логотип — реальний файл із брендбуку. Дві копії, бо <img> не
              успадковує колір: над моховим героєм (і над відкритим меню)
@@ -103,11 +118,14 @@ $primary = [
         </a>
 
         <div class="site-header__actions">
-          <a class="header-phone" href="<?= $contact['phone_href'] ?>">
+          <a class="btn-icon header-phone" href="<?= $contact['phone_href'] ?>" aria-label="Зателефонувати: <?= $contact['phone'] ?>">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
             <span class="header-phone__num"><?= $contact['phone'] ?></span>
           </a>
-          <button type="button" class="btn btn--sm btn--ghost site-header__cta" data-modal="booking">Записатись</button>
+          <button type="button" class="btn btn--sm btn--ghost btn-icon site-header__cta" data-modal="booking" aria-label="Записатись на заняття">
+            <svg class="icon icon--sm site-header__cta-icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-calendar"></use></svg>
+            <span class="site-header__cta-label">Записатись</span>
+          </button>
         </div>
       </div>
     </header>
@@ -150,10 +168,6 @@ $primary = [
           <a href="account.php">Кабінет клієнта</a>
           <a href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener">Instagram</a>
           <a href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener">Facebook</a>
-        </div>
-        <div class="lang-switch" role="group" aria-label="Мова сайту">
-          <button type="button" class="lang-switch__btn is-active" data-lang="ua" aria-pressed="true">UA</button>
-          <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
         </div>
       </div>
     </nav>

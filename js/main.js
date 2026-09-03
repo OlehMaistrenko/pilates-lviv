@@ -296,6 +296,30 @@
     apply();   // перезавантаження посеред сторінки зберігає позицію скролу
   })();
 
+  /* ---- Dropdown (<details class="dropdown">): закриття кліком повз і по
+     Escape. Саме відкриття, клавіатура й ARIA — нативні, JS тут лише
+     доповнює те, чого <details> не вміє. --------------------------------- */
+  (() => {
+    const dropdowns = document.querySelectorAll('details.dropdown');
+    if (!dropdowns.length) return;
+
+    const closeAll = (except) => dropdowns.forEach((d) => {
+      if (d !== except) d.open = false;
+    });
+
+    document.addEventListener('click', (e) => {
+      const inside = e.target.closest('details.dropdown');
+      closeAll(inside);
+    });
+    addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const open = document.querySelector('details.dropdown[open]');
+      if (!open) return;
+      open.open = false;
+      open.querySelector('summary')?.focus();
+    });
+  })();
+
   /* ---- Fullscreen menu — body.menu-open перемикає хедер у світлий стан
      (css/main.css, Header) ---------------------------------------------- */
   (() => {

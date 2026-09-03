@@ -99,8 +99,9 @@
   --r-pill:  999px;   /* кнопки */
   --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
 
-  --header-h: 88px;
-  --header-h-min: 64px;   /* після скролу, див. Header */
+  --header-h-max: 104px;
+  --header-h-min: 76px;   /* після скролу, див. Header */
+  --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -616,12 +617,19 @@ html.lenis, html.lenis body { height: auto; }
 .is-scrolled .header-fixed--over { background: var(--c-page); color: var(--c-ink); }
 .menu-open .header-fixed { background: transparent; color: var(--c-page); }
 
+/* --header-h — «поточна» висота: за замовчуванням = --header-h-max,
+   .is-scrolled стискає до --header-h-min, .menu-open повертає назад до
+   максимуму (порядок правил значущий — відкрите меню важливіше за стан
+   скролу, тому його правило нижче). Усе, що має РЕАГУВАТИ на скрол
+   (рядок хедера, лого), рахує висоту від --header-h; усе, що має
+   лишатись незмінним (спейсер, паддінг героя — інакше контент стрибав
+   би на порозі скролу), береться прямо від --header-h-max. */
+.is-scrolled { --header-h: var(--header-h-min); }
+.menu-open   { --header-h: var(--header-h-max); }
+
 /* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
-   після нього резервує цей простір, щоб контент не ліз під хедер.
-   Спейсер тримає повну висоту й після стиснення хедера — інакше контент
-   стрибав би на кожному перетині порога скролу. На сторінці з прозорим
-   хедером спейсера немає навмисно: герой має починатись під хедером. */
-.header-spacer { height: var(--header-h); }
+   після нього резервує цей простір, щоб контент не ліз під хедер. */
+.header-spacer { height: var(--header-h-max); }
 
 .site-header__row {
   height: var(--header-h);
@@ -636,30 +644,25 @@ html.lenis, html.lenis body { height: auto; }
      його межі, сторінка під ним не рухається */
   transition: height .3s var(--ease);
 }
-.is-scrolled .site-header__row { height: var(--header-h-min); }
-.menu-open .site-header__row { height: var(--header-h); }
 @media (max-width: 768px) {
-  :root { --header-h: 72px; --header-h-min: 56px; }
+  :root { --header-h-max: 84px; --header-h-min: 64px; }
 }
 
 /* Логотип — готові файли assets/logo/*.svg у <img>. Пропорція локапа
-   464 × 303; задаємо висоту, ширину рахує aspect-ratio. Стиснення на
-   скролі — transform, а не height: без перерахунку лейауту й рівно з
-   центру, де лого і стоїть. */
+   464 × 303; задаємо висоту, ширину рахує aspect-ratio. Висота прив'язана
+   до --header-h (поточної), тож стискається/росте разом із рядком хедера
+   без окремого transform-хака. */
 .brand {
   position: relative;
   display: flex;
   align-items: center;
   justify-self: center;
-  transition: transform .3s var(--ease);
 }
-.is-scrolled .brand { transform: scale(.72); }
-.menu-open .brand { transform: none; }
 .brand__logo {
-  height: 56px;
+  height: calc(var(--header-h) - 16px);
   width: auto;
   aspect-ratio: 464 / 303;
-  transition: opacity .3s var(--ease);
+  transition: height .3s var(--ease), opacity .3s var(--ease);
 }
 /* Світлий і темний варіанти лежать один на одному: <img> не успадковує
    колір, а перефарбовувати логотип фільтром брендбук забороняє. */
@@ -672,18 +675,22 @@ html.lenis, html.lenis body { height: auto; }
 .menu-open .header-fixed .brand__logo--light { opacity: 1; }
 .menu-open .header-fixed .brand__logo--dark  { opacity: 0; }
 
-@media (max-width: 768px) {
-  .brand__logo { height: 46px; }
+@media (prefers-reduced-motion: reduce) {
+  .header-fixed, .site-header__row, .brand__logo { transition: none; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .header-fixed, .site-header__row, .brand, .brand__logo { transition: none; }
+/* Ліва група: тумблер меню + перемикач мов. Логотип стоїть по центру
+   рядка, тому обидва службові контроли зібрані в одному краю. */
+.site-header__lead {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
 }
 
 /* Тумблер меню: дві риски + слово. Слово потрібне — без нього
    мінімалістичний хедер із самими рисками читається як декор. */
 .nav-toggle {
-  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-3);
@@ -721,55 +728,116 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: var(--sp-5);
 }
-/* телефон у хедері: цифри від 1081px, нижче — лише іконка */
-.header-phone { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); }
+/* Телефон і запис — обидва .btn-icon: без підпису це рівно той самий
+   круглий контрол, що й деінде на сайті, тож розмір і hover беремо з
+   компонента. Ширші екрани, де підпис є, просто знімають фіксовану
+   ширину — решта (min-height, паддінги, контур) лишається від .btn. */
+.header-phone { font-size: var(--fs-sm); }
+@media (min-width: 1081px) {
+  /* з підписом .btn-icon-hover (заливка) мусить мати куди лягти */
+  .header-phone { width: auto; height: auto; gap: var(--sp-2); padding-inline: var(--sp-3); }
+}
 @media (max-width: 1080px) { .header-phone__num { display: none; } }
 
+.site-header__cta-icon { display: none; }
+@media (min-width: 769px) {
+  .site-header__cta { width: auto; height: auto; }
+}
+@media (min-width: 1081px) {
+  /* hover від .btn-icon — заливка; контурній кнопці з підписом лишаємо
+     ghost-поведінку: підсвічується контур, а не фон */
+  .site-header__cta:hover { background: transparent; }
+}
+@media (max-width: 768px) {
+  .site-header__cta-label { display: none; }
+  .site-header__cta-icon { display: block; }
+  /* паддінги .btn ширші за 44px кола — без цього іконка вилазить за край */
+  .site-header__cta { padding-inline: 0; }
+}
 @media (max-width: 560px) {
   .nav-toggle__label { display: none; }
+  .site-header__lead { gap: var(--sp-3); }
   .site-header__actions { gap: var(--sp-3); }
 }
-/* <400px (iPhone SE і менші): лого + телефон + кнопка не влазять разом */
+/* <400px (iPhone SE і менші): лого + два контроли по краях не влазять */
 @media (max-width: 399px) {
   .site-header__row { padding-inline: var(--sp-4); }
-  .site-header__cta { display: none; }
+  .header-phone { display: none; }
 }
 
-/* Lang switch — без плашки: активна мова позначена вагою і золотою
-   рискою, а не заливкою. Живе у фулскрін-меню (мохове поле), тому
-   currentColor — піщаний. */
-.lang-switch {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-}
-.lang-switch__btn {
-  position: relative;
+/* Dropdown — нативний <details>. Панель абсолютна, тож на висоту
+   хедера не впливає; колір фіксований (беж/темний), бо відкриватись
+   може з прозорого хедера, де currentColor піщаний. */
+.dropdown { position: relative; }
+.dropdown > summary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: var(--sp-2);
   height: 36px;
-  padding-inline: var(--sp-2);
-  border: 0;
-  background: transparent;
-  font-family: var(--font-body);
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-pill);
   font-size: var(--fs-xs);
   font-weight: var(--fw-med);
   letter-spacing: var(--tracking-mono);
-  color: color-mix(in srgb, currentColor 55%, transparent);
-  transition: color .2s var(--ease);
+  cursor: pointer;
+  list-style: none;   /* Firefox */
+  transition: background-color .2s var(--ease);
+}
+.dropdown > summary::-webkit-details-marker { display: none; }
+.dropdown > summary:focus-visible,
+.dropdown[open] > summary { background: color-mix(in srgb, currentColor 10%, transparent); }
+@media (min-width: 1081px) {
+  .dropdown > summary:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+}
+/* шеврон — CSS-фігура, той самий прийом, що й .accordion__icon */
+.dropdown__caret {
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform .2s var(--ease);
+}
+.dropdown[open] .dropdown__caret { transform: translateY(25%) rotate(-135deg); }
+.dropdown__panel {
+  position: absolute;
+  top: calc(100% + var(--sp-2));
+  left: 0;
+  z-index: 1;
+  min-width: 172px;
+  padding: var(--sp-2);
+  background: var(--c-page);
+  color: var(--c-ink);
+  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
+  border-radius: var(--r-card);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dropdown > summary, .dropdown__caret { transition: none; }
+}
+
+/* Мова: активна позначена вагою і золотою крапкою, не заливкою */
+.lang__opt {
+  display: block;
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-card);
+  font-size: var(--fs-sm);
+  color: var(--c-ink-mute);
+  transition: background-color .2s var(--ease), color .2s var(--ease);
 }
 @media (min-width: 1081px) {
-  .lang-switch__btn:hover { color: currentColor; }
+  .lang__opt:hover { background: color-mix(in srgb, var(--c-ink) 6%, transparent); color: var(--c-ink); }
 }
-.lang-switch__btn.is-active { color: currentColor; font-weight: var(--fw-sb); }
-.lang-switch__btn.is-active::after {
+.lang__opt.is-active { color: var(--c-ink); font-weight: var(--fw-med); }
+.lang__opt.is-active::after {
   content: "";
-  position: absolute;
-  left: var(--sp-2); right: var(--sp-2);
-  bottom: 7px;
-  height: 1px;
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: var(--sp-2);
+  border-radius: 50%;
   background: var(--c-gold);
+  vertical-align: middle;
 }
 
 /* ============================================================
@@ -785,7 +853,7 @@ html.lenis, html.lenis body { height: auto; }
   display: flex;
   align-items: flex-end;
   min-height: min(100svh, 960px);
-  padding-top: calc(var(--header-h) + var(--sp-9));
+  padding-top: calc(var(--header-h-max) + var(--sp-9));
   padding-bottom: var(--sp-9);
   background: var(--c-moss);
   color: var(--c-page);
@@ -839,6 +907,7 @@ html.lenis, html.lenis body { height: auto; }
   color: color-mix(in srgb, var(--c-page) 70%, transparent);
 }
 .hero__meta a { display: inline-flex; align-items: center; gap: var(--sp-2); transition: color .2s var(--ease); }
+.hero__meta-item { display: inline-flex; align-items: center; gap: var(--sp-2); }
 @media (min-width: 1081px) {
   .hero__meta a:hover { color: var(--c-page); }
 }
@@ -849,6 +918,6 @@ html.lenis, html.lenis body { height: auto; }
   .hero__meta { max-width: 44ch; }
 }
 @media (max-width: 768px) {
-  .hero { padding-top: calc(var(--header-h) + var(--sp-8)); padding-bottom: var(--sp-8); }
+  .hero { padding-top: calc(var(--header-h-max) + var(--sp-8)); padding-bottom: var(--sp-8); }
   .hero__meta { padding-top: var(--sp-4); }
 }

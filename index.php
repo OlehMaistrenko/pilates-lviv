@@ -81,10 +81,14 @@ include 'partials/header.php';
       </div>
 
       <p class="hero__meta text--sm" data-reveal style="--reveal-i: 2">
-        <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener">
+        <span class="hero__meta-item">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
-          <?= $contact['address'] ?>
-        </a>
+          <span>
+            <a href="location-chuprynky.php">Чупринки</a> ·
+            <a href="location-bryukhovychi.php">Брюховичі</a> ·
+            <a href="location-sykhiv.php">Сихів</a>
+          </span>
+        </span>
         <a href="<?= $contact['phone_href'] ?>">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
           <?= $contact['phone'] ?>
