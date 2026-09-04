@@ -169,55 +169,29 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     04 · Записатись — ЄДИНЕ умброве поле на сторінці.
-     Умбра = колір вуличної вивіски студії, тому означає «двері».
+     04 · Записатись — split-лейаут (кадр + текст). Фон — градієнт умбри
+     в мох: умбра = колір вуличної вивіски, тому секція означає «двері».
+     Два паралакс-шари з різними швидкостями (кадр повільніший за текст).
      ============================================================ -->
-<section class="booking">
-  <div class="container">
-    <div class="booking__grid">
-      <div class="booking__main">
-        <h2 data-reveal="lines">Перше заняття — знайомство</h2>
-        <p class="text--lead booking__lead" data-reveal>
-          Приходьте подивитись зал, познайомитись із тренером і спробувати
-          тренажери. Далі вирішуєте самі.
-        </p>
+<section class="split split--booking">
+  <div class="split__grid">
+    <figure class="split__media">
+      <img class="split__layer" src="assets/img/cta.jpeg" alt="Групове заняття в залі студії"
+           width="1792" height="2400" loading="lazy"
+           data-anim="parallax" data-parallax="10">
+    </figure>
 
-        <ol class="booking__steps">
-          <li data-reveal><span class="label">01</span><span>Лишаєте номер або дзвоните — передзвонимо того ж дня.</span></li>
-          <li data-reveal style="--reveal-i: 1"><span class="label">02</span><span>Підбираємо напрямок, тренера і час у розкладі.</span></li>
-          <li data-reveal style="--reveal-i: 2"><span class="label">03</span><span>Приходите, дивитесь зал і пробуєте Cadillac чи Reformer.</span></li>
-        </ol>
+    <div class="split__body" data-anim="parallax" data-parallax="4">
+      <h2 data-reveal="lines">Перше заняття — знайомство</h2>
+      <p class="text--lead split__lead" data-reveal>
+        Приходьте подивитись зал, познайомитись із тренером і спробувати
+        тренажери. Далі вирішуєте самі.
+      </p>
 
-        <div class="booking__actions" data-reveal>
-          <button type="button" class="btn btn--sand" data-modal="booking">Записатись</button>
-          <a class="btn btn--ghost" href="schedule.php">Розклад занять</a>
-        </div>
+      <div class="split__actions" data-reveal>
+        <button type="button" class="btn btn--sand" data-modal="booking">Записатись</button>
+        <a class="btn btn--ghost" href="schedule.php">Розклад занять</a>
       </div>
-
-      <aside class="booking__aside" data-reveal style="--reveal-i: 1">
-        <p class="booking__aside-title">Наші студії</p>
-        <ul class="booking__studios">
-          <li class="studio">
-            <p class="studio__name">Чупринки</p>
-            <p class="text--sm text--muted"><?= $contact['address'] ?></p>
-            <p class="text--sm text--muted">Пн–Нд, 08:00–21:00</p>
-            <a class="link-arrow" href="location-chuprynky.php">
-              Розклад
-              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-            </a>
-          </li>
-          <!-- TODO: адреса, графік і телефон по цих двох локаціях — від клієнта.
-               На діючому сайті вказана лише одна адреса, вигадувати решту не можна. -->
-          <li class="studio studio--empty">
-            <p class="studio__name">Брюховичі</p>
-            <p class="text--sm text--muted">Адреса і графік уточнюються</p>
-          </li>
-          <li class="studio studio--empty">
-            <p class="studio__name">Сихів</p>
-            <p class="text--sm text--muted">Адреса і графік уточнюються</p>
-          </li>
-        </ul>
-      </aside>
     </div>
   </div>
 </section>

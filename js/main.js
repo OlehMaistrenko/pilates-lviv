@@ -200,6 +200,18 @@
           .fromTo(el, { opacity: 0.25 }, { opacity: 1, ease: 'none' })
           .to(el, { opacity: 0.25, ease: 'none' });
       });
+
+      /* data-anim="parallax" — шар їде повільніше за скрол. Силу (у % власної
+         висоти) задає data-parallax, тож два шари в одній секції з різними
+         значеннями дають глибину. Тригер — секція, а не сам шар: інакше
+         кожен шар рахував би свій відрізок і вони роз'їхались би. */
+      document.querySelectorAll('[data-anim="parallax"]').forEach((el) => {
+        const d = parseFloat(el.dataset.parallax) || 8;
+        gsap.fromTo(el, { yPercent: -d }, {
+          yPercent: d, ease: 'none',
+          scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+      });
     });
 
     /* Рефреш не з нульової позиції: браузер відновлює скрол асинхронно —
