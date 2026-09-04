@@ -5,14 +5,13 @@ $page_description = 'Пілатес на професійних тренажер
 $header_over_hero = true;   // герой моховий — хедер лягає поверх нього прозорим
 $vendor_swiper = true;      // слайдер відгуків
 
-// Реальний каталог занять із діючого pilateslviv.com
+// Реальний каталог занять із instasport.ua/uk/club/pilates_lviv
 $directions = [
-  ['Пілатес Springtone', 'training-pilates.php', 'На Cadillac і Reformer. Пружина замість ваги — м’яко для суглобів, точно для м’язів.', 'pilates'],
-  ['Функціональне відновлення', 'training-recovery.php', 'Після пологів, після травми, при болю в спині. Повертаємо рух там, де він зник.', 'recovery'],
-  ['Йога', 'training-yoga.php', 'Не спорт, а радше мистецтво: тіло, дихання й увага в одному темпі.', 'yoga'],
-  ['Танці', 'training-dance.php', 'Спосіб досягнути краси і гармонії, володіючи кожним м’язом.', 'dance'],
-  ['Консультація фізіолога', 'training-physio.php', 'Розбираємо, що саме болить і чому, і складаємо план занять під вас.', 'physio'],
-  ['Навчальний центр', 'academy.php', 'Курси для тих, хто хоче викладати пілатес сам.', 'academy'],
+  ['Пілатес', 'training-pilates-mat.php', 'На матах: глибокий м’язовий корсет, постава, гнучкість. Для початківців і досвідчених.', 'pilates-mat'],
+  ['Пілатес-Реформер', 'training-reformer.php', 'На реформерах і Wall Unit. Точне дозування навантаження, робота з усім тілом.', 'reformer'],
+  ['Здорова спина', 'training-back.php', 'З кульками BALLance®. Здоров’я хребта, зняття напруги в спині, постава.', 'back'],
+  ['Персональне', 'training-personal.php', 'Індивідуальні тренування — програма під ваші цілі й особливості тіла.', 'personal'],
+  ['Спліт', 'training-split.php', 'Парні й мінігрупові заняття — з тренером на двох чи трьох.', 'split'],
 ];
 
 // Три точки — з цитати Джозефа Пілатеса (10/20/30); тексти під кожну — наші.
@@ -144,30 +143,28 @@ include 'partials/header.php';
 <section class="section directions">
   <div class="container">
     <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Що в нас можна робити</h2>
+      <h2 data-reveal="lines">Напрямки</h2>
       <p class="text--lead text--muted" data-reveal>
-        Шість напрямків в одній залі. Якщо не знаєте, з чого почати, —
+        П’ять напрямків в одній студії. Якщо не знаєте, з чого почати, —
         почніть із консультації: там і розберемось.
       </p>
     </div>
 
-    <ol class="directions__list">
+    <ul class="directions__list">
       <?php foreach ($directions as $i => [$title, $href, $note, $slug]): ?>
         <li class="direction" data-reveal style="--reveal-i: <?= $i % 3 ?>">
           <a class="direction__link" href="<?= $href ?>">
-            <span class="direction__num label"><?= sprintf('%02d', $i + 1) ?></span>
             <span class="direction__media">
               <img src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
-              <span class="direction__note text--sm text--muted"><?= $note ?></span>
+              <span class="direction__note text--muted"><?= $note ?></span>
             </span>
-            <svg class="icon direction__arrow" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </a>
         </li>
       <?php endforeach; ?>
-    </ol>
+    </ul>
   </div>
 </section>
 
