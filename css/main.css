@@ -96,7 +96,7 @@
   --r-chip:  2px;     /* дрібна плашка, тег */
   --r-card:  2px;     /* картка */
   --r-block: 2px;     /* великий блок / медіа */
-  --r-pill:  999px;   /* кнопки */
+  --r-pill:  999px;   /* кнопки; як кадр — свідомий виняток, лише .path__shot */
   --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
 
   --header-h-max: 120px;
@@ -461,17 +461,6 @@ main { overflow: clip; }
   .container:has(.section--panel) { padding-inline: 0; }
 }
 
-/* GSAP fromTo(scale) рендерить старт інлайн-стилем щойно твін створюється —
-   якщо елемент до цього був без transform, це сам собою стрибок (браузер
-   рендерить "без scale" один кадр, тоді GSAP підставляє translate3d+scale).
-   Той самий стан у CSS наперед — рендер одразу масштабований, стрибка немає.
-   Лише десктоп (min-width: 1081px): scrub там і вмикається (js/main.js) — на
-   мобілці/планшеті твіна немає, і без медіа-запиту секція лишилась би
-   назавжди зменшеною до scale(0.85). */
-@media (min-width: 1081px) {
-  [data-anim="zoom-in"] { transform: scale(0.85); transform-origin: center top; }
-}
-
 /* ============================================================
    Accessibility: skip link
    ============================================================ */
@@ -548,20 +537,6 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: clip; }
 .lenis.lenis-smooth iframe { pointer-events: none; }
-
-/* data-anim="words" — JS ріже текст на .word, GSAP скрабить opacity.
-   Базовий стан приглушений; без JS слова лишаються повністю видимими. */
-[data-anim="words"] .word {
-  opacity: .22;
-  transition: opacity .3s var(--ease);
-  display: inline-block;
-  overflow: hidden;
-  padding-top: 0.14em;
-  margin-top: -0.14em;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-anim="words"] .word { opacity: 1; }
-}
 
 /* ============================================================
    Typography helpers — section-head, label
