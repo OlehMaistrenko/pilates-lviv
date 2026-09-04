@@ -241,6 +241,9 @@ main { overflow: clip; }
   border-color: color-mix(in srgb, currentColor 38%, transparent);
 }
 .btn--sm { min-height: 40px; padding-inline: var(--sp-4); }
+/* на всю ширину контейнера; width замало — .btn інлайновий флекс, і в
+   grid/flex-батька з центруванням він однаково лишився б по контенту */
+.btn--block { display: flex; width: 100%; }
 
 @media (min-width: 1081px) {
   .btn:hover { --btn-bg: var(--c-moss); --btn-c: var(--c-page); }
