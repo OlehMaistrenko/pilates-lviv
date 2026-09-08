@@ -121,8 +121,7 @@ include 'partials/header.php';
     <div class="path__grid">
       <!-- одометр: три цифри в масці, скрол зсуває стовпчик (js/main.js,
            data-anim="odometer"), а pin тримає його по центру екрана. На
-           мобілці й при reduced-motion прихований — там цифру показує
-           кожен крок сам. -->
+           мобілці прихований — там цифру показує кожен крок сам. -->
       <div class="path__counter" data-anim="pin" data-pin-track=".path__list" aria-hidden="true">
         <div class="path__roll">
           <div data-anim="odometer" data-odometer-for=".path__list">

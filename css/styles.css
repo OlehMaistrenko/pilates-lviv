@@ -69,14 +69,6 @@
   .modal-overlay__panel { padding: var(--sp-5); border-radius: var(--r-card); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  /* тривалість на корені лишається ненульовою: JS чекає на transitionend,
-     щоб повернути hidden — transition: none означало б модалку, яка
-     більше ніколи не закриється */
-  .modal-overlay { transition-duration: .01ms; }
-  .modal-overlay__panel { transition: none; transform: none; }
-}
-
 /* ============================================================
    Form — .form/.form__row поля
    ============================================================ */
@@ -146,11 +138,6 @@
 .menu.is-open .menu__list li,
 .menu.is-open .menu__group,
 .menu.is-open .menu__foot { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .menu { transition-duration: .01ms; }
-  .menu__list li, .menu__group, .menu__foot { transition: none; transform: none; opacity: 1; }
-}
 
 .menu__list { grid-area: list; }
 .menu__list a {
@@ -340,8 +327,6 @@
   .link-arrow:hover { color: var(--c-gold-ink); border-bottom-color: currentColor; }
   .link-arrow:hover .icon { transform: translateX(3px); }
 }
-@media (prefers-reduced-motion: reduce) { .link-arrow, .link-arrow .icon { transition: none; } }
-
 /* ============================================================
    Component: .embossed — тиснення патерном з брендбуку (с.13).
    Патерн підключений маскою, а не картинкою: сам SVG чорний, фарбу
@@ -477,8 +462,8 @@
   object-fit: cover;
 }
 
-/* без одометра (мобілка, reduced-motion) цифру показує кожен крок сам */
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+/* без одометра (мобілка) цифру показує кожен крок сам */
+@media (max-width: 900px) {
   /* justify-content з десктопу тут зайвий: одна колонка мусить тягнутись
      на всю ширину, а не стискатись по вмісту й центруватись */
   .path__grid { grid-template-columns: minmax(0, 1fr); justify-content: stretch; }
@@ -554,9 +539,6 @@
   .direction__link:hover .direction__media > img { transform: scale(1.06); }
 }
 .direction__link:focus-visible .direction__media { outline-color: var(--c-gold); }
-@media (prefers-reduced-motion: reduce) {
-  .direction__title, .direction__media, .direction__media > img { transition: none; }
-}
 @media (max-width: 1080px) {
   .direction { flex: 0 1 calc(50% - var(--sp-5) / 2); }
 }
@@ -898,7 +880,6 @@
   .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); color: var(--c-gold-ink); }
   .trainer--all .trainer__link:hover .trainer__all { color: var(--c-gold-ink); }
 }
-@media (prefers-reduced-motion: reduce) { .trainer__media > img, .trainer__name { transition: none; } }
 
 /* ============================================================
    Home 10 — Відгуки: третє і останнє мохове поле (герой, футер, це).
@@ -1028,7 +1009,6 @@
 /* [hidden] — лише UA-стиль, а .link-arrow(display:inline-flex) переважує
    його специфічністю: без цього JS-приховування кнопки не спрацьовує */
 .footer-seo__toggle[hidden] { display: none; }
-@media (prefers-reduced-motion: reduce) { .footer-seo__text { transition: none; } }
 .site-footer__top {
   display: grid;
   grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);

@@ -254,8 +254,6 @@ main { overflow: clip; }
      власному ж бежевому/прозорому фоні й губиться */
   .btn--ghost:hover { --btn-c: currentColor; background: color-mix(in srgb, currentColor 12%, transparent); }
 }
-@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
-
 .btn-icon {
   display: inline-flex;
   align-items: center;
@@ -517,11 +515,6 @@ main { overflow: clip; }
 }
 [data-reveal="lines"].is-visible .word-mask { opacity: 1; transform: none; }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1; transform: none; transition: none; }
-  [data-reveal="lines"] .word-mask { opacity: 1; transform: none; transition: none; }
-}
-
 /* ============================================================
    Motion — Lenis + GSAP scrub/pin
    Lenis-стилі інлайнимо (191 байт) замість окремого запиту.
@@ -666,10 +659,6 @@ html.lenis, html.lenis body { height: auto; }
 .menu-open .header-fixed .brand__logo--light { opacity: 1; }
 .menu-open .header-fixed .brand__logo--dark  { opacity: 0; }
 
-@media (prefers-reduced-motion: reduce) {
-  .header-fixed, .site-header__row, .brand__logo { transition: none; }
-}
-
 /* Ліва група: тумблер меню + перемикач мов. Логотип стоїть по центру
    рядка, тому обидва службові контроли зібрані в одному краю. */
 .site-header__lead {
@@ -701,7 +690,6 @@ html.lenis, html.lenis body { height: auto; }
 .nav-toggle__icon i:last-child  { bottom: 0; }
 .nav-toggle[aria-expanded="true"] .nav-toggle__icon i:first-child { transform: translateY(5.5px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-toggle__icon i:last-child  { transform: translateY(-5.5px) rotate(-45deg); }
-@media (prefers-reduced-motion: reduce) { .nav-toggle__icon i { transition: none; } }
 
 .site-header__actions {
   justify-self: end;
@@ -766,9 +754,6 @@ html.lenis, html.lenis body { height: auto; }
   color: var(--c-ink);
   border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
   border-radius: var(--r-card);
-}
-@media (prefers-reduced-motion: reduce) {
-  .dropdown > summary, .dropdown__caret { transition: none; }
 }
 
 /* Мова: активна позначена вагою і золотою крапкою, не заливкою */
