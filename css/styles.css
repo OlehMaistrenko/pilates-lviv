@@ -805,9 +805,24 @@
 .gallery__item > img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ============================================================
+   Slider controls — генерична панель під будь-яким .swiper-wrap:
+   стрілки (.btn-icon) + .swiper-pagination. У спрайті лише стрілка
+   вправо, тож .slider-prev дзеркалиться тут же.
+   ============================================================ */
+.slider-controls { display: flex; align-items: center; gap: var(--sp-4);  position: relative; justify-content: center; }
+.slider-controls .swiper-prev .icon { transform: scaleX(-1); }
+.slider-controls .swiper-pagination { position: relative; width: auto;left: unset!important;transform: none!important;margin: 0;top:unset!important;bottom: unset!important; }
+
+/* ============================================================
    Home 09 — Тренери: портрет-арка, ім'я, напрямок, цитата
    ============================================================ */
-.team__slider .swiper-slide { height: auto; }
+.team .swiper { overflow: visible; }
+.team .swiper-slide { height: auto; }
+.team .swiper-pagination {
+  --swiper-pagination-bullet-inactive-color: var(--c-ink);
+  --swiper-pagination-bullet-inactive-opacity: .25;
+}
+.team .swiper-pagination-bullet-active { background: var(--c-gold); }
 .trainer__link { display: flex; flex-direction: column; gap: var(--sp-1); height: 100%; }
 .trainer__media {
   display: block;
@@ -815,36 +830,29 @@
   margin-bottom: var(--sp-3);
   border-radius: var(--r-arch);
   overflow: hidden;
-  outline: 1px solid transparent;
-  outline-offset: -1px;
-  transition: outline-color .3s var(--ease);
 }
 .trainer__media > .ph,
-.trainer__media > img { width: 100%; height: 100%; object-fit: cover; }
+.trainer__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
 .trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
 .trainer__quote { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
-/* остання плитка — посилання на команду: порожня арка з золотим контуром */
+/* остання плитка — посилання на команду: біла арка з левом із лого */
 .trainer--all .trainer__media {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--sp-3);
-  border: 1px solid var(--c-gold);
-  transition: border-color .3s var(--ease), color .25s var(--ease);
+  background: #fff;
 }
-.trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); }
+.trainer__all-mark { width: 3.5rem; height: auto; fill: currentColor; color: var(--c-ink); transition: transform .4s var(--ease), color .25s var(--ease); }
+.trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); transition: color .25s var(--ease); }
 @media (min-width: 1081px) {
-  .trainer__link:hover .trainer__media { outline-color: var(--c-gold); }
+  .trainer__link:hover .trainer__media > img:not(.trainer__all-mark) { transform: scale(1.06); }
   .trainer__link:hover .trainer__name { color: var(--c-gold-ink); }
-  .trainer--all .trainer__link:hover .trainer__media { color: var(--c-gold-ink); border-color: var(--c-gold-ink); }
+  .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); color: var(--c-gold-ink); }
+  .trainer--all .trainer__link:hover .trainer__all { color: var(--c-gold-ink); }
 }
-.trainer__link:focus-visible .trainer__media { outline-color: var(--c-gold); }
-@media (prefers-reduced-motion: reduce) { .trainer__media, .trainer__name { transition: none; } }
-.team__controls { display: flex; align-items: center; gap: var(--sp-4); margin-top: var(--sp-8); }
-.team__controls .swiper-pagination { position: static; width: auto; display: flex; gap: var(--sp-2); }
-.team__controls .swiper-pagination-bullet-active { background: var(--c-gold); }
-.team__controls .swiper-prev .icon { transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) { .trainer__media > img, .trainer__name { transition: none; } }
 
 /* ============================================================
    Home 10 — Відгуки: третє і останнє мохове поле (герой, футер, це).
@@ -875,15 +883,11 @@
 .review__text::after  { content: "»"; }
 .review__meta { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-6); }
 .review__name { font-weight: var(--fw-med); }
-.reviews__controls { display: flex; align-items: center; gap: var(--sp-4); margin-top: var(--sp-8); }
 .reviews .btn-icon { border: 1px solid color-mix(in srgb, currentColor 38%, transparent); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
 @media (min-width: 1081px) {
   .reviews .btn-icon:hover { border-color: currentColor; }
 }
-/* у спрайті лише стрілка вправо — «назад» дзеркалимо */
-.reviews .swiper-prev .icon { transform: scaleX(-1); }
-.reviews .swiper-pagination { position: static; width: auto; display: flex; gap: var(--sp-2); }
-.reviews .swiper-pagination-bullet { margin: 0; background: var(--c-page); }
+.reviews .swiper-pagination-bullet { background: var(--c-page); }
 .reviews .swiper-pagination-bullet-active { background: var(--c-gold-lt); }
 @media (max-width: 1080px) {
   .reviews__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
