@@ -36,10 +36,12 @@ $team = [
 ];
 
 // TODO: приклади. Замінити на реальні відгуки клієнтів (Google Maps / Instagram).
+// Четвертий елемент — кадр-пігулка збоку: знімок заняття, а не портрет автора
+// відгуку (портретів клієнтів у нас немає, вигадувати обличчя не можна).
 $reviews = [
-  ['Після другої дитини боліла поперек — на реформері за два місяці пройшло. Тренер щоразу дивиться, як саме я роблю вправу, а не просто рахує повтори.', 'Марта', 'функціональне відновлення'],
-  ['Сиджу за ноутбуком по 10 годин. Прийшов, бо не міг повернути голову. Тепер ходжу двічі на тиждень, шия не болить, постава помітно рівніша.', 'Андрій', 'пілатес Springtone'],
-  ['Пробувала пілатес у трьох студіях. Тут єдині, де є Cadillac, і єдині, де мені пояснили, навіщо кожна вправа.', 'Оля', 'пілатес Springtone'],
+  ['Після другої дитини боліла поперек — на реформері за два місяці пройшло. Тренер щоразу дивиться, як саме я роблю вправу, а не просто рахує повтори.', 'Марта', 'функціональне відновлення', '6.jpg'],
+  ['Сиджу за ноутбуком по 10 годин. Прийшов, бо не міг повернути голову. Тепер ходжу двічі на тиждень, шия не болить, постава помітно рівніша.', 'Андрій', 'пілатес Springtone', '7.jpg'],
+  ['Пробувала пілатес у трьох студіях. Тут єдині, де є Cadillac, і єдині, де мені пояснили, навіщо кожна вправа.', 'Оля', 'пілатес Springtone', '4.jpg'],
 ];
 
 $faq = [
@@ -417,26 +419,12 @@ include 'partials/header.php';
      ============================================================ -->
 <section class="reviews">
   <div class="container">
-    <div class="reviews__grid">
+    <!-- .swiper-wrap огортає всю сітку: initSwiper шукає контроли в межах
+         найближчого .swiper-wrap, а вони стоять у колонці заголовка -->
+    <div class="swiper-wrap reviews__grid" data-reveal>
       <div class="reviews__head">
         <h2 data-reveal="lines">Що кажуть клієнти</h2>
-      </div>
-
-      <div class="swiper-wrap" data-reveal>
-        <div class="swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
-          <div class="swiper-wrapper">
-            <?php foreach ($reviews as [$text, $name, $role]): ?>
-              <blockquote class="swiper-slide review">
-                <p class="review__text"><?= $text ?></p>
-                <footer class="review__meta">
-                  <span class="review__name"><?= $name ?></span>
-                  <span class="text--sm text--muted"><?= $role ?></span>
-                </footer>
-              </blockquote>
-            <?php endforeach; ?>
-          </div>
-        </div>
-        <div class="slider-controls">
+        <div class="slider-controls reviews__controls mt-5">
           <button type="button" class="btn-icon swiper-prev" aria-label="Попередній відгук">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </button>
@@ -444,6 +432,25 @@ include 'partials/header.php';
           <button type="button" class="btn-icon swiper-next" aria-label="Наступний відгук">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </button>
+        </div>
+      </div>
+
+      <div class="swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
+        <div class="swiper-wrapper">
+          <?php foreach ($reviews as [$text, $name, $role, $shot]): ?>
+            <blockquote class="swiper-slide review">
+              <figure class="review__shot">
+                <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
+              </figure>
+              <div class="review__body">
+                <p class="review__text"><?= $text ?></p>
+                <footer class="review__meta">
+                  <span class="review__name"><?= $name ?></span>
+                  <span class="text--sm text--muted"><?= $role ?></span>
+                </footer>
+              </div>
+            </blockquote>
+          <?php endforeach; ?>
         </div>
       </div>
     </div>

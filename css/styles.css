@@ -867,11 +867,27 @@
 }
 .reviews__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
   gap: var(--sp-8) var(--sp-9);
   align-items: start;
 }
-.review { margin: 0; }
+/* .swiper як grid-item не має власної ширини-основи — Swiper без цього
+   рахує слайди по контенту й вилазить за колонку */
+.reviews__grid > .swiper { min-width: 0; width: 100%; }
+.review { margin: 0; display: flex; gap: var(--sp-7); align-items: center; }
+/* вертикальна пігулка — та сама свідома «пігулка як кадр», що й .path__shot,
+   лише повернута: 3/5 замість 5/2 */
+.review__shot {
+  flex: none;
+  margin: 0;
+  width: clamp(8rem, 16vw, 12rem);
+  aspect-ratio: 1 / 2;
+  overflow: hidden;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--c-page) 12%, transparent);
+}
+.review__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.review__body { min-width: 0; }
 .review__text {
   max-width: 28ch;
   font-size: var(--fs-h3);
@@ -889,8 +905,17 @@
 }
 .reviews .swiper-pagination-bullet { background: var(--c-page); }
 .reviews .swiper-pagination-bullet-active { background: var(--c-gold-lt); }
-@media (max-width: 1080px) {
+/* контроли живуть у колонці заголовка — тож не центруються, а йдуть від лівого краю */
+.reviews__controls { justify-content: start; }
+@media (max-width: 900px) {
   .reviews__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
+  /* на вужчих екранах колонки стають рядками: контроли переносимо під відгуки */
+  .reviews__head { display: contents; }
+  .reviews__controls { order: 1; margin-top: 0; }
+}
+@media (max-width: 768px) {
+  .review { gap: var(--sp-5); }
+  .review__shot { width: clamp(4.5rem, 22vw, 6rem); }
 }
 
 /* ============================================================
