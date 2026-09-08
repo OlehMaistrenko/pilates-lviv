@@ -76,11 +76,8 @@ css/vendor/, js/vendor/  — swiper, mapbox (за гейтом); gsap, lenis (г
 
 Блок для довільного HTML з CMS. Підтримує: `p h2 h3 h4 ul ol li blockquote cite figure figcaption img table thead tbody tr th td hr strong em a video iframe`.
 
-Для відео-embed обов'язково обгортати:
-
-```html
-<div class="simple-text__video-wrap"><iframe src="..."></iframe></div>
-```
+Відео-embed — голий `<iframe>`, без обгортки: `aspect-ratio` стоїть
+безпосередньо на `.simple-text iframe`.
 
 Для `table` обов'язково обгортати (горизонтальний скрол, якщо колонки не влазять):
 

@@ -227,29 +227,13 @@
    тут заголовок стоїть під фото в звичайному контейнері — крок нижче.
    ============================================================ */
 .post-header__title { font-size: var(--fs-h2); font-weight: var(--fw-reg); }
-.post-header__banner { position: relative; }
-.post-header__cover {
-  display: block;
-  width: 100%;
-  /* хедер лежить поверх (.header-fixed--over) — висота рахує його зріст,
-     інакше на мобільному фото ховається під хедером майже повністю */
-  height: clamp(26rem, var(--header-h-max) + 20rem, 48rem);
-  object-fit: cover;
-}
-/* та сама заливка, що .hero__tint — тримає лого/меню хедера читабельними
-   на будь-якому кадрі, незалежно від того, що на фото */
-.post-header__tint {
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, black 35%, transparent);
-}
 
 /* ============================================================
    Component: .simple-text — WP-редаговуваний rich-текст (CMS-контент).
    Підтримує: p h2 h3 h4 ul ol li blockquote cite figure figcaption img
    table thead tbody tr th td hr strong em a video iframe.
    ============================================================ */
-.simple-text { display: flex; flex-direction: column; gap: var(--sp-5); max-width: 72ch; }
+.simple-text { display: flex; flex-direction: column; gap: var(--sp-5);  }
 .simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-reg); }
 .simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-reg); }
 .simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
@@ -272,15 +256,29 @@
 /* курсиву на сайті немає ніде — виділення через колір, а не нахил */
 .simple-text em { font-style: normal; color: var(--c-gold-ink); }
 
-.simple-text__video-wrap {
-  position: relative;
+.simple-text iframe {
+  width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: var(--r-card);
-  overflow: hidden;
+  border:none
 }
-.simple-text__video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 .simple-text__gallery-wrap { margin-block: var(--sp-2); }
+/* slidesPerView: auto (глобальний дефолт initSwiper) — слайд не розтягує
+   Swiper, ширину рахує сам за пропорцією фото, лише капається max-height/
+   max-width, щоб вертикальні/дуже широкі кадри не ламали ряд */
+.simple-text__gallery-wrap .swiper-slide {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+}
+.simple-text__gallery-wrap .swiper-slide img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 24rem;
+}
 
 .simple-text__table-wrap { overflow-x: auto; }
 .simple-text table { width: 100%; border-collapse: collapse; }

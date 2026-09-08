@@ -18,15 +18,25 @@ include 'partials/header.php';
 
 <?php if ($has_cover): ?>
   <!-- ============================================================
-       01 · Банер — фото на всю ширину під прозорим хедером (та сама
-       .header-fixed--over логіка, що на blog.php/index.php). Тінт поверх —
-       щоб світле лого/меню хедера читалось на будь-якому кадрі; заголовок
-       і дата йдуть окремим блоком нижче, тінт тут суто під хедер.
+       01 · Банер — той самий .hero--inner, що на blog.php, тільки без
+       заголовка/ліда: тут вони йдуть окремим блоком нижче (02).
        ============================================================ -->
-  <section class="post-header__banner">
-    <img class="post-header__cover" src="assets/img/gallery/1.jpg" alt="Заняття на реформері в студії"
+  <section class="hero hero--inner">
+    <img class="hero__video" src="assets/img/gallery/1.jpg" alt="" aria-hidden="true"
          width="2400" height="1100" loading="eager">
-    <div class="post-header__tint" aria-hidden="true"></div>
+    <div class="hero__tint" aria-hidden="true"></div>
+
+    <div class="container container--full">
+      <div class="hero__inner hero__inner--end">
+        <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
+          <a href="index.php">Головна</a>
+          <span aria-hidden="true">·</span>
+          <a href="blog.php">Блог</a>
+          <span aria-hidden="true">·</span>
+          <span aria-current="page">Reformer vs Mat</span>
+        </nav>
+      </div>
+    </div>
   </section>
 <?php endif; ?>
 
@@ -35,13 +45,15 @@ include 'partials/header.php';
      ============================================================ -->
 <section class="section pb-0">
   <div class="container container--narrow">
-    <nav class="breadcrumbs text--sm mb-5" aria-label="Хлібні крихти">
-      <a href="index.php">Головна</a>
-      <span aria-hidden="true">·</span>
-      <a href="blog.php">Блог</a>
-      <span aria-hidden="true">·</span>
-      <span aria-current="page">Reformer vs Mat</span>
-    </nav>
+    <?php if (!$has_cover): ?>
+      <nav class="breadcrumbs text--sm mb-5" aria-label="Хлібні крихти">
+        <a href="index.php">Головна</a>
+        <span aria-hidden="true">·</span>
+        <a href="blog.php">Блог</a>
+        <span aria-hidden="true">·</span>
+        <span aria-current="page">Reformer vs Mat</span>
+      </nav>
+    <?php endif; ?>
 
     <h1 class="post-header__title" data-reveal="lines">Чим пілатес на реформері відрізняється від пілатесу на матах</h1>
 
@@ -141,15 +153,13 @@ include 'partials/header.php';
       </ol>
 
       <h2>Як це виглядає в залі</h2>
-      <div class="simple-text__video-wrap">
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Заняття на Reformer у студії Пілатес Львів"
-                loading="lazy" allowfullscreen></iframe>
-      </div>
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Заняття на Reformer у студії Пілатес Львів"
+              loading="lazy" allowfullscreen></iframe>
 
       <h2>Кадри із зали</h2>
       <div class="simple-text__gallery-wrap">
         <div class="swiper-wrap" data-reveal>
-          <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":16,"breakpoints":{"768":{"slidesPerView":2.2}}}'>
+          <div class="swiper" data-swiper='{"spaceBetween":16}'>
             <div class="swiper-wrapper">
               <figure class="swiper-slide">
                 <img src="assets/img/gallery/2.jpg" alt="Reformer у залі студії" loading="lazy">
@@ -162,6 +172,15 @@ include 'partials/header.php';
               </figure>
               <figure class="swiper-slide">
                 <img src="assets/img/directions/3.jpeg" alt="Індивідуальне заняття з тренером" loading="lazy">
+              </figure>
+              <figure class="swiper-slide">
+                <img src="assets/img/gallery/5.jpg" alt="Розтяжка на Cadillac" loading="lazy">
+              </figure>
+              <figure class="swiper-slide">
+                <img src="assets/img/gallery/6.jpg" alt="Зал студії з тренажерами" loading="lazy">
+              </figure>
+              <figure class="swiper-slide">
+                <img src="assets/img/directions/5.jpeg" alt="Вправа на Reformer з тренером" loading="lazy">
               </figure>
             </div>
           </div>

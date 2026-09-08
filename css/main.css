@@ -99,7 +99,7 @@
   --r-pill:  62.4375rem;   /* кнопки; як кадр — свідомий виняток: .path__shot, .review__shot */
   --r-arch:  62.4375rem 62.4375rem 2px 2px;   /* арка — вікно львівської кам'яниці */
 
-  --header-h-max: 7.5rem;
+  --header-h-max: 9rem;
   --header-h-min: 5rem;   /* після скролу, див. Header */
   --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
@@ -601,20 +601,21 @@ html.lenis, html.lenis body { height: auto; }
   z-index: 100;
   background: var(--c-page);
   color: var(--c-ink);
+  border-bottom: 1px solid color-mix(in srgb, currentColor 38%, transparent);
   transition: background-color .5s var(--ease), color .5s var(--ease);
 }
 /* Клас ставить сторінка ($header_over_hero перед include), а не JS — щоб
    не було кадру, у якому темний текст стоїть на темному фоні до першого
    спрацювання скрипта. */
-.header-fixed--over { background: transparent; color: var(--c-page); }
+.header-fixed--over { background: transparent; color: var(--c-page); border-bottom-color: transparent; }
 /* Сторінка без героя, але з темним (моховим) першим екраном під хедером:
    $header_theme='dark' — той самий світлий текст, що й --over, але фон
    лишається непрозорим (немає героя, що просвічував би крізь нього) */
-.header-fixed--dark { background: var(--c-moss-deep); color: var(--c-page); }
+.header-fixed--dark { background: var(--c-moss-deep); color: var(--c-page); border-bottom-color: transparent; }
 /* .is-scrolled / .menu-open ставить js/main.js на <body>; порядок правил
    значущий — відкрите меню важливіше за стан скролу */
 .is-scrolled .header-fixed--over,
-.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); }
+.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); border-bottom-color: color-mix(in srgb, currentColor 38%, transparent); }
 .menu-open .header-fixed { background: transparent; color: var(--c-page); }
 
 /* --header-h — «поточна» висота: за замовчуванням = --header-h-max,
@@ -658,16 +659,11 @@ html.lenis, html.lenis body { height: auto; }
   justify-self: center;
 }
 .brand__logo {
-  height: calc(var(--header-h) - 1rem);
+  height: calc((var(--header-h) - 1rem));
   width: auto;
   aspect-ratio: 464 / 303;
-  
-  transform: translateY(10%) scale(1.2);
-  transform-origin: top;
-  transition: height .5s var(--ease), opacity .5s var(--ease), transform .5s var(--ease);
-
+  transition: height .5s var(--ease), opacity .5s var(--ease);
 }
-.is-scrolled .brand__logo{ transform: scale(1); }
 /* Світлий і темний варіанти лежать один на одному: <img> не успадковує
    колір, а перефарбовувати логотип фільтром брендбук забороняє. */
 .brand__logo--dark { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
@@ -686,6 +682,8 @@ html.lenis, html.lenis body { height: auto; }
 /* Ліва група: тумблер меню + перемикач мов. Логотип стоїть по центру
    рядка, тому обидва службові контроли зібрані в одному краю. */
 .site-header__lead {
+  height: var(--header-h-min);
+  align-self: start;
   justify-self: start;
   display: flex;
   align-items: center;
@@ -716,6 +714,8 @@ html.lenis, html.lenis body { height: auto; }
 .nav-toggle[aria-expanded="true"] .nav-toggle__icon i:last-child  { transform: translateY(-0.34375rem) rotate(-45deg); }
 
 .site-header__actions {
+  height: var(--header-h-min);
+  align-self: start;
   justify-self: end;
   display: flex;
   align-items: center;
@@ -912,6 +912,20 @@ html.lenis, html.lenis body { height: auto; }
 /* Заголовок притиснутий до низу, крихти — до верху: вільну висоту, яку
    дає min-height, забирає цей проміжок, а не рівні відступи довкола. */
 .hero--inner .hero__inner { gap: var(--sp-7); justify-content: space-between; }
+/* Банер без заголовка (напр. blog-single.php з $has_cover) — самі крихти
+   без .hero__bottom, justify-content: space-between тут нічого не робить
+   (один child), тож притискаємо крихти до низу банера вручну. Додатковий
+   градієнт знизу (поверх рівного .hero__tint) — крихти лежать прямо на
+   фото понизу кадру, самого тінту там не завжди досить для контрасту. */
+.hero--inner .hero__inner--end { justify-content: end; }
+.hero--inner:has(.hero__inner--end)::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40%;
+  background: linear-gradient(to top, color-mix(in srgb, black 55%, transparent), transparent);
+  pointer-events: none;
+}
 /* margin-bottom: -0.15em на .hero__title опускає заголовок до рівня кнопок
    на головній; тут кнопок під ним немає, тож від'ємний відступ лише з'їдав
    би padding-bottom банера. */
