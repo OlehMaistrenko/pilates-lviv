@@ -247,51 +247,6 @@ include 'partials/header.php';
     </div>
   </div>
 </section>
-
-<!-- ============================================================
-     06 · Чому саме ми — одна теза, цифри, три аргументи з діючого сайту
-     ============================================================ -->
-<section class="section why">
-  <div class="container">
-    <h2 class="why__title" data-reveal="lines">Єдина у Львові студія з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
-
-    <div class="why__grid">
-      <dl class="why__facts">
-        <div data-reveal><dt>2015</dt><dd class="text--sm text--muted">рік, з якого працюємо у Львові</dd></div>
-        <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd class="text--sm text--muted">тренажери — Cadillac і Reformer</dd></div>
-        <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd class="text--sm text--muted">напрямків: від пілатесу до танців</dd></div>
-        <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd class="text--sm text--muted">тренерів у команді</dd></div>
-      </dl>
-
-      <div class="why__list">
-        <div class="why__item" data-reveal>
-          <h3>Пружина замість ваги</h3>
-          <p class="text--muted">
-            Cadillac і Reformer дають опір, який можна точно дозувати. Це м’якше
-            для суглобів, ніж вільна вага, і дає тренеру бачити техніку кожного руху.
-          </p>
-        </div>
-        <div class="why__item" data-reveal style="--reveal-i: 1">
-          <h3>Тренери, які продовжують вчитись</h3>
-          <p class="text--muted">
-            У нас молодий колектив. Тренери постійно вдосконалюють свої вміння на
-            семінарах, тренінгах і майстер-класах — і приносять це в зал, а не
-            лишають у сертифікатах.
-          </p>
-        </div>
-        <div class="why__item" data-reveal style="--reveal-i: 2">
-          <h3>Метод Springtone</h3>
-          <p class="text--muted">
-            Найрезультативніша з наших програм: робота на пружинах із постійним
-            контролем техніки. Не «відходити тренування», а зробити кожен рух так,
-            щоб він рахувався.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============================================================
      07 · Про студію — історія засновниці, дослівно з діючого сайту
      ============================================================ -->
@@ -299,11 +254,7 @@ include 'partials/header.php';
   <div class="container">
     <div class="about__grid">
       <figure class="about__media" data-reveal>
-        <div class="ph" role="img" aria-label="Засновниця студії">
-          <span class="ph__name">assets/img/founder.jpg</span>
-          <span class="ph__note">Портрет у залі, денне світло. Вертикальний кадр 3:4.</span>
-        </div>
-        <figcaption class="text--sm text--muted">Засновниця студії</figcaption>
+        <img src="assets/img/founder.jpeg" alt="Засновниця студії" width="1264" height="843" loading="lazy">
       </figure>
 
       <div class="about__text">
@@ -329,6 +280,46 @@ include 'partials/header.php';
     </div>
   </div>
 </section>
+
+
+<!-- ============================================================
+     06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
+     пунктирний розділювач, три аргументи знизу.
+     ============================================================ -->
+<section class="why">
+  <div class="why__bg" aria-hidden="true">
+    <img class="why__layer" src="assets/img/gallery/2.jpeg" alt=""
+         width="2400" height="1792" loading="lazy"
+         data-anim="parallax" data-parallax="12">
+  </div>
+
+  <div class="container why__inner">
+    <h2 class="why__title" data-reveal="lines">Єдина у Львові студія з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
+
+    <dl class="why__facts">
+      <div data-reveal><dt>2015</dt><dd class="text--sm text--muted">рік у Львові</dd></div>
+      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd class="text--sm text--muted">тренажери — Cadillac і Reformer</dd></div>
+      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd class="text--sm text--muted">напрямків тренувань</dd></div>
+      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd class="text--sm text--muted">тренерів у команді</dd></div>
+    </dl>
+
+    <div class="why__list">
+      <div class="why__item" data-reveal>
+        <h3>Пружина замість ваги</h3>
+        <p class="text--muted text--sm">М’якше для суглобів, техніка кожного руху видно тренеру.</p>
+      </div>
+      <div class="why__item" data-reveal style="--reveal-i: 1">
+        <h3>Тренери, які вчаться</h3>
+        <p class="text--muted text--sm">Молодий колектив, постійні семінари й майстер-класи.</p>
+      </div>
+      <div class="why__item" data-reveal style="--reveal-i: 2">
+        <h3>Метод Springtone</h3>
+        <p class="text--muted text--sm">Робота на пружинах із постійним контролем техніки.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ============================================================
      08 · Галерея — зал як він є; розміри кадрів різні навмисно

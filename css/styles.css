@@ -677,36 +677,78 @@
 }
 
 /* ============================================================
-   Home 06 — Чому саме ми: теза, чотири цифри, три аргументи
-   Без іконок, без рамок, без hover — тут немає нічого клікабельного.
+   Home 06 — Чому саме ми: банер із фоновим фото й паралаксом,
+   ряд цифр, пунктирний розділювач, три аргументи знизу.
+   Темне поле дає не мох, а сам кадр під затемненням — мохових
+   секцій на сторінці й так рівно стільки, скільки дозволяє бренд.
+   Без іконок, без hover — тут немає нічого клікабельного.
    ============================================================ */
+.why {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--sp-10);
+  color: var(--c-page);
+  /* темне поле: приглушений текст, лінії й золото беруться світлі —
+     utility .text--muted працює тут без власних правил */
+  --c-ink-mute: color-mix(in srgb, var(--c-page) 70%, transparent);
+  --c-gold-ink: var(--c-gold-lt);
+}
+.why__bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+/* шар вищий за секцію — інакше паралакс відкрив би порожнечу зверху/знизу.
+   Запас мусить перекривати хід: data-parallax="12" — це ±12% висоти шару,
+   тож 132% з інсетом -16% лишає ще й невеликий люфт. */
+.why__layer { position: absolute; inset: -16% 0; width: 100%; height: 132%; object-fit: cover; }
+/* затемнення живе на ::after самого .why, а не окремим шаром у розмітці:
+   градієнт трохи щільніший зверху, де стоїть заголовок */
+.why::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--c-ink) 82%, transparent) 0%,
+    color-mix(in srgb, var(--c-ink) 68%, transparent) 100%);
+}
 .why__title { max-width: 24ch; }
-.why__title em { font-style: normal; color: var(--c-gold-ink); }
-.why__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--sp-8) clamp(var(--sp-8), 8vw, 10rem);
-  align-items: start;
-  margin-top: var(--sp-8);
-}
+.why__title em { font-style: normal; color: var(--c-gold-lt); }
+/* space-between, а не рівні колонки: підписи різної довжини, і сітка з
+   4×1fr лишала б дірки в коротких («7 тренерів») — розгін по краях
+   тримає ряд цифр як одну лінію від краю до краю контейнера */
 .why__facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: var(--sp-7) var(--sp-6);
-  margin: 0;
+  margin: var(--sp-8) 0 0;
+  padding-bottom: var(--sp-8);
+  /* та сама лінія, що ділить перший екран (.hero__rule) — на темному полі
+     вона світла, не золота: золото тут уже несуть цифри й заголовки */
+  border-bottom: 1px dashed color-mix(in srgb, var(--c-page) 45%, transparent);
 }
+.why__facts > div { flex: 0 1 auto; max-width: 22ch; }
 .why__facts dt {
   font-size: var(--fs-hero);
   font-weight: var(--fw-lt);
   line-height: 1;
   letter-spacing: var(--tracking-tight);
-  color: var(--c-gold-ink);
+  color: var(--c-gold-lt);
 }
-.why__facts dd { margin: var(--sp-3) 0 0; max-width: 18ch; line-height: var(--lh-body); }
-.why__list { display: flex; flex-direction: column; gap: var(--sp-7); }
-.why__item p { margin-top: var(--sp-3); max-width: 46ch; line-height: var(--lh-body); }
-@media (max-width: 900px) {
-  .why__grid { grid-template-columns: minmax(0, 1fr); }
+.why__facts dd { margin: var(--sp-3) 0 0; line-height: var(--lh-body); }
+.why__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-7) var(--sp-6);
+  margin-top: var(--sp-8);
+}
+.why__item { flex: 0 1 30ch; }
+.why__item h3 { font-size: var(--fs-h5); color: var(--c-gold-lt); }
+.why__item p { margin-top: var(--sp-2); line-height: var(--lh-body); }
+@media (max-width: 768px) {
+  /* по дві цифри в рядок: space-between на чотирьох тут розтягував би
+     пари надто далеко одна від одної */
+  .why__facts > div { flex: 0 1 calc(50% - var(--sp-6) / 2); }
+  .why__item { flex: 1 1 100%; }
 }
 
 /* ============================================================
@@ -714,19 +756,21 @@
    ============================================================ */
 .about__grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  /* колонка кадру — під його реальний max-width (.about__media), а не
+     гнучка частка: 0.7fr резервував більше місця, ніж займав кадр
+     на 460px, і лишав порожній розрив перед текстом */
+  grid-template-columns: 460px minmax(0, 1fr);
   gap: var(--sp-8) clamp(var(--sp-8), 8vw, 10rem);
   align-items: center;
 }
-.about__media { max-width: 460px; }
+.about__media { max-width: 460px; aspect-ratio: 3 / 4; }
 .about__media > .ph,
 .about__media > img {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  height: 100%;
   object-fit: cover;
   border-radius: var(--r-arch);
 }
-.about__media figcaption { margin-top: var(--sp-3); }
 /* золота волосина зліва — єдиний акцент секції, позначає пряму мову */
 .about__quote {
   margin-top: var(--sp-7);
@@ -736,6 +780,7 @@
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
+  font-style: italic;
   max-width: 24ch;
 }
 .about__text > p { margin-top: var(--sp-5); max-width: 52ch; line-height: var(--lh-body); }
