@@ -185,7 +185,7 @@ include 'partials/header.php';
      Два паралакс-шари з різними швидкостями (кадр повільніший за текст).
      ============================================================ -->
 <section class="split split--booking">
-  <div class="split__grid">
+  <div class="split__grid embossed">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
            width="2048" height="1365" loading="lazy"
@@ -377,7 +377,7 @@ include 'partials/header.php';
     </div>
 
     <div class="swiper-wrap" data-reveal>
-      <div class="swiper" data-swiper='{"slidesPerView":2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":3},"1081":{"slidesPerView":4}}}'>
+      <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":2.2},"1081":{"slidesPerView":4}}}'>
         <ul class="swiper-wrapper">
           <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
             <li class="trainer swiper-slide">
@@ -417,7 +417,7 @@ include 'partials/header.php';
 <!-- ============================================================
      10 · Відгуки — третє й останнє мохове поле перед футером
      ============================================================ -->
-<section class="reviews">
+<section class="reviews embossed">
   <div class="container">
     <!-- .swiper-wrap огортає всю сітку: initSwiper шукає контроли в межах
          найближчого .swiper-wrap, а вони стоять у колонці заголовка -->
@@ -467,7 +467,7 @@ include 'partials/header.php';
         <h2 data-reveal="lines">Питання перед першим заняттям</h2>
         <p class="text--muted" data-reveal>
           Не знайшли своє — подзвоніть:
-          <a class="faq__phone" href="<?= $contact['phone_href'] ?>"><?= $contact['phone'] ?></a>
+          <a class="link-arrow faq__phone" href="<?= $contact['phone_href'] ?>"><?= $contact['phone'] ?></a>
         </p>
       </div>
 
@@ -490,29 +490,26 @@ include 'partials/header.php';
   </div>
 </section>
 
-<!-- ============================================================
-     12 · SEO-текст — вузький стовпчик, читається як довідка, не як банер
-     ============================================================ -->
-<section class="section seo">
-  <div class="container container--narrow">
-    <div class="simple-text seo__text">
-      <h2>Пілатес у Львові на Cadillac і Reformer</h2>
-      <p>
-        Pilates Lviv — студія на вулиці Романицького, що працює з 2015 року.
-        Ми єдина у Львові пілатес-студія з професійними тренажерами Cadillac
-        і Reformer: пружинний опір дозволяє точно дозувати навантаження, тому
-        заняття підходять і тим, хто відновлюється після травми чи пологів,
-        і тим, хто хоче міцне тіло без болю в спині.
-      </p>
-      <p>
-        Окрім пілатесу за методом Springtone, у студії є йога, танці,
-        функціональне відновлення та консультації фізіолога. Для тих, хто
-        хоче викладати сам, працює навчальний центр. Перше заняття —
-        знайомство: подивитись зал, спробувати тренажери, поговорити з
-        тренером. Записатись можна телефоном або через форму на сайті.
-      </p>
-    </div>
-  </div>
-</section>
+<?php
+// 12 · SEO-текст — рендериться першим блоком футера (partials/footer.php).
+// Сторінка без $seo_title/$seo_text просто не отримує цього блоку.
+$seo_title = 'Пілатес у Львові на Cadillac і Reformer';
+$seo_text  = <<<HTML
+  <p>
+    Pilates Lviv — студія на вулиці Романицького, що працює з 2015 року.
+    Ми єдина у Львові пілатес-студія з професійними тренажерами Cadillac
+    і Reformer: пружинний опір дозволяє точно дозувати навантаження, тому
+    заняття підходять і тим, хто відновлюється після травми чи пологів,
+    і тим, хто хоче міцне тіло без болю в спині.
+  </p>
+  <p>
+    Окрім пілатесу за методом Springtone, у студії є йога, танці,
+    функціональне відновлення та консультації фізіолога. Для тих, хто
+    хоче викладати сам, працює навчальний центр. Перше заняття —
+    знайомство: подивитись зал, спробувати тренажери, поговорити з
+    тренером. Записатись можна телефоном або через форму на сайті.
+  </p>
+HTML;
 
-<?php include 'partials/footer.php'; ?>
+include 'partials/footer.php';
+?>

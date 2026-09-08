@@ -281,6 +281,15 @@
         }, i - 1);
       });
 
+      /* Повільний наїзд кадру на весь пін — один твін на всі зали, а не
+         по одному на крок: інакше на межі кроків масштаб стрибав би назад
+         на 1. Тягнеться зі скролом (той самий scrub, що й жалюзі).
+         Ціль — спільний .locations__bgs, а не кожен .locations__bg: у
+         момент переходу два кадри видно одночасно (один крізь маску
+         іншого), і на різних масштабах шов між ними був би помітний. */
+      tl.fromTo(sec.querySelector('.locations__bgs'),
+        { scale: 1 }, { scale: 1.15, ease: 'none', duration: panels.length - 1 }, 0);
+
       /* Контент в арці зі скролом НЕ звʼязаний: інакше на будь-якій
          проміжній позиції текст завмирає напівпрозорим (і читається як
          баг, і ловить кліки). Тому — звичайна анімація фіксованої
@@ -345,28 +354,45 @@
       if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
     };
 
+    /* fill:'forwards' обов'язковий — інакше після завершення анімації
+       елемент повертається до CSS max-height:0 і відкритий акордеон
+       схлопується. Попередню анімацію скасовуємо, щоб швидкі перемикання
+       не боролися між собою; from читаємо з поточної висоти, а не зі
+       scrollHeight, щоб закриття посеред відкриття не стрибало. */
+    function animate(body, from, to, margin) {
+      body.__anim?.cancel();
+      const a = body.animate(
+        { maxHeight: [`${from}px`, `${to}px`], marginTop: margin },
+        { duration: DURATION, easing: 'ease', fill: 'forwards' }
+      );
+      body.__anim = a;
+      return a;
+    }
+
     function animateOpen(item, body, summary) {
+      /* висоти читаємо ДО додавання .accordion--open: клас знімає max-height,
+         після нього from дорівнював би to і анімації не було б видно */
+      const from = body.getBoundingClientRect().height;
+      const to = body.scrollHeight;
       item.classList.add('accordion--open');
       summary.setAttribute('aria-expanded', 'true');
       const margin = getComputedStyle(body).marginTop;
-      const target = body.scrollHeight;
-      body.animate(
-        { maxHeight: ['0px', `${target}px`], marginTop: ['0px', margin] },
-        { duration: DURATION, easing: 'ease' }
-      ).finished.then(refreshScroll).catch(() => {});
+      const a = animate(body, from, to, ['0px', margin]);
+      a.finished.then(() => {
+        /* знімаємо pixel-лок: далі висоту тримає .accordion--open{max-height:none} */
+        if (body.__anim === a) { a.cancel(); body.__anim = null; }
+        refreshScroll();
+      }).catch(() => {});
     }
 
     function animateClose(item, body, summary) {
       const margin = getComputedStyle(body).marginTop;
-      const from = body.scrollHeight;
       summary.setAttribute('aria-expanded', 'false');
-      body.animate(
-        { maxHeight: [`${from}px`, '0px'], marginTop: [margin, '0px'] },
-        { duration: DURATION, easing: 'ease' }
-      ).finished.then(() => {
-        item.classList.remove('accordion--open');
-        refreshScroll();
-      }).catch(() => {});
+      animate(body, body.getBoundingClientRect().height, 0, [margin, '0px'])
+        .finished.then(() => {
+          item.classList.remove('accordion--open');
+          refreshScroll();
+        }).catch(() => {});
     }
 
     document.querySelectorAll('.accordion').forEach((item) => {
@@ -396,6 +422,62 @@
         e.preventDefault();
         toggle();
       });
+    });
+  })();
+
+  /* ---- Footer SEO-текст: читати більше/менше ------------------------- */
+  (() => {
+    const toggle = document.querySelector('.footer-seo__toggle');
+    const text = document.getElementById('footer-seo-text');
+    const label = toggle?.querySelector('.footer-seo__toggle-label');
+    if (!toggle || !text || !label) return;
+
+    /* CSS не знає auto-висоти наперед, тож max-height анімуємо inline-стилем,
+       а висоту згорнутого стану (line-clamp: 2) міряємо самі. Перемір після
+       fonts.ready обов'язковий: до підвантаження Geologica два рядки мають
+       іншу висоту, і на цьому значенні згортання зупинилось би не там. */
+    let collapsedHeight = text.getBoundingClientRect().height + 'px';
+    const measure = () => {
+      if (text.classList.contains('is-expanded')) return;
+      collapsedHeight = text.getBoundingClientRect().height + 'px';
+    };
+
+    /* Кнопка не потрібна, якщо текст і так влазить у 2 рядки:
+       scrollHeight > clientHeight означає, що clamp щось відрізає.
+       Міряємо лише згорнутий стан; ResizeObserver ловить зміну ширини —
+       на іншій ширині перенос інший, і 2 рядки можуть стати достатніми. */
+    const sync = () => {
+      if (text.classList.contains('is-expanded')) return;
+      measure();
+      toggle.hidden = text.scrollHeight <= text.clientHeight;
+    };
+    sync();
+    new ResizeObserver(sync).observe(text);
+    document.fonts?.ready.then(sync);
+
+    toggle.addEventListener('click', () => {
+      const expanded = text.classList.contains('is-expanded');
+      if (expanded) {
+        text.classList.remove('is-settled');
+        text.style.maxHeight = text.scrollHeight + 'px';
+        requestAnimationFrame(() => { text.style.maxHeight = collapsedHeight; });
+        text.addEventListener('transitionend', () => {
+          text.classList.remove('is-expanded');
+          text.style.maxHeight = '';
+        }, { once: true });
+      } else {
+        text.classList.add('is-expanded');
+        text.style.maxHeight = collapsedHeight;
+        requestAnimationFrame(() => { text.style.maxHeight = text.scrollHeight + 'px'; });
+        /* maxHeight знімаємо після переходу, щоб блок далі жив на auto-висоті
+           (інакше довгий текст обріжеться на заміряному значенні) */
+        text.addEventListener('transitionend', () => {
+          text.style.maxHeight = '';
+          text.classList.add('is-settled');
+        }, { once: true });
+      }
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      label.textContent = expanded ? toggle.dataset.labelMore : toggle.dataset.labelLess;
     });
   })();
 

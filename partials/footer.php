@@ -46,7 +46,25 @@
   ];
   ?>
 
-  <footer class="site-footer">
+  <footer class="site-footer embossed">
+    <?php if (!empty($seo_title) && !empty($seo_text)): ?>
+      <div class="container">
+        <!-- лінія живе на внутрішньому блоці, а не на .container: бордер
+             контейнера ліг би на padding-box і був би довшим за розділювач
+             під .site-footer__top на два гуттери -->
+        <div class="footer-seo">
+          <h2 class="footer-seo__title"><?= $seo_title ?></h2>
+          <div class="simple-text text--muted footer-seo__text" id="footer-seo-text">
+            <?= $seo_text ?>
+          </div>
+          <button type="button" class="link-arrow footer-seo__toggle" aria-expanded="false" aria-controls="footer-seo-text"
+                  data-label-more="Читати більше" data-label-less="Читати менше">
+            <span class="footer-seo__toggle-label">Читати більше</span>
+          </button>
+        </div>
+      </div>
+    <?php endif; ?>
+
     <div class="container">
       <div class="site-footer__top">
         <div class="site-footer__brand">

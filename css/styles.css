@@ -314,6 +314,9 @@
 .accordion__icon::after { width: 2px; height: 14px; }
 .accordion--open .accordion__icon::after { transform: translate(-50%, -50%) rotate(90deg) scale(0); }
 .accordion__body { overflow: hidden; max-height: 0; }
+/* після завершення відкриття JS знімає pixel-лок анімації, щоб висота
+   лишалась гнучкою при ресайзі/довантаженні шрифтів */
+.accordion--open .accordion__body { max-height: none; }
 .accordion__body-inner { padding-bottom: var(--sp-4); }
 
 
@@ -338,6 +341,48 @@
   .link-arrow:hover .icon { transform: translateX(3px); }
 }
 @media (prefers-reduced-motion: reduce) { .link-arrow, .link-arrow .icon { transition: none; } }
+
+/* ============================================================
+   Component: .embossed — тиснення патерном з брендбуку (с.13).
+   Патерн підключений маскою, а не картинкою: сам SVG чорний, фарбу
+   дає background-color, тож один файл годиться і для темних, і для
+   світлих полів. Ефект витисненого в тканину — два зсунуті шари
+   однієї маски: темний угору (тінь у заглибині), світлий униз (блік
+   на краю). Зсув переважно вертикальний (світло згори), по X —
+   суб-піксельний: у патерні є і горизонтальні, і вертикальні лінії,
+   і чистий діагональний зсув однаково слабко проявляв обидві.
+   Фактура має читатись на просвіт, а не конкурувати з текстом.
+   Силу тиснення на конкретному полі крутити через --emboss-shadow/
+   --emboss-light, колір бліку — через --emboss-c.
+   ============================================================ */
+.embossed {
+  position: relative;
+  /* шари сидять на z-index:-1, isolate не дає їм провалитись під
+     фон предка, коли в самої секції фону немає */
+  isolation: isolate;
+}
+.embossed::before,
+.embossed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  -webkit-mask: url(../assets/img/pattern-lion.svg) 0 0 / 266px 286px repeat;
+  mask: url(../assets/img/pattern-lion.svg) 0 0 / 266px 286px repeat;
+  pointer-events: none;
+}
+.embossed::before {
+  background-color: #000;
+  -webkit-mask-position: -.5px -1px;
+  mask-position: -.5px -1px;
+  opacity: var(--emboss-shadow, .09);
+}
+.embossed::after {
+  background-color: var(--emboss-c, var(--c-page));
+  -webkit-mask-position: .5px 1px;
+  mask-position: .5px 1px;
+  opacity: var(--emboss-light, .04);
+}
 
 /* ============================================================
    Home 02 — Шлях новичка: цитата-теза, потім цифра-одометр на пів екрана
@@ -787,7 +832,7 @@
 .about__text > .link-arrow { margin-top: var(--sp-7); }
 @media (max-width: 900px) {
   .about__grid { grid-template-columns: minmax(0, 1fr); }
-  .about__media { max-width: 340px; }
+  .about__media { max-width: 500px; }
 }
 
 /* ============================================================
@@ -795,6 +840,7 @@
    Ефект: глядач ніби стоїть в центрі круглої каруселі кадрів.
    ============================================================ */
 .gallery .section-head--split > a { justify-self: end; }
+@media (max-width: 900px) { .gallery .section-head--split > a { justify-self: start; } }
 .gallery__slider { padding: var(--sp-6) 0; overflow: visible; }
 .gallery__slider .swiper { overflow: visible; }
 .gallery__item {
@@ -911,7 +957,8 @@
   .reviews__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
   /* на вужчих екранах колонки стають рядками: контроли переносимо під відгуки */
   .reviews__head { display: contents; }
-  .reviews__controls { order: 1; margin-top: 0; }
+  .reviews__controls { order: 1; margin-top: 0;
+  justify-content: center; }
 }
 @media (max-width: 768px) {
   .review { gap: var(--sp-5); }
@@ -930,17 +977,16 @@
 .faq__head { position: sticky; top: calc(var(--header-h-min) + var(--sp-6)); }
 .faq__head h2 { max-width: 14ch; }
 .faq__head p { margin-top: var(--sp-5); max-width: 30ch; line-height: var(--lh-body); }
-.faq__phone { color: var(--c-ink); border-bottom: 1px solid var(--c-gold); white-space: nowrap; }
+/* Решту (волосина, hover, transition) дає .link-arrow — тут лише те, чим
+   телефон усередині речення відрізняється від самостійного посилання:
+   не гасне разом із .text--muted-абзацом, не дрібнішає до --fs-sm і не
+   переноситься посеред номера */
+.faq__phone { color: var(--c-ink); font-size: inherit; white-space: nowrap; }
 .faq__answer { max-width: 60ch; line-height: var(--lh-body); }
 @media (max-width: 900px) {
   .faq__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
   .faq__head { position: static; }
 }
-
-/* ============================================================
-   Home 12 — SEO-текст: довідковий стовпчик, тихіший за решту сторінки
-   ============================================================ */
-.seo__text p { color: var(--c-ink-mute); }
 
 /* ============================================================
    Footer — останнє мохове поле сторінки (герой, відгуки, футер)
@@ -956,6 +1002,33 @@
   --c-ink-mute: color-mix(in srgb, var(--c-page) 62%, transparent);
   --c-gold-ink: var(--c-gold-lt);
 }
+/* З SEO-блоком верхній відступ футера дорівнює відступу до розділювача
+   (--sp-8), щоб текст стояв у своїй смузі симетрично; без блоку футер
+   лишає більший --sp-10 із правила вище */
+.site-footer:has(.footer-seo) { padding-block-start: var(--sp-8); }
+/* Розділювач — той самий, що під .site-footer__top: ті самі --c-line,
+   padding-bottom і ширина (обидва — діти .container, не сам контейнер) */
+.footer-seo { padding-bottom: var(--sp-8); border-bottom: 1px solid var(--c-line); margin-bottom: var(--sp-8); }
+.footer-seo__title { font-size: var(--fs-h4); font-weight: var(--fw-reg); margin-bottom: var(--sp-5); }
+/* max-height анімує JS (inline style, зняте після переходу — див. main.js).
+   line-clamp тримає 2 рядки у згорнутому стані; клампимо весь блок, а не
+   окремі <p>, бо абзаців кілька і текст має читатись як один шматок. */
+.footer-seo__text {
+  max-width: none;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  transition: max-height .4s var(--ease);
+}
+.footer-seo__text.is-expanded { display: flex; -webkit-line-clamp: unset; line-clamp: unset; }
+.footer-seo__text.is-expanded.is-settled { overflow: visible; }
+.footer-seo__toggle { margin-top: var(--sp-5); }
+/* [hidden] — лише UA-стиль, а .link-arrow(display:inline-flex) переважує
+   його специфічністю: без цього JS-приховування кнопки не спрацьовує */
+.footer-seo__toggle[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .footer-seo__text { transition: none; } }
 .site-footer__top {
   display: grid;
   grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
@@ -1017,6 +1090,8 @@
   .site-footer__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-7) var(--sp-5); }
 }
 @media (max-width: 620px) {
+  /* футера з SEO-блоком не стосується: там :has()-правило вище тримає
+     --sp-8, і воно й так менше за цей мобільний --sp-9 */
   .site-footer { padding-block-start: var(--sp-9); }
   .site-footer__nav > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   .site-footer__bottom { flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); }
