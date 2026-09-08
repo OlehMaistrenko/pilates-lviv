@@ -73,11 +73,11 @@
      Дрібні кроки фіксовані (кілька px — плавність не видно), кроки
      лейаут-ритму fluid за методом Utopia: лінійна інтерполяція між
      мобільним і десктопним розміром, а не clamp(min, Xvw, max) навмання. */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
   --sp-6: clamp(1.5rem, 1.3786rem + 0.5178vw, 2rem);
   --sp-7: clamp(2rem, 1.7573rem + 1.0356vw, 3rem);
   --sp-8: clamp(3rem, 2.7573rem + 1.0356vw, 4rem);
@@ -86,8 +86,8 @@
 
   --section-py: clamp(4rem, 3.0291rem + 4.1424vw, 8rem);
 
-  --container:        1760px;
-  --container-narrow: 1120px;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
+  --container:        110rem;
+  --container-narrow: 70rem;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
   --gutter:           clamp(1rem, 0.1505rem + 3.6246vw, 4.5rem);
 
   /* ---- Radius ----
@@ -96,11 +96,11 @@
   --r-chip:  2px;     /* дрібна плашка, тег */
   --r-card:  2px;     /* картка */
   --r-block: 2px;     /* великий блок / медіа */
-  --r-pill:  999px;   /* кнопки; як кадр — свідомий виняток: .path__shot, .review__shot */
-  --r-arch:  999px 999px 2px 2px;   /* арка — вікно львівської кам'яниці */
+  --r-pill:  62.4375rem;   /* кнопки; як кадр — свідомий виняток: .path__shot, .review__shot */
+  --r-arch:  62.4375rem 62.4375rem 2px 2px;   /* арка — вікно львівської кам'яниці */
 
-  --header-h-max: 120px;
-  --header-h-min: 80px;   /* після скролу, див. Header */
+  --header-h-max: 7.5rem;
+  --header-h-min: 5rem;   /* після скролу, див. Header */
   --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -183,8 +183,8 @@ main { overflow: clip; }
    Utility: .icon — спрайтова іконка (assets/icons/sprite.svg).
    Контур і колір задає сам symbol через currentColor.
    ============================================================ */
-.icon { width: 24px; height: 24px; flex: none; }
-.icon--sm { width: 20px; height: 20px; }
+.icon { width: 1.5rem; height: 1.5rem; flex: none; }
+.icon--sm { width: 1.25rem; height: 1.25rem; }
 
 /* ============================================================
    Utility: text — size via --fs-* tokens, colour via modifier
@@ -219,7 +219,7 @@ main { overflow: clip; }
   align-items: center;
   justify-content: center;
   gap: var(--sp-2);
-  min-height: 48px;
+  min-height: 3rem;
   padding-inline: var(--sp-6);
   border: 1px solid transparent;
   border-radius: var(--r-pill);
@@ -240,7 +240,7 @@ main { overflow: clip; }
   --btn-c: currentColor;
   border-color: color-mix(in srgb, currentColor 38%, transparent);
 }
-.btn--sm { min-height: 40px; padding-inline: var(--sp-4); }
+.btn--sm { min-height: 2.5rem; padding-inline: var(--sp-4); }
 /* на всю ширину контейнера; width замало — .btn інлайновий флекс, і в
    grid/flex-батька з центруванням він однаково лишився б по контенту */
 .btn--block { display: flex; width: 100%; }
@@ -468,7 +468,7 @@ main { overflow: clip; }
 .skip-link {
   position: absolute;
   left: var(--sp-4);
-  top: -100px;
+  top: -6.25rem;
   z-index: 200;
   background: var(--c-ink);
   color: var(--c-page);
@@ -483,7 +483,7 @@ main { overflow: clip; }
    ============================================================ */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(1.75rem);
   transition:
     opacity .7s var(--ease),
     transform .7s var(--ease);
@@ -613,14 +613,14 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: var(--sp-4);
   /* без max-width — контроли хедера стоять на тих самих краях, що й
-     контент героя (.container--full): лише --gutter, без ліміту 1760px */
+     контент героя (.container--full): лише --gutter, без ліміту 110rem */
   padding-inline: var(--gutter);
   /* height анімує лейаут, але хедер fixed — перерахунок не виходить за
      його межі, сторінка під ним не рухається */
   transition: height .5s var(--ease);
 }
 @media (max-width: 768px) {
-  :root { --header-h-max: 84px; --header-h-min: 64px; }
+  :root { --header-h-max: 5.25rem; --header-h-min: 4rem; }
 }
 
 /* Логотип — готові файли assets/logo/*.svg у <img>. Пропорція локапа
@@ -634,7 +634,7 @@ html.lenis, html.lenis body { height: auto; }
   justify-self: center;
 }
 .brand__logo {
-  height: calc(var(--header-h) - 16px);
+  height: calc(var(--header-h) - 1rem);
   width: auto;
   aspect-ratio: 464 / 303;
   
@@ -674,8 +674,8 @@ html.lenis, html.lenis body { height: auto; }
    від сусіднього дропдауна кабінету. */
 .nav-toggle__icon {
   position: relative;
-  width: 20px;
-  height: 12px;
+  width: 1.25rem;
+  height: 0.75rem;
   flex: none;
 }
 .nav-toggle__icon i {
@@ -688,8 +688,8 @@ html.lenis, html.lenis body { height: auto; }
 }
 .nav-toggle__icon i:first-child { top: 0; }
 .nav-toggle__icon i:last-child  { bottom: 0; }
-.nav-toggle[aria-expanded="true"] .nav-toggle__icon i:first-child { transform: translateY(5.5px) rotate(45deg); }
-.nav-toggle[aria-expanded="true"] .nav-toggle__icon i:last-child  { transform: translateY(-5.5px) rotate(-45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__icon i:first-child { transform: translateY(0.34375rem) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__icon i:last-child  { transform: translateY(-0.34375rem) rotate(-45deg); }
 
 .site-header__actions {
   justify-self: end;
@@ -707,14 +707,14 @@ html.lenis, html.lenis body { height: auto; }
   .nav-toggle,
   .lang > summary,
   .account > summary {
-    width: 40px;
+    width: 2.5rem;
     padding-inline: 0;
     justify-content: center;
   }
   /* без каретки «UA» стає таким самим колом, як сусідні контроли */
   .lang .dropdown__caret { display: none; }
 }
-/* <400px (iPhone SE і менші): лого + два контроли по краях не влазять */
+/* <25rem (iPhone SE і менші): лого + два контроли по краях не влазять */
 @media (max-width: 399px) {
   .site-header__row { padding-inline: var(--sp-4); }
 }
@@ -734,8 +734,8 @@ html.lenis, html.lenis body { height: auto; }
 .dropdown[open] > .btn { background: color-mix(in srgb, currentColor 12%, transparent); }
 /* шеврон — CSS-фігура, той самий прийом, що й .accordion__icon */
 .dropdown__caret {
-  width: 5px;
-  height: 5px;
+  width: 0.3125rem;
+  height: 0.3125rem;
   border-right: 1.5px solid currentColor;
   border-bottom: 1.5px solid currentColor;
   transform: translateY(-25%) rotate(45deg);
@@ -748,7 +748,7 @@ html.lenis, html.lenis body { height: auto; }
   top: calc(100% + var(--sp-2));
   left: 0;
   z-index: 1;
-  min-width: 172px;
+  min-width: 10.75rem;
   padding: var(--sp-2);
   background: var(--c-page);
   color: var(--c-ink);
@@ -773,8 +773,8 @@ html.lenis, html.lenis body { height: auto; }
 .lang__opt.is-active::after {
   content: "";
   display: inline-block;
-  width: 4px;
-  height: 4px;
+  width: 0.25rem;
+  height: 0.25rem;
   margin-left: var(--sp-2);
   border-radius: 50%;
   background: var(--c-gold);
@@ -792,7 +792,7 @@ html.lenis, html.lenis body { height: auto; }
 .hero {
   position: relative;
   display: flex;
-  min-height: min(100svh, 960px);
+  min-height: min(100svh, 60rem);
   /* --sp-10 зверху ставить лінію приблизно на половину екрана — далі
      заголовок іде одразу під нею, тож знизу вистачає меншого кроку */
   padding-top: calc(var(--header-h-max) + var(--sp-7));
@@ -873,14 +873,14 @@ html.lenis, html.lenis body { height: auto; }
   flex: none;
   gap: var(--sp-3);
 }
-/* 1081–1400px: поруч зі стовпчиком кнопок заголовку лишається ~966px, а
+/* 1081–87.5rem: поруч зі стовпчиком кнопок заголовку лишається ~60.375rem, а
    --fs-mega у версалах вимагає більше й ламає його на два рядки. Власний
    clamp за Utopia (1081→1400) тримає рядок цілим; ширші екрани — --fs-mega. */
 @media (min-width: 1081px) and (max-width: 1400px) {
   .hero__title { font-size: clamp(5rem, 0.2557rem + 7.0219vw, 6.4rem); }
 }
 @media (max-width: 1080px) {
-  .hero { min-height: min(92svh, 820px); }
+  .hero { min-height: min(92svh, 51.25rem); }
 }
 @media (max-width: 768px) {
   .hero { padding-top: calc(var(--header-h-max) + var(--sp-9)); padding-bottom: var(--sp-6); }

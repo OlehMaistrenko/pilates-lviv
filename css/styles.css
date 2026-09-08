@@ -37,13 +37,13 @@
 }
 .modal-overlay__panel {
   position: relative;
-  width: min(560px, 100%);
-  max-height: min(80vh, 720px);
+  width: min(35rem, 100%);
+  max-height: min(80vh, 45rem);
   overflow-y: auto;
   border-radius: var(--r-card);
   background: var(--c-page);
   padding: var(--sp-7);
-  transform: translateY(12px);
+  transform: translateY(0.75rem);
   transition: transform .3s var(--ease);
 }
 .modal-overlay.is-open .modal-overlay__panel { transform: none; }
@@ -91,7 +91,7 @@
   outline: none;
   border-color: var(--c-ink);
 }
-.form__textarea { resize: vertical; min-height: 120px; }
+.form__textarea { resize: vertical; min-height: 7.5rem; }
 .form__error { font-size: var(--fs-xs); color: #c0392b; }
 
 /* ============================================================
@@ -131,7 +131,7 @@
 .menu__group,
 .menu__foot {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(1rem);
   transition: opacity .4s var(--ease), transform .5s var(--ease);
   transition-delay: calc(60ms + var(--i, 0) * 35ms);
 }
@@ -167,7 +167,7 @@
 .menu__group ul { display: flex; flex-direction: column; }
 .menu__group li a {
   display: inline-block;
-  padding-block: 3px;
+  padding-block: 0.1875rem;
   font-size: var(--fs-body);
   color: color-mix(in srgb, var(--c-page) 78%, transparent);
   transition: color .2s var(--ease);
@@ -286,8 +286,8 @@
 .accordion__icon {
   flex: none;
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 .accordion__icon::before, .accordion__icon::after {
   content: "";
@@ -297,8 +297,8 @@
   transform: translate(-50%, -50%);
   transition: transform .25s var(--ease);
 }
-.accordion__icon::before { width: 14px; height: 2px; }
-.accordion__icon::after { width: 2px; height: 14px; }
+.accordion__icon::before { width: 0.875rem; height: 2px; }
+.accordion__icon::after { width: 2px; height: 0.875rem; }
 .accordion--open .accordion__icon::after { transform: translate(-50%, -50%) rotate(90deg) scale(0); }
 .accordion__body { overflow: hidden; max-height: 0; }
 /* після завершення відкриття JS знімає pixel-лок анімації, щоб висота
@@ -325,7 +325,7 @@
 .link-arrow .icon { transition: transform .25s var(--ease); }
 @media (min-width: 1081px) {
   .link-arrow:hover { color: var(--c-gold-ink); border-bottom-color: currentColor; }
-  .link-arrow:hover .icon { transform: translateX(3px); }
+  .link-arrow:hover .icon { transform: translateX(0.1875rem); }
 }
 /* ============================================================
    Component: .embossed — тиснення патерном з брендбуку (с.13).
@@ -352,8 +352,8 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  -webkit-mask: url(../assets/img/pattern-lion.svg) 0 0 / 266px 286px repeat;
-  mask: url(../assets/img/pattern-lion.svg) 0 0 / 266px 286px repeat;
+  -webkit-mask: url(../assets/img/pattern-lion.svg) 0 0 / 16.625rem 17.875rem repeat;
+  mask: url(../assets/img/pattern-lion.svg) 0 0 / 16.625rem 17.875rem repeat;
   pointer-events: none;
 }
 .embossed::before {
@@ -380,7 +380,7 @@
 /* Цифра непрозора, тож вона не може лежати під текстом — у неї власна
    ліва колонка, кроки в правій. */
 /* Колонки по вмісту, а не 1fr/1.2fr: текст кроку обмежений 34ch, тож
-   fr-колонка лишала праворуч ~450px порожнечі й уся секція виглядала
+   fr-колонка лишала праворуч ~28.125rem порожнечі й уся секція виглядала
    зсунутою вліво. max-content по обох + justify-content: center ставить
    пару «цифра + текст» рівно посередині контейнера. */
 .path__grid {
@@ -785,12 +785,12 @@
   display: grid;
   /* колонка кадру — під його реальний max-width (.about__media), а не
      гнучка частка: 0.7fr резервував більше місця, ніж займав кадр
-     на 460px, і лишав порожній розрив перед текстом */
-  grid-template-columns: 460px minmax(0, 1fr);
+     на 28.75rem, і лишав порожній розрив перед текстом */
+  grid-template-columns: 28.75rem minmax(0, 1fr);
   gap: var(--sp-8) clamp(var(--sp-8), 8vw, 10rem);
   align-items: center;
 }
-.about__media { max-width: 460px; aspect-ratio: 3 / 4; }
+.about__media { max-width: 28.75rem; aspect-ratio: 3 / 4; }
 .about__media > .ph,
 .about__media > img {
   width: 100%;
@@ -814,7 +814,7 @@
 .about__text > .link-arrow { margin-top: var(--sp-7); }
 @media (max-width: 900px) {
   .about__grid { grid-template-columns: minmax(0, 1fr); }
-  .about__media { max-width: 500px; }
+  .about__media { max-width: 31.25rem; }
 }
 
 /* ============================================================
@@ -1022,7 +1022,7 @@
   align-items: flex-start;
   gap: var(--sp-5);
 }
-.brand--footer .brand__logo { height: 104px; }
+.brand--footer .brand__logo { height: 6.5rem; }
 .site-footer__contacts {
   display: flex;
   flex-direction: column;
@@ -1062,7 +1062,7 @@
 @media (min-width: 1081px) {
   .site-footer__bottom a:hover { color: var(--c-page); }
 }
-/* бренд-колонка тісна вже ~1200px — раніше складаємо бренд над нав-меню */
+/* бренд-колонка тісна вже ~75rem — раніше складаємо бренд над нав-меню */
 @media (max-width: 1200px) {
   .site-footer__top { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
 }
