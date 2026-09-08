@@ -80,8 +80,12 @@ include 'partials/header.php';
      заради шапки списку окреме відео не вантажимо.
      ============================================================ -->
 <section class="hero hero--inner">
-  <img class="hero__video" src="assets/img/gallery/7.jpg" alt="" aria-hidden="true"
-       width="2048" height="1365" loading="eager">
+  <!-- Панорамний кадр (2.49:1) — під пропорції банера. Постать ліворуч,
+       праворуч порожня стіна: лід лягає на чисту площину, а не на тіло.
+       Окремий файл, а не path/2.jpeg: оригінал 2.7 МБ, а це перший
+       eager-кадр сторінки — тут він важить 0.3 МБ, як і cta.jpg. -->
+  <img class="hero__video" src="assets/img/blog-banner.jpg" alt="" aria-hidden="true"
+       width="2400" height="964" loading="eager">
   <div class="hero__tint" aria-hidden="true"></div>
 
   <div class="container container--full">
@@ -126,7 +130,7 @@ include 'partials/header.php';
     <ul class="posts">
       <?php foreach ($visible as $i => [$title, $slug, $excerpt, $date, $rubric, $img]): ?>
         <li class="post" data-reveal style="--reveal-i: <?= $i % 3 ?>">
-          <a class="post__link" href="post-<?= $slug ?>.php">
+          <a class="post__link" href="blog-single.php?post=<?= $slug ?>">
             <!-- alt порожній навмисно: назва статті вже є текстом самого
                  посилання, дубль змусив би скрінрідер прочитати її двічі -->
             <span class="post__media">

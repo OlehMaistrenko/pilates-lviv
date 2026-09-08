@@ -87,7 +87,7 @@
   --section-py: clamp(4rem, 3.0291rem + 4.1424vw, 8rem);
 
   --container:        110rem;
-  --container-narrow: 70rem;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
+  --container-narrow: 80rem;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
   --gutter:           clamp(1rem, 0.1505rem + 3.6246vw, 4.5rem);
 
   /* ---- Radius ----
