@@ -55,8 +55,7 @@ $faq = [
    'Телефоном або через форму на сайті — передзвонимо й підберемо час. Про скасування попереджайте заздалегідь, щоб місце міг зайняти хтось інший.'],
 ];
 
-// Галерея: розмір кадру (span у 12-колонковій сітці) і пропорція — у CSS за порядком
-$gallery = ['Зал із реформерами', 'Cadillac', 'Роздягальня', 'Вхід зі сторони вулиці', 'Індивідуальне заняття', 'Група на килимках'];
+$gallery = ['Вправа на реформері', 'Cadillac', 'Wunda chair', 'Розтяжка на Cadillac', 'Вправа на килимку', 'Розтяжка на реформері'];
 
 // Реальна тільки перша адреса (Романицького, 24а — з діючого сайту) і її
 // фото (assets/img/location-1). TODO: Брюховичі й Сихів — адреси й описи
@@ -186,8 +185,8 @@ include 'partials/header.php';
 <section class="split split--booking">
   <div class="split__grid">
     <figure class="split__media">
-      <img class="split__layer" src="assets/img/cta.jpeg" alt="Групове заняття в залі студії"
-           width="1792" height="2400" loading="lazy"
+      <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
+           width="2048" height="1365" loading="lazy"
            data-anim="parallax" data-parallax="10">
     </figure>
 
@@ -288,8 +287,8 @@ include 'partials/header.php';
      ============================================================ -->
 <section class="why">
   <div class="why__bg" aria-hidden="true">
-    <img class="why__layer" src="assets/img/gallery/2.jpeg" alt=""
-         width="2400" height="1792" loading="lazy"
+    <img class="why__layer" src="assets/img/gallery/1.jpg" alt=""
+         width="2048" height="1365" loading="lazy"
          data-anim="parallax" data-parallax="12">
   </div>
 
@@ -340,7 +339,7 @@ include 'partials/header.php';
       <div class="swiper-wrapper">
         <?php foreach ($gallery as $i => $alt): ?>
           <figure class="swiper-slide gallery__item">
-            <img src="assets/img/gallery/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
+            <img src="assets/img/gallery/<?= $i + 1 ?>.jpg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
           </figure>
         <?php endforeach; ?>
       </div>
