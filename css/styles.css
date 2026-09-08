@@ -669,52 +669,11 @@
   line-height: var(--lh-body);
 }
 
-/* Брейкпоінт збігається з гейтом matchMedia у js/main.js (min-width: 901px):
-   якби вони розійшлись на піксель, лишилась би смуга ширин, де пін уже не
-   працює, а розкладка ще розрахована на нього. */
-@media (max-width: 900px), (prefers-reduced-motion: reduce) {
-  .locations { height: auto; }
-  /* Фону-кадру тут немає, тож і темна підкладка не потрібна: інакше вийшло б
-     зайве мохове поле (їх на сторінці й так рівно стільки, скільки треба). */
-  .locations__stage {
-    height: auto;
-    display: block;
-    padding: var(--section-py) var(--gutter);
-    background: none;
-  }
-  .locations__bgs { display: none; }
-  /* Без піна арка вже не підкладка під один зал, а просто обгортка списку:
-     фон і форму отримує кожна панель окремо, інакше три зали читались би
-     однією карткою. */
-  .locations__arch {
-    display: block;   /* рядок під маркер тут не потрібен — панелі йдуть потоком */
-    width: min(30rem, 100%);
-    min-height: 0;
-    margin-inline: auto;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-  }
-  /* маркер мав сенс як шапка однієї арки; над списком карток він зайвий */
-  .locations__pin { display: none; }
-  /* Панель на бежі того ж тону, що й сторінка, — форму арки видно не буде,
-     тож тут її тримає не фон, а сам кадр-арка зверху (див. ::before).
-     Auto-margin-и з десктопу знімаємо: там вони розганяли вміст по висоті
-     піна, а тут панелі йдуть звичайним потоком одна за одною. */
-  .locations__panel { padding-bottom: var(--sp-7); }
-  .locations__panel > :first-child { margin-top: 0; }
-  .locations__desc { margin-bottom: 0; }
-  .locations__panel::before {
-    content: '';
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    margin-bottom: var(--sp-6);
-    border-radius: var(--r-arch);
-    background: var(--bg-shot) center / cover no-repeat;
-  }
-  .locations__panel:not(.is-active) { opacity: 1; pointer-events: auto; }
-  .locations__panel + .locations__panel { margin-top: var(--sp-6); }
+@media (max-width: 900px) {
+  /* На вузькому екрані рядки заголовка й опису переносяться частіше, тож
+     контенту й так більше по висоті — 30rem/62svh лишає порожнечу над і
+     під текстом. 24rem розрахований на найдовший опис (Сихів). */
+  .locations__arch { min-height: min(24rem, 52svh); }
 }
 
 /* ============================================================

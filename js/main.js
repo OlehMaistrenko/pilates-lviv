@@ -175,112 +175,6 @@
         });
       });
 
-      /* data-anim="locations" — секція пінується на N екранів; scrub-таймлайн
-         міняє фон жалюзі (смуги нового кадру розкриваються scaleY зі стагером)
-         і панель в арці. Не pin+odometer, як у path: там один безперервний
-         зсув однієї стрічки, тут — дискретна заміна вмісту, тож кроки
-         тримає сам таймлайн, а не окремий твін. */
-      document.querySelectorAll('[data-anim="locations"]').forEach((sec) => {
-        const bgs = sec.querySelectorAll('.locations__bg');
-        const panels = sec.querySelectorAll('.locations__panel');
-        if (panels.length < 2) return;
-        // висоту секції (кількість екранів на прокрут) рахує CSS із цього числа
-        sec.style.setProperty('--steps', panels.length);
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sec,
-            start: 'top top',
-            end: 'bottom bottom',
-            pin: '.locations__stage',
-            pinSpacing: false,   // висоту вже дає сама секція (calc зі --steps)
-            scrub: true,
-          },
-        });
-
-        /* Маска жалюзі: SLATS однакових смуг, у кожній видима частка росте
-           від 0 до 1. Пишемо градієнт у CSS-змінну щоразу, бо CSS не вміє
-           нагенерувати N колірних стопів сам.
-           Хвиля: смуга s відкривається не разом з усіма, а у своєму вікні
-           прогресу — [s * крок; s * крок + SPAN]. WAVE — яку частку
-           загального прогресу з'їдає розбіг між першою й останньою смугою;
-           решта (SPAN) лишається на саме розкриття однієї смуги. */
-        const SLATS = 30;
-        const WAVE = 0.55;
-        const SPAN = 1 - WAVE;
-        const band = 100 / SLATS;
-        const setMask = (el, p) => {
-          let stops = '';
-          for (let s = 0; s < SLATS; s++) {
-            const a = s * band;
-            /* 0deg — градієнт іде знизу вгору, тож смуга 0 найнижча.
-               Хвиля має котитись згори вниз, тому першою відкривається
-               остання смуга: затримка росте від кінця до початку. */
-            const delay = s / (SLATS - 1) * WAVE;
-            const open = Math.min(1, Math.max(0, (p - delay) / SPAN));
-            const cut = (a + band * open).toFixed(3);
-            stops += `${s ? ', ' : ''}black ${a.toFixed(3)}% ${cut}%, transparent ${cut}% ${(a + band).toFixed(3)}%`;
-          }
-          el.style.setProperty('--mask-gradient', `linear-gradient(0deg, ${stops})`);
-        };
-        bgs.forEach((bg, i) => { if (i) setMask(bg, 0); });
-
-        /* Крок — рівно 1 умовна секунда таймлайна, щоб кожен зал займав
-           однакову частку скролу (на цьому тримається поріг зміни панелі).
-           До скролу привʼязані ЛИШЕ жалюзі: кадр тягнеться разом із рухом
-           пальця. Твінимо проксі-обʼєкт: --open у масці не анімується сам,
-           градієнт треба перезбирати щокадру. */
-        panels.forEach((panel, i) => {
-          if (!i) return;
-          const m = { open: 0 };
-          tl.to(m, {
-            open: 1, ease: 'none', duration: 0.75,
-            onUpdate: () => setMask(bgs[i], m.open),
-          }, i - 1);
-        });
-
-        /* Контент в арці зі скролом НЕ звʼязаний: інакше на будь-якій
-           проміжній позиції текст завмирає напівпрозорим (і читається як
-           баг, і ловить кліки). Тому — звичайна анімація фіксованої
-           тривалості, яку запускає перетин порога кроку. */
-        let shown = 0;
-        const swapTo = (n) => {
-          if (n === shown) return;
-          const from = panels[shown], to = panels[n];
-          shown = n;
-          /* Клас ставимо одразу всім, а не в onComplete: при швидкому
-             скролі туди-назад killTweensOf обриває твін, і onComplete не
-             настав би — панель лишилась би .is-active назавжди. */
-          panels.forEach((p, k) => p.classList.toggle('is-active', k === n));
-          gsap.killTweensOf(panels);
-          /* Перестрибнуту панель (швидкий скрол 1→3) гасимо без анімації —
-             інакше на ній лишиться інлайнова opacity від обірваного твіна */
-          panels.forEach((p, k) => {
-            if (k !== n && p !== from) gsap.set(p, { opacity: 0, yPercent: 0 });
-          });
-          /* Кросфейд із перекриттям: новий текст рушає ще поки старий гасне
-             (delay менший за тривалість виходу) — без паузи з порожньою
-             аркою посередині. Зсув малий: на великому тексті довга дорога
-             читається як стрибок, а не як плавність. */
-          gsap.to(from, { opacity: 0, yPercent: -3, duration: 0.7, ease: 'power2.inOut' });
-          gsap.fromTo(to, { opacity: 0, yPercent: 3 },
-            { opacity: 1, yPercent: 0, duration: 0.9, ease: 'power2.out', delay: 0.25 });
-        };
-        /* Твіни останнього кроку закінчуються трохи раніше за рівну довжину —
-           порожній твін у кінці добиває таймлайн до цілого числа кроків.
-           totalDuration() тут не годиться: він розтягнув би самі твіни, а
-           нам треба рівні кроки — на них тримається поріг зміни панелі. */
-        tl.to({}, { duration: 0 }, panels.length - 1);
-        /* Індекс беремо з прогресу таймлайна, а не .set() на кроці: set при
-           скролі вгору лишає останнє значення, а прогрес однаково правильний
-           в обидва боки. Поріг — 0.6 кроку: жалюзі на цей момент уже здебільш
-           відкрили новий кадр, тож підпис міняється на своєму фоні. */
-        tl.eventCallback('onUpdate', () => {
-          swapTo(Math.min(panels.length - 1,
-            Math.floor(tl.progress() * (panels.length - 1) + 0.4)));
-        });
-      });
-
       /* data-anim="odometer" — стовпчик із N цифр у масці висотою в одну
          (CSS); скрол зсуває його на N-1 позицій уздовж списку з
          data-odometer-for — від центру першого кроку до центру останнього,
@@ -317,6 +211,115 @@
           yPercent: d, ease: 'none',
           scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true },
         });
+      });
+    });
+
+    /* data-anim="locations" — секція пінується на N екранів; scrub-таймлайн
+       міняє фон жалюзі (смуги нового кадру розкриваються scaleY зі стагером)
+       і панель в арці. Не pin+odometer, як у path: там один безперервний
+       зсув однієї стрічки, тут — дискретна заміна вмісту, тож кроки
+       тримає сам таймлайн, а не окремий твін.
+       Поза matchMedia вище навмисно: той гейт — лише десктоп/no-preference,
+       а тут ефект мусить працювати на всіх ширинах і без урахування
+       prefers-reduced-motion. */
+    document.querySelectorAll('[data-anim="locations"]').forEach((sec) => {
+      const bgs = sec.querySelectorAll('.locations__bg');
+      const panels = sec.querySelectorAll('.locations__panel');
+      if (panels.length < 2) return;
+      // висоту секції (кількість екранів на прокрут) рахує CSS із цього числа
+      sec.style.setProperty('--steps', panels.length);
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sec,
+          start: 'top top',
+          end: 'bottom bottom',
+          pin: '.locations__stage',
+          pinSpacing: false,   // висоту вже дає сама секція (calc зі --steps)
+          scrub: true,
+        },
+      });
+
+      /* Маска жалюзі: SLATS однакових смуг, у кожній видима частка росте
+         від 0 до 1. Пишемо градієнт у CSS-змінну щоразу, бо CSS не вміє
+         нагенерувати N колірних стопів сам.
+         Хвиля: смуга s відкривається не разом з усіма, а у своєму вікні
+         прогресу — [s * крок; s * крок + SPAN]. WAVE — яку частку
+         загального прогресу з'їдає розбіг між першою й останньою смугою;
+         решта (SPAN) лишається на саме розкриття однієї смуги. */
+      const SLATS = 30;
+      const WAVE = 0.55;
+      const SPAN = 1 - WAVE;
+      const band = 100 / SLATS;
+      const setMask = (el, p) => {
+        let stops = '';
+        for (let s = 0; s < SLATS; s++) {
+          const a = s * band;
+          /* 0deg — градієнт іде знизу вгору, тож смуга 0 найнижча.
+             Хвиля має котитись згори вниз, тому першою відкривається
+             остання смуга: затримка росте від кінця до початку. */
+          const delay = s / (SLATS - 1) * WAVE;
+          const open = Math.min(1, Math.max(0, (p - delay) / SPAN));
+          const cut = (a + band * open).toFixed(3);
+          stops += `${s ? ', ' : ''}black ${a.toFixed(3)}% ${cut}%, transparent ${cut}% ${(a + band).toFixed(3)}%`;
+        }
+        el.style.setProperty('--mask-gradient', `linear-gradient(0deg, ${stops})`);
+      };
+      bgs.forEach((bg, i) => { if (i) setMask(bg, 0); });
+
+      /* Крок — рівно 1 умовна секунда таймлайна, щоб кожен зал займав
+         однакову частку скролу (на цьому тримається поріг зміни панелі).
+         До скролу привʼязані ЛИШЕ жалюзі: кадр тягнеться разом із рухом
+         пальця. Твінимо проксі-обʼєкт: --open у масці не анімується сам,
+         градієнт треба перезбирати щокадру. */
+      panels.forEach((panel, i) => {
+        if (!i) return;
+        const m = { open: 0 };
+        tl.to(m, {
+          open: 1, ease: 'none', duration: 0.75,
+          onUpdate: () => setMask(bgs[i], m.open),
+        }, i - 1);
+      });
+
+      /* Контент в арці зі скролом НЕ звʼязаний: інакше на будь-якій
+         проміжній позиції текст завмирає напівпрозорим (і читається як
+         баг, і ловить кліки). Тому — звичайна анімація фіксованої
+         тривалості, яку запускає перетин порога кроку. */
+      let shown = 0;
+      const swapTo = (n) => {
+        if (n === shown) return;
+        const from = panels[shown], to = panels[n];
+        shown = n;
+        /* Клас ставимо одразу всім, а не в onComplete: при швидкому
+           скролі туди-назад killTweensOf обриває твін, і onComplete не
+           настав би — панель лишилась би .is-active назавжди. */
+        panels.forEach((p, k) => p.classList.toggle('is-active', k === n));
+        gsap.killTweensOf(panels);
+        /* Перестрибнуту панель (швидкий скрол 1→3) гасимо без анімації —
+           інакше на ній лишиться інлайнова opacity від обірваного твіна */
+        panels.forEach((p, k) => {
+          if (k !== n && p !== from) gsap.set(p, { opacity: 0, yPercent: 0 });
+        });
+        /* Кросфейд із перекриттям: новий текст рушає ще поки старий гасне
+           (delay менший за тривалість виходу) — без паузи з порожньою
+           аркою посередині. Зсув малий: на великому тексті довга дорога
+           читається як стрибок, а не як плавність. */
+        gsap.to(from, { opacity: 0, yPercent: -3, duration: 0.7, ease: 'power2.inOut' });
+        gsap.fromTo(to, { opacity: 0, yPercent: 3 },
+          { opacity: 1, yPercent: 0, duration: 0.9, ease: 'power2.out', delay: 0.25 });
+      };
+      /* Твіни останнього кроку закінчуються трохи раніше за рівну довжину —
+         порожній твін у кінці добиває таймлайн до цілого числа кроків.
+         totalDuration() тут не годиться: він розтягнув би самі твіни, а
+         нам треба рівні кроки — на них тримається поріг зміни панелі. */
+      tl.to({}, { duration: 0 }, panels.length - 1);
+      /* Індекс беремо з прогресу таймлайна, а не .set() на кроці: set при
+         скролі вгору лишає останнє значення, а прогрес однаково правильний
+         в обидва боки. Поріг — 0.45 кроку: контент арки міняється ще
+         посеред розкриття жалюзі, не чекаючи, поки кадр майже готовий. */
+      tl.eventCallback('onUpdate', () => {
+        swapTo(Math.min(panels.length - 1,
+          Math.floor(tl.progress() * (panels.length - 1) + 0.55)));
       });
     });
 
