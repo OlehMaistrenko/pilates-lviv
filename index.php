@@ -327,19 +327,23 @@ include 'partials/header.php';
 <section class="section gallery">
   <div class="container">
     <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Зал на Романицького</h2>
+      <h2 data-reveal="lines">Зали та тренажери</h2>
       <a class="link-arrow" href="https://app.lapentor.com/sphere/pilates-2" target="_blank" rel="noopener" data-reveal>
         3D-тур студією
         <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
       </a>
     </div>
+  </div>
 
-    <div class="gallery__grid">
-      <?php foreach ($gallery as $i => $alt): ?>
-        <figure class="gallery__item" data-reveal style="--reveal-i: <?= $i % 3 ?>">
-          <img src="assets/img/gallery/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
-        </figure>
-      <?php endforeach; ?>
+  <div class="swiper-wrap gallery__slider" data-reveal>
+    <div class="swiper" data-swiper='{"effect":"coverflow","grabCursor":true,"centeredSlides":true,"slidesPerView":1.3,"loop":true,"autoplay":{"delay":2800,"disableOnInteraction":false},"coverflowEffect":{"rotate":35,"stretch":0,"depth":220,"modifier":1,"slideShadows":false},"breakpoints":{"768":{"slidesPerView":2},"1080":{"slidesPerView":3}}}'>
+      <div class="swiper-wrapper">
+        <?php foreach ($gallery as $i => $alt): ?>
+          <figure class="swiper-slide gallery__item">
+            <img src="assets/img/gallery/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
+          </figure>
+        <?php endforeach; ?>
+      </div>
     </div>
   </div>
 </section>
@@ -357,30 +361,43 @@ include 'partials/header.php';
       </p>
     </div>
 
-    <ul class="team__grid">
-      <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
-        <li class="trainer" data-reveal style="--reveal-i: <?= $i % 4 ?>">
-          <a class="trainer__link" href="trainer-<?= $slug ?>.php">
-            <span class="trainer__media">
-              <span class="ph" role="img" aria-label="<?= $name ?>, <?= mb_strtolower($role) ?>">
-                <span class="ph__name">assets/img/team/<?= $slug ?>.jpg</span>
+    <div class="swiper-wrap team__slider" data-reveal>
+      <div class="swiper" data-swiper='{"slidesPerView":2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":3},"1081":{"slidesPerView":4}}}'>
+        <ul class="swiper-wrapper">
+          <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
+            <li class="trainer swiper-slide">
+              <a class="trainer__link" href="trainer-<?= $slug ?>.php">
+                <span class="trainer__media">
+                  <span class="ph" role="img" aria-label="<?= $name ?>, <?= mb_strtolower($role) ?>">
+                    <span class="ph__name">assets/img/team/<?= $slug ?>.jpg</span>
+                  </span>
+                </span>
+                <span class="trainer__name"><?= $name ?></span>
+                <span class="text--sm text--muted"><?= $role ?></span>
+                <q class="trainer__quote text--sm"><?= $quote ?></q>
+              </a>
+            </li>
+          <?php endforeach; ?>
+          <li class="trainer trainer--all swiper-slide">
+            <a class="trainer__link" href="team.php">
+              <span class="trainer__media">
+                <span class="trainer__all">Уся команда</span>
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
               </span>
-            </span>
-            <span class="trainer__name"><?= $name ?></span>
-            <span class="text--sm text--muted"><?= $role ?></span>
-            <q class="trainer__quote text--sm"><?= $quote ?></q>
-          </a>
-        </li>
-      <?php endforeach; ?>
-      <li class="trainer trainer--all" data-reveal style="--reveal-i: 3">
-        <a class="trainer__link" href="team.php">
-          <span class="trainer__media">
-            <span class="trainer__all">Уся команда</span>
-            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-          </span>
-        </a>
-      </li>
-    </ul>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="team__controls">
+        <button type="button" class="btn-icon btn-icon--ghost swiper-prev" aria-label="Попередній тренер">
+          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+        </button>
+        <div class="swiper-pagination"></div>
+        <button type="button" class="btn-icon btn-icon--ghost swiper-next" aria-label="Наступний тренер">
+          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 
