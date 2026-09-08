@@ -327,6 +327,146 @@
   .link-arrow:hover { color: var(--c-gold-ink); border-bottom-color: currentColor; }
   .link-arrow:hover .icon { transform: translateX(0.1875rem); }
 }
+
+/* ============================================================
+   Component: .posts / .post — сітка карток-тизерів (блог, події,
+   інші тренування). Та сама візуальна мова, що в .direction/.trainer
+   (арка, --fs-h4/--fw-lt, золотий hover), але кадр ширший: портретна
+   арка читається як людина або зал, а стаття — не портрет.
+   Генерично, а не .blog__card: тими самими картками підуть події,
+   команда й локації.
+   ============================================================ */
+.posts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8) var(--sp-5);
+}
+.post { flex: 0 1 calc(33.333% - var(--sp-5) * 2 / 3); }
+
+.post__link { display: flex; flex-direction: column; height: 100%; }
+.post__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: var(--sp-4);
+  border-radius: var(--r-arch);
+  overflow: hidden;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color .3s var(--ease);
+}
+.post__media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s var(--ease);
+}
+
+/* датлайн над заголовком: дата й рубрика читаються як службовий рядок,
+   а не як підпис під статтею — тому й не потребують margin-top: auto */
+.post__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+/* золото як волосина, не заливка */
+.post__rubric { padding-left: var(--sp-4); border-left: 1px solid var(--c-gold); }
+
+.post__title {
+  display: block;
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  transition: color .25s var(--ease);
+}
+.post__excerpt { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
+
+/* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
+@media (min-width: 1081px) {
+  .post__link:hover .post__title { color: var(--c-gold-ink); }
+  .post__link:hover .post__media { outline-color: var(--c-gold); }
+  .post__link:hover .post__media > img { transform: scale(1.06); }
+}
+.post__link:focus-visible .post__media { outline-color: var(--c-gold); }
+
+@media (max-width: 1080px) {
+  .post { flex: 0 1 calc(50% - var(--sp-5) / 2); }
+}
+@media (max-width: 768px) {
+  .posts { gap: var(--sp-7) var(--sp-4); }
+  .post { flex: 1 1 100%; }
+}
+
+/* ============================================================
+   Component: .filters — фільтр списку за категорією. Звичайні
+   посилання (?rubric=), не таби: стан живе в URL, тому працює без JS
+   і індексується. Активний пункт — заливка мохом; золото тут не
+   використовуємо, воно лишається лінією й акцентом, не фоном.
+   ============================================================ */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-8);
+}
+.filters__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+}
+.filters__item.is-current {
+  background: var(--c-moss);
+  border-color: var(--c-moss);
+  color: var(--c-page);
+}
+/* лічильник — службова цифра, тому дрібніша й тихіша за назву */
+.filters__count { font-size: var(--fs-xs); opacity: .6; }
+@media (min-width: 1081px) {
+  .filters__item:not(.is-current):hover { border-color: var(--c-ink); }
+}
+@media (max-width: 768px) {
+  .filters { margin-bottom: var(--sp-7); }
+}
+
+/* ============================================================
+   Component: .pagination — посторінкова навігація списків
+   ============================================================ */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-9);
+}
+.pagination__page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding-inline: var(--sp-2);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  transition: background-color .2s var(--ease), color .2s var(--ease);
+}
+.pagination__page.is-current { background: var(--c-ink); color: var(--c-page); }
+@media (min-width: 1081px) {
+  a.pagination__page:hover { background: color-mix(in srgb, var(--c-ink) 10%, transparent); }
+}
+/* «Далі» відсунуте від номерів, але не притиснуте до правого краю:
+   на широкому екрані сітка ліворуч, тож і навігація лишається зліва */
+.pagination__next { margin-left: var(--sp-4); }
+
 /* ============================================================
    Component: .embossed — тиснення патерном з брендбуку (с.13).
    Патерн підключений маскою, а не картинкою: сам SVG чорний, фарбу
@@ -346,6 +486,11 @@
      фон предка, коли в самої секції фону немає */
   isolation: isolate;
 }
+/* mask-position рахується від власного боксу, тож у двох сусідніх
+   .embossed-блоках (CTA над футером) плитка стартує заново і на стику
+   видно розрив. Зсуваємо початок плитки на власний відступ блоку від
+   верху документа — --emboss-offset ставить сторінка там, де блоки
+   стоять поруч; за замовчуванням 0, тож одиночні блоки не змінюються. */
 .embossed::before,
 .embossed::after {
   content: "";
@@ -356,16 +501,20 @@
   mask: url(../assets/img/pattern-lion.svg) 0 0 / 16.625rem 17.875rem repeat;
   pointer-events: none;
 }
+/* --emboss-y зсуває початок плитки: блок, що стоїть одразу під іншим
+   .embossed, отримує зсув на висоту сусіда, і патерн через межу йде
+   без розриву (див. .split--cta + .site-footer). Дефолт 0 — одиночні
+   блоки поводяться як раніше. */
 .embossed::before {
   background-color: #000;
-  -webkit-mask-position: -.5px -1px;
-  mask-position: -.5px -1px;
+  -webkit-mask-position: -.5px calc(-1px - var(--emboss-y, 0px));
+  mask-position: -.5px calc(-1px - var(--emboss-y, 0px));
   opacity: var(--emboss-shadow, .09);
 }
 .embossed::after {
   background-color: var(--emboss-c, var(--c-page));
-  -webkit-mask-position: .5px 1px;
-  mask-position: .5px 1px;
+  -webkit-mask-position: .5px calc(1px - var(--emboss-y, 0px));
+  mask-position: .5px calc(1px - var(--emboss-y, 0px));
   opacity: var(--emboss-light, .04);
 }
 
@@ -584,6 +733,12 @@
   --c-line: color-mix(in srgb, var(--c-page) 22%, transparent);
   --c-gold-ink: var(--c-gold-lt);
 }
+
+/* Компактний варіант — CTA в кінці внутрішньої сторінки. На головній
+   135svh потрібні паралаксу на повний хід; наприкінці списку статей
+   повноекранний блок став би найбільшим елементом сторінки. Ходу
+   паралаксу тут вистачає: запас шару (±12%) від висоти не залежить. */
+.split--cta .split__grid { min-height: 90svh; }
 
 @media (max-width: 1080px) {
   /* в один стовпець кадр і текст складаються по висоті — власний мінімум

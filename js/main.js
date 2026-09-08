@@ -782,4 +782,34 @@
 
   document.querySelectorAll('[data-tabs]').forEach(initTabs);
 
+  /* ---- Emboss — нерозривна плитка тиснення між сусідніми полями ------
+     mask-position у .embossed рахується від власного боксу елемента, тож
+     кожне тиснене поле починає плитку заново — і на межі двох сусідніх
+     (CTA над футером) видно розрив. Прив'язуємо початок плитки до
+     документа: --emboss-y = відступ поля від верху сторінки за модулем
+     висоти плитки, і патерн проходить крізь межу як одне полотно.
+     Модуль — щоб зсув лишався малим числом і не залежав від довжини
+     сторінки. Висота плитки мусить збігатися з mask-size у styles.css. */
+  (() => {
+    const blocks = document.querySelectorAll('.embossed');
+    if (!blocks.length) return;
+
+    const TILE = 17.875 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+    const sync = () => {
+      const top = window.scrollY || document.documentElement.scrollTop;
+      blocks.forEach((el) => {
+        const y = el.getBoundingClientRect().top + top;
+        el.style.setProperty('--emboss-y', (y % TILE).toFixed(2) + 'px');
+      });
+    };
+
+    sync();
+    window.addEventListener('resize', sync);
+    document.fonts?.ready.then(sync);
+    // висота сусідів змінюється (розгорнутий SEO-текст, підвантажені кадри) —
+    // тоді зсув треба перерахувати, інакше плитка знову розходиться
+    new ResizeObserver(sync).observe(document.body);
+  })();
+
 })();

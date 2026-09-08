@@ -564,6 +564,30 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ============================================================
+   Breadcrumbs — хлібні крихти внутрішніх сторінок. У main.css, бо
+   стоять у банері, тобто на першому екрані.
+   ============================================================ */
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  /* приглушення від поточного кольору тексту, а не .text--muted: у банері
+     крихти стоять на темному полі, де --c-ink-mute нечитабельний */
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+/* Лінія відділяє крихти від заголовка — та сама пунктирна волосина, що
+   ділить перший екран головної (.hero__rule). Це єдиний розділювач банера:
+   рядок службових слів під нею був би декоративним лейблом. */
+.breadcrumbs--rule {
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
+}
+@media (min-width: 1081px) {
+  .breadcrumbs a:hover { color: var(--c-gold-lt); }
+}
+
+/* ============================================================
    Header — три колонки: тумблер меню · лого по центру · запис.
    Fixed поверх контенту; над моховим героєм прозорий (.header-fixed--over),
    після скролу — бежевий, нижчий, з меншим лого. Над відкритим
@@ -873,17 +897,59 @@ html.lenis, html.lenis body { height: auto; }
   flex: none;
   gap: var(--sp-3);
 }
+/* Банер внутрішньої сторінки — той самий герой, але не на весь екран:
+   під ним одразу список, тож 100svh зайві — під банером має бути видно
+   початок контенту. Заголовок на крок дрібніший за --fs-mega головної:
+   тут він заголовок сторінки, а не плакат.
+   Висоту тримає min-height, а не вміст: самого заголовка з лінією замало,
+   щоб кадр читався кадром. 62svh лишає внизу смугу наступної секції,
+   а стеля в rem не дає банеру рости на високих моніторах. */
+.hero--inner {
+  min-height: min(62svh, 37.5rem);
+  padding-top: calc(var(--header-h-max) + var(--sp-7));
+  padding-bottom: var(--sp-7);
+}
+/* Заголовок притиснутий до низу, крихти — до верху: вільну висоту, яку
+   дає min-height, забирає цей проміжок, а не рівні відступи довкола. */
+.hero--inner .hero__inner { gap: var(--sp-7); justify-content: space-between; }
+/* margin-bottom: -0.15em на .hero__title опускає заголовок до рівня кнопок
+   на головній; тут кнопок під ним немає, тож від'ємний відступ лише з'їдав
+   би padding-bottom банера. */
+.hero--inner .hero__title {
+  font-size: var(--fs-hero);
+  margin-bottom: 0;
+}
+/* лід замість кнопок: у банері списку вести нікуди, СТА стоїть унизу сторінки */
+.hero__lead { flex: 0 1 46ch; margin-bottom: 0.2em; line-height: var(--lh-body); }
+
 /* 1081–87.5rem: поруч зі стовпчиком кнопок заголовку лишається ~60.375rem, а
    --fs-mega у версалах вимагає більше й ламає його на два рядки. Власний
    clamp за Utopia (1081→1400) тримає рядок цілим; ширші екрани — --fs-mega. */
 @media (min-width: 1081px) and (max-width: 1400px) {
   .hero__title { font-size: clamp(5rem, 0.2557rem + 7.0219vw, 6.4rem); }
+  /* власний clamp вище — для --fs-mega; банер уже на крок нижчий і влазить */
+  .hero--inner .hero__title { font-size: var(--fs-hero); }
 }
 @media (max-width: 1080px) {
   .hero { min-height: min(92svh, 51.25rem); }
+  .hero--inner { min-height: min(56svh, 31.25rem); }
+  /* лід під заголовок, а не збоку: поруч із --fs-hero йому лишається
+     занадто вузька колонка */
+  .hero--inner .hero__bottom { flex-direction: column; align-items: stretch; gap: var(--sp-5); }
+  .hero__lead { flex: none; margin-bottom: 0; }
 }
 @media (max-width: 768px) {
   .hero { padding-top: calc(var(--header-h-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
+  /* той самий принцип, що на десктопі, але кроком нижче: на вузькому
+     екрані --sp-7 з усіх боків з'їдає надто багато висоти банера.
+     Мінімум теж нижчий — лід тут стоїть під заголовком, тож вміст
+     і сам дає потрібну висоту, а більший min-height лишав би порожнечу. */
+  .hero--inner {
+    min-height: min(46svh, 25rem);
+    padding-top: calc(var(--header-h-max) + var(--sp-6));
+    padding-bottom: var(--sp-6);
+  }
+  .hero--inner .hero__inner { gap: var(--sp-6); }
   .hero__rule { gap: var(--sp-3); }
   /* кнопки поруч із заголовком тут уже не влазять — під нього, у рядок */
   .hero__bottom { flex-direction: column; align-items: stretch; gap: var(--sp-6); }
