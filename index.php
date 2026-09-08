@@ -335,14 +335,28 @@ include 'partials/header.php';
   </div>
 
   <div class="swiper-wrap gallery__slider" data-reveal>
-    <div class="swiper" data-swiper='{"effect":"coverflow","grabCursor":true,"centeredSlides":true,"slidesPerView":1.3,"loop":true,"autoplay":{"delay":2800,"disableOnInteraction":false},"coverflowEffect":{"rotate":35,"stretch":0,"depth":220,"modifier":1,"slideShadows":false},"breakpoints":{"768":{"slidesPerView":2},"1080":{"slidesPerView":3}}}'>
+    <div class="swiper" data-swiper='{"effect":"coverflow","grabCursor":true,"centeredSlides":true,"slidesPerView":1.3,"loop":true,"autoplay":{"delay":2800,"disableOnInteraction":false},"coverflowEffect":{"rotate":35,"stretch":0,"depth":220,"modifier":1,"slideShadows":false},"pagination":{"dynamicBullets":true},"breakpoints":{"768":{"slidesPerView":2},"1080":{"slidesPerView":4}}}'>
       <div class="swiper-wrapper">
         <?php foreach ($gallery as $i => $alt): ?>
           <figure class="swiper-slide gallery__item">
             <img src="assets/img/gallery/<?= $i + 1 ?>.jpg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
           </figure>
         <?php endforeach; ?>
+         <?php foreach ($gallery as $i => $alt): ?>
+          <figure class="swiper-slide gallery__item">
+            <img src="assets/img/gallery/<?= $i + 1 ?>.jpg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
+          </figure>
+        <?php endforeach; ?>
       </div>
+    </div>
+    <div class="slider-controls mt-5">
+      <button type="button" class="btn-icon btn-icon--ghost swiper-prev" aria-label="Попереднє фото">
+        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+      </button>
+      <div class="swiper-pagination"></div>
+      <button type="button" class="btn-icon btn-icon--ghost swiper-next" aria-label="Наступне фото">
+        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+      </button>
     </div>
   </div>
 </section>

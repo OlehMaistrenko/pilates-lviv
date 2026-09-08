@@ -811,18 +811,18 @@
    ============================================================ */
 .slider-controls { display: flex; align-items: center; gap: var(--sp-4);  position: relative; justify-content: center; }
 .slider-controls .swiper-prev .icon { transform: scaleX(-1); }
-.slider-controls .swiper-pagination { position: relative; width: auto;left: unset!important;transform: none!important;margin: 0;top:unset!important;bottom: unset!important; }
+.slider-controls .swiper-pagination {
+  position: relative; width: auto; left: unset!important; transform: none!important; margin: 0; top: unset!important; bottom: unset!important;
+  --swiper-pagination-bullet-inactive-color: var(--c-ink);
+  --swiper-pagination-bullet-inactive-opacity: .25;
+}
+.slider-controls .swiper-pagination-bullet-active { background: var(--c-gold); }
 
 /* ============================================================
    Home 09 — Тренери: портрет-арка, ім'я, напрямок, цитата
    ============================================================ */
 .team .swiper { overflow: visible; }
 .team .swiper-slide { height: auto; }
-.team .swiper-pagination {
-  --swiper-pagination-bullet-inactive-color: var(--c-ink);
-  --swiper-pagination-bullet-inactive-opacity: .25;
-}
-.team .swiper-pagination-bullet-active { background: var(--c-gold); }
 .trainer__link { display: flex; flex-direction: column; gap: var(--sp-1); height: 100%; }
 .trainer__media {
   display: block;
