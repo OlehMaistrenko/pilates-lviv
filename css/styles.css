@@ -838,15 +838,61 @@
 .split__media { position: relative; overflow: hidden; min-height: 100%; }
 /* шар вищий за колонку — інакше паралакс відкрив би порожнечу зверху/знизу */
 .split__layer { position: absolute; inset: -12% 0; width: 100%; height: 124%; object-fit: cover; }
+/* Вертикальний ритм — gap колонки, а не margin на кожній дитині: набір
+   блоків тут різний по сторінках (на головній є ще список залів), і з
+   маргінами кожен новий блок мусив би сам знати, від чого відступає. */
 .split__body {
   align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
   /* власний padding замість .container: секція йде від краю до краю екрана,
      тож відступ тексту мусить жити тут */
   padding: var(--sp-10) clamp(var(--sp-6), 6vw, var(--sp-10));
   max-width: calc(60ch + clamp(var(--sp-6), 6vw, var(--sp-10)) * 2);
 }
-.split__lead { margin-top: var(--sp-5); }
-.split__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-8); }
+/* Кнопки відходять від тексту далі за базовий крок — дія відділена від
+   абзацу, який її пояснює */
+.split__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+  align-items: flex-start;
+}
+
+/* Три зали під кнопками — довідка «куди прийти». Ряд у три колонки, а не
+   стовпчик: три однакові рядки на всю ширину читались як сірий хвіст під
+   кнопками, а ряд має власну форму й ловиться оком одразу. Межу з дією
+   тримає відступ, не лінія. */
+.split__locations {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-5);
+  margin: var(--sp-5) 0 0;   /* поверх gap колонки: довідка відходить від кнопок далі */
+  padding: 0;
+}
+.split__locations a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  transition: color .25s var(--ease);
+}
+/* Назва залу — головне в рядку, тож кегль і вага більші за адресу під нею */
+.split__loc-name {
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+  color: var(--clr-accent);
+}
+@media (min-width: 1081px) {
+  .split__locations a:hover .split__loc-name { color: var(--clr-page); }
+}
+@media (max-width: 560px) {
+  /* три колонки на телефоні лишили б по слову в рядок — назви залів
+     довгі («Брюховичі»), тому в стовпчик */
+  .split__locations { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+}
 
 /* Умбра в мох: умбра = колір вуличної вивіски, тому це «двері».
    Токени тексту/ліній/золота йдуть з .on-dark у розмітці — тому
@@ -871,21 +917,24 @@
 }
 
 /* ============================================================
-   Home 05 — Локації: фулскрін-пін, фон-зал міняється жалюзі
+   Home 05 — Переваги: фулскрін-пін, кадр за аркою міняється жалюзі
    Секція вища за екран рівно настільки, скільки треба на прокрут
-   усіх залів; сам кадр — .locations__stage, його пінує GSAP.
+   усіх панелей; сам кадр — .pinstack__stage, його пінує GSAP.
+   Блок генеричний (не .advantages): механіка «стек панелей на піні»
+   не прив'язана до вмісту — тут вона тримає аргументи, але так само
+   тримала б будь-який інший однорідний ряд.
    ============================================================ */
-/* Екран на перший зал плюс --step-vh на кожен перехід: --steps = кількість
+/* Екран на першу панель плюс --step-vh на кожен перехід: --steps = кількість
    панелей, тож висота = N × --step-vh. Значення ставить JS; фолбек тримає
-   верстку, якщо GSAP не піднявся (тоді видно перший зал статично).
+   верстку, якщо GSAP не піднявся (тоді видно першу панель статично).
    --step-vh > 100svh: жалюзі йдуть хвилею, і на короткій дистанції
    перехід проскакує швидше, ніж око встигає його прочитати. */
-.locations {
+.pinstack {
   --step-vh: 170svh;
   position: relative;
   height: calc(var(--steps, 3) * var(--step-vh));
 }
-.locations__stage {
+.pinstack__stage {
   position: relative;
   height: 100svh;
   overflow: hidden;
@@ -894,8 +943,8 @@
   background: var(--clr-surface-deep);   /* видно, поки кадри ще не завантажились */
 }
 
-.locations__bgs { position: absolute; inset: 0; }
-.locations__bg {
+.pinstack__bgs { position: absolute; inset: 0; }
+.pinstack__bg {
   position: absolute;
   inset: 0;
   background-size: cover;
@@ -904,59 +953,46 @@
 /* Жалюзі: маска з N однакових горизонтальних смуг, де видима частка смуги
    росте від 0 до повної. Сам градієнт збирає JS у --mask-gradient — CSS не
    вміє нагенерувати N колірних стопів циклом.
-   Перший зал відкритий, решта чекає на скрол: поки JS не поставив маску,
+   Перший кадр відкритий, решта чекає на скрол: поки JS не поставив маску,
    градієнта немає — тому дефолт ховає шар цілком, щоб до ініціалізації
    GSAP не блимнули всі кадри одразу. */
-.locations__bg + .locations__bg {
+.pinstack__bg + .pinstack__bg {
   -webkit-mask-image: var(--mask-gradient, linear-gradient(transparent, transparent));
   mask-image: var(--mask-gradient, linear-gradient(transparent, transparent));
 }
 
 /* Без кадру всередині арка стала вужчою й вищою — пропорція ближча до
    вікна кам'яниці, ніж до картки. Мінімальна висота тримає форму арки
-   однаковою на всіх залах, попри різну довжину опису. */
-/* Два рядки: маркер угорі, під ним стек панелей на весь залишок висоти.
-   Панелі всі лежать у другому рядку одна на одній (grid-area 2/1). */
-.locations__arch {
+   однаковою на всіх панелях, попри різну довжину опису. */
+.pinstack__arch {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-rows: auto 1fr;
   justify-items: center;
   width: min(26rem, 86vw);
-  min-height: min(30rem, 62svh);
-  padding: var(--sp-7) var(--sp-5) var(--sp-5);
+  min-height: min(26rem, 56svh);
+  padding: var(--sp-7) var(--sp-5);
   background: var(--clr-page);
   border-radius: var(--r-arch);
   text-align: center;
 }
-/* Маркер один на всі зали — зі зміною слайда не анімується й не міняється */
-.locations__pin { color: var(--clr-accent);width: 2.5rem;height: 2.5rem; }
 
-/* Панелі — стек в одній комірці: висота арки не стрибає при зміні залу.
-   Сама панель теж grid — щоб посилання внизу центрувалось по своїй ширині,
-   а не розтягувалось на всю. */
-/* align-content:start, а не center: інакше вміст центрувався б як одне ціле
-   й кнопка стояла б одразу під текстом, а не на дні арки. */
-/* Флекс-колонка: діти на всю ширину (align-items за замовчуванням stretch),
-   тож .btn--block розтягується сам, без justify-self.
-   Два auto-margin тримають вертикаль: перший блок відпихається від верху,
-   останній перед кнопкою — від неї. Текст стоїть однією групою по центру,
-   кнопка лишається на дні арки, скільки б рядків не зайняв опис. */
-.locations__panel {
-  grid-area: 2 / 1;   /* рядок 1 зайнятий маркером; усі панелі — стеком у 2-му */
+/* Панелі — стек в одній комірці: висота арки не стрибає при зміні панелі.
+   Вміст центрується по вертикалі як одна група: у панелі лише заголовок
+   і абзац, притискати нема чого. */
+.pinstack__panel {
+  grid-area: 1 / 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 100%;   /* арка має justify-items:center — без цього панель стиснулась би по вмісту */
 }
-.locations__panel > :first-child { margin-top: auto; }
 /* Неактивна панель не ловить кліки: панелі лежать одна на одній, і
-   прозорий шар зверху перехоплював би посилання активної. Саму прозорість
+   прозорий шар зверху перехоплював би вміст активної. Саму прозорість
    під час зміни веде GSAP інлайном, тому тут лише pointer-events. */
-.locations__panel:not(.is-active) { opacity: 0; pointer-events: none; }
-/* Назва залу — тепер сам заголовок панелі, тож більший кегль */
-/* h3 за рівнем, але кегль h2 за роллю в макеті — назва залу тут головна */
-.locations__title {
+.pinstack__panel:not(.is-active) { opacity: 0; pointer-events: none; }
+/* h3 за рівнем, але кегль h2 за роллю в макеті — це головний рядок панелі */
+.pinstack__title {
   font-size: var(--fs-h2);
   font-weight: var(--fw-lt);
   line-height: var(--lh-display);
@@ -964,22 +1000,13 @@
   text-wrap: balance;
   margin: 0;
 }
-.locations__addr { margin-top: var(--sp-4); color: var(--clr-accent); }
-/* Останній блок перед кнопкою: margin-bottom:auto відпихає її на дно.
-   min-height через padding не годиться — потрібен саме гарантований зазор,
-   коли auto стиснувся до нуля на довгому описі, тому padding-bottom. */
-.locations__desc {
-  margin-top: var(--sp-4);
-  margin-bottom: auto;
-  padding-bottom: var(--sp-7);
-  line-height: var(--lh-body);
-}
+.pinstack__desc { margin-top: var(--sp-4); line-height: var(--lh-body); }
 
 @media (max-width: 900px) {
   /* На вузькому екрані рядки заголовка й опису переносяться частіше, тож
-     контенту й так більше по висоті — 30rem/62svh лишає порожнечу над і
-     під текстом. 24rem розрахований на найдовший опис (Сихів). */
-  .locations__arch { min-height: min(24rem, 52svh); }
+     контенту й так більше по висоті — повна висота лишала б порожнечу
+     над і під текстом. */
+  .pinstack__arch { min-height: min(22rem, 48svh); }
 }
 
 /* ============================================================

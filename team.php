@@ -117,7 +117,7 @@ include 'partials/header.php';
 
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Не знаєте, до кого записатись</h2>
-      <p class="text--lead text--muted split__lead" data-reveal>
+      <p class="text--lead text--muted" data-reveal>
         Подзвоніть — спитаємо, що болить і чого хочете, і підберемо тренера
         під це. Перше заняття все одно знайомство.
       </p>

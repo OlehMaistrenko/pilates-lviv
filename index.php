@@ -76,6 +76,14 @@ $locations = [
   ['Сихів',     'просп. Червоної Калини, 62', 'Reformer, Wall Unit і окрема кімната для персональних занять. Три хвилини від трамвая.', 'location-1/6.jpg'],
 ];
 
+// Аргументи не перетинаються з банером .why нижче (пружина / тренери /
+// Springtone) — там про метод, тут про те, як влаштоване саме заняття.
+$advantages = [
+  ['Cadillac і Reformer', 'Єдина у Львові студія з професійними тренажерами для пілатесу. Не мат на підлозі — робота на пружинах.', 'location-1/1.jpg'],
+  ['Група — до 8 людей',  'Тренер бачить техніку кожного і встигає поправити. Персональні заняття — в окремій кімнаті.', 'location-1/3.jpg'],
+  ['Перше — знайомство',  'Приходите подивитись зал і спробувати тренажери. Далі вирішуєте самі, без абонемента наперед.', 'location-1/6.jpg'],
+];
+
 include 'partials/header.php';
 ?>
 
@@ -221,54 +229,59 @@ include 'partials/header.php';
 
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Перше заняття — знайомство</h2>
-      <p class="text--lead text--muted split__lead" data-reveal>
+      <p class="text--lead text--muted" data-reveal>
         Приходьте подивитись зал, познайомитись із тренером і спробувати
         тренажери. Далі вирішуєте самі.
       </p>
 
       <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
+        <button type="button" class="btn btn--filled" data-modal="booking">Записатись</button>
         <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
       </div>
+
+      <!-- Опис залу ($l[2]) сюди не тягнемо: поруч із кнопкою запису
+           потрібна адреса, куди прийти, а не характеристика обладнання. -->
+      <ul class="split__locations" data-reveal style="--reveal-i: 1">
+        <?php foreach ($locations as $l): ?>
+          <li>
+            <a href="locations.php">
+              <span class="split__loc-name"><?= $l[0] ?></span>
+              <span class="text--sm text--muted">Львів, <?= $l[1] ?></span>
+            </a>
+          </li>
+        <?php endforeach; ?>
+      </ul>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     05 · Локації — фулскрін-пін: фон-зал міняється жалюзі, арка тримає
-     інфо про поточний зал. Розмітка розрахована на JS (js/main.js,
-     data-anim="locations"); без нього видно перший зал статично.
+     05 · Переваги — фулскрін-пін: кадр за аркою міняється жалюзі, арка
+     тримає поточний аргумент. Розмітка розрахована на JS (js/main.js,
+     data-anim="pinstack"); без нього видно перший аргумент статично.
      ============================================================ -->
-<section class="locations" data-anim="locations">
+<section class="pinstack" data-anim="pinstack">
   <!-- Макет — фулскрін-кадр без місця під видимий заголовок, але секції
-       потрібен свій рівень: інакше h2 бере на себе назва першої локації
-       і три зали читаються як три окремі секції. -->
-  <h2 class="sr-only">Локації</h2>
-  <div class="locations__stage">
-    <!-- По шару на зал, цілим кадром. Жалюзі — маска зі смуг
+       потрібен свій рівень: інакше h2 бере на себе перший аргумент
+       і три панелі читаються як три окремі секції. -->
+  <h2 class="sr-only">Чому саме тут</h2>
+  <div class="pinstack__stage">
+    <!-- По шару на панель, цілим кадром. Жалюзі — маска зі смуг
          (mask-image, збирає js/main.js): смуги розширюються, і кадр
          проступає планками, а не одним фейдом. -->
-    <div class="locations__bgs" aria-hidden="true">
-      <?php foreach ($locations as $l): ?>
-        <div class="locations__bg" style="background-image: url('assets/img/<?= $l[3] ?>')"></div>
+    <div class="pinstack__bgs" aria-hidden="true">
+      <?php foreach ($advantages as $a): ?>
+        <div class="pinstack__bg" style="background-image: url('assets/img/<?= $a[2] ?>')"></div>
       <?php endforeach; ?>
     </div>
 
-    <div class="locations__arch">
-      <!-- Маркер живе в арці, а не в панелі: він однаковий для всіх залів,
-           тож не бере участі в зміні слайдів і нічим не анімується -->
-      <svg class="locations__pin icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
-
-      <!-- Панелі складені в один стек (grid-area 1/1); активну веде скрол.
-           Усі три — h3 під h2 секції: зали однорідні, тож і рівень однаковий. -->
-      <?php foreach ($locations as $i => $l): ?>
-        <article class="locations__panel<?= $i ? '' : ' is-active' ?>">
-          <h3 class="locations__title"><?= $l[0] ?></h3>
-          <p class="locations__addr">Львів, <?= $l[1] ?></p>
-          <p class="locations__desc"><?= $l[2] ?></p>
-          <a class="btn btn--filled btn--block" href="locations.php">
-            Про локацію
-          </a>
+    <!-- Панелі складені в один стек (grid-area 1/1); активну веде скрол.
+         Усі три — h3 під h2 секції: аргументи однорідні, тож і рівень однаковий. -->
+    <div class="pinstack__arch">
+      <?php foreach ($advantages as $i => $a): ?>
+        <article class="pinstack__panel<?= $i ? '' : ' is-active' ?>">
+          <h3 class="pinstack__title"><?= $a[0] ?></h3>
+          <p class="pinstack__desc"><?= $a[1] ?></p>
         </article>
       <?php endforeach; ?>
     </div>

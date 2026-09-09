@@ -245,16 +245,16 @@
       });
     });
 
-    /* data-anim="locations" — секція пінується на N екранів; scrub-таймлайн
+    /* data-anim="pinstack" — секція пінується на N екранів; scrub-таймлайн
        міняє фон жалюзі (смуги нового кадру розкриваються scaleY зі стагером)
        і панель в арці. Не pin+odometer, як у path: там один безперервний
        зсув однієї стрічки, тут — дискретна заміна вмісту, тож кроки
        тримає сам таймлайн, а не окремий твін.
        Поза matchMedia вище навмисно: той гейт — лише десктоп, а тут ефект
        мусить працювати на всіх ширинах. */
-    document.querySelectorAll('[data-anim="locations"]').forEach((sec) => {
-      const bgs = sec.querySelectorAll('.locations__bg');
-      const panels = sec.querySelectorAll('.locations__panel');
+    document.querySelectorAll('[data-anim="pinstack"]').forEach((sec) => {
+      const bgs = sec.querySelectorAll('.pinstack__bg');
+      const panels = sec.querySelectorAll('.pinstack__panel');
       if (panels.length < 2) return;
       // висоту секції (кількість екранів на прокрут) рахує CSS із цього числа
       sec.style.setProperty('--steps', panels.length);
@@ -264,7 +264,7 @@
           trigger: sec,
           start: 'top top',
           end: 'bottom bottom',
-          pin: '.locations__stage',
+          pin: '.pinstack__stage',
           pinSpacing: false,   // висоту вже дає сама секція (calc зі --steps)
           scrub: true,
         },
@@ -297,7 +297,7 @@
       };
       bgs.forEach((bg, i) => { if (i) setMask(bg, 0); });
 
-      /* Крок — рівно 1 умовна секунда таймлайна, щоб кожен зал займав
+      /* Крок — рівно 1 умовна секунда таймлайна, щоб кожна панель займала
          однакову частку скролу (на цьому тримається поріг зміни панелі).
          До скролу привʼязані ЛИШЕ жалюзі: кадр тягнеться разом із рухом
          пальця. Твінимо проксі-обʼєкт: --open у масці не анімується сам,
@@ -311,13 +311,13 @@
         }, i - 1);
       });
 
-      /* Повільний наїзд кадру на весь пін — один твін на всі зали, а не
+      /* Повільний наїзд кадру на весь пін — один твін на всі панелі, а не
          по одному на крок: інакше на межі кроків масштаб стрибав би назад
          на 1. Тягнеться зі скролом (той самий scrub, що й жалюзі).
-         Ціль — спільний .locations__bgs, а не кожен .locations__bg: у
+         Ціль — спільний .pinstack__bgs, а не кожен .pinstack__bg: у
          момент переходу два кадри видно одночасно (один крізь маску
          іншого), і на різних масштабах шов між ними був би помітний. */
-      tl.fromTo(sec.querySelector('.locations__bgs'),
+      tl.fromTo(sec.querySelector('.pinstack__bgs'),
         { scale: 1 }, { scale: 1.15, ease: 'none', duration: panels.length - 1 }, 0);
 
       /* Контент в арці зі скролом НЕ звʼязаний: інакше на будь-якій
