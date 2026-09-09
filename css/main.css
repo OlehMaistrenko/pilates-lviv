@@ -94,7 +94,7 @@
 
   --section-py: clamp(4rem, 3.0291rem + 4.1424vw, 8rem);
 
-  --container:        110rem;
+  --container:        1920px;
   --container-narrow: 80rem;   /* довгі тексти: рядок понад ~90 символів нечитабельний */
   --gutter:           clamp(1rem, 0.1505rem + 3.6246vw, 4.5rem);
 
@@ -152,7 +152,7 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
   font-weight: var(--fw-lt);
-  line-height: 1.4;
+  line-height: var(--lh-body);
   color: var(--clr-ink);
   background: var(--clr-page);
   -webkit-font-smoothing: antialiased;
@@ -183,8 +183,12 @@ h1 { font-size: var(--fs-hero); }
 h2 { font-size: var(--fs-h2); }
 h3 { font-size: var(--fs-h4); }
 h4 { font-size: var(--fs-h5); }
-h3, h4 { font-family: var(--font-body); font-weight: var(--fw-reg); line-height: var(--lh-tight); }
-h5, h6 { font-size: var(--fs-body); font-weight: var(--fw-med); line-height: var(--lh-tight); }
+/* --lh-tight (1.12) розрахований на --fs-h3 і вище; дрібні заголовки
+   стоять на --fs-h4/--fs-h5, де він злипає рядки — їм вистачає базового.
+   Компонент, який справді бере великий кегль (.direction__title,
+   .review__text), ставить --lh-tight сам. */
+h3, h4 { font-family: var(--font-body); font-weight: var(--fw-reg); }
+h5, h6 { font-size: var(--fs-body); font-weight: var(--fw-med); }
 p { text-wrap: pretty; }
 ul, ol { padding: 0; list-style: none; }
 /* .simple-text повертає маркери назад: там список — це контент із CMS,
@@ -363,7 +367,7 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
   text-transform: uppercase;
   opacity: .7;
 }
-.ph__note { font-size: var(--fs-sm); max-width: 34ch; line-height: var(--lh-body); }
+.ph__note { font-size: var(--fs-sm); max-width: 34ch; }
 /* на моховому/умбровому полі плейсхолдер має бути світлішим за фон, а не темнішим */
 .ph--on-dark {
   background: color-mix(in srgb, var(--clr-page) 12%, transparent);
@@ -631,9 +635,6 @@ html.lenis, html.lenis body { height: auto; }
   gap: var(--sp-5) var(--sp-9);
   align-items: end;
 }
-/* без :not() — лід у split-голові інакше лишався б із 1.6, бо селектор
-   специфічніший за .text--lead */
-.section-head--split > p:not(.text--lead) { line-height: var(--lh-body); }
 .section-head--split > a { justify-self: start; margin-bottom: 0.35em; }
 @media (max-width: 900px) {
   .section-head--split { grid-template-columns: minmax(0, 1fr); align-items: start; }
@@ -666,7 +667,7 @@ html.lenis, html.lenis body { height: auto; }
   border-bottom: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
 }
 @media (min-width: 1081px) {
-  .breadcrumbs a:hover { color: var(--clr-accent-light); }
+  .breadcrumbs a:hover { color: var(--clr-accent); }
 }
 
 /* ============================================================
@@ -708,7 +709,10 @@ html.lenis, html.lenis body { height: auto; }
    інакше підзаголовок відʼїхав би від імені на загальний gap колонки. */
 .profile__head { display: flex; flex-direction: column; gap: var(--sp-3); }
 
-/* Цитата тримається розміром і вагою — курсиву на сайті немає ніде.
+/* Той самий набір, що в .quote (css/styles.css), але продубльований
+   свідомо: профіль — перший екран сторінки тренера, тож його стилі
+   мусять лишатись критичними, а .quote лежить у deferred-файлі.
+   Цитата тримається розміром і вагою — курсиву на сайті немає ніде.
    Лапки малює сам <q>, тому власного ::before тут не треба. */
 .profile__quote {
   display: block;

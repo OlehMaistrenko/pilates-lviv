@@ -141,7 +141,7 @@ include 'partials/header.php';
               <span class="label post__rubric"><?= $rubric ?></span>
             </span>
             <span class="post__title"><?= $title ?></span>
-            <span class="post__excerpt text--sm text--muted"><?= $excerpt ?></span>
+            <span class="card__note text--muted"><?= $excerpt ?></span>
           </a>
         </li>
       <?php endforeach; ?>

@@ -207,7 +207,7 @@ include 'partials/header.php';
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
-              <span class="direction__note text--muted"><?= $note ?></span>
+              <span class="card__note text--muted"><?= $note ?></span>
             </span>
           </a>
         </li>
@@ -307,7 +307,7 @@ include 'partials/header.php';
   <div class="split__grid split__grid--media-end patterned">
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Як усе почалось</h2>
-      <blockquote class="pull-quote" data-reveal>
+      <blockquote class="quote quote--rule" data-reveal>
         За 15 хвилин прогулянки до метро я побачила аж 4 студії пілатесу
       </blockquote>
       <p class="text--muted" data-reveal style="--reveal-i: 1">
@@ -351,24 +351,24 @@ include 'partials/header.php';
     <h2 class="why__title" data-reveal="lines">Єдина у Львові студія з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
 
     <dl class="why__facts">
-      <div data-reveal><dt>2015</dt><dd class="text--body">рік у Львові</dd></div>
-      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd class="text--body">тренажери — Cadillac і Reformer</dd></div>
-      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd class="text--body">напрямків тренувань</dd></div>
-      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd class="text--body">тренерів у команді</dd></div>
+      <div data-reveal><dt>2015</dt><dd>рік у Львові</dd></div>
+      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd>тренажери — Cadillac і Reformer</dd></div>
+      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd>напрямків тренувань</dd></div>
+      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd>тренерів у команді</dd></div>
     </dl>
 
     <div class="why__list">
       <div class="why__item" data-reveal>
         <h3>Пружина замість ваги</h3>
-        <p class="text--body">М’якше для суглобів, техніка кожного руху видно тренеру.</p>
+        <p>М’якше для суглобів, техніка кожного руху видно тренеру.</p>
       </div>
       <div class="why__item" data-reveal style="--reveal-i: 1">
         <h3>Тренери, які вчаться</h3>
-        <p class="text--body">Молодий колектив, постійні семінари й майстер-класи.</p>
+        <p>Молодий колектив, постійні семінари й майстер-класи.</p>
       </div>
       <div class="why__item" data-reveal style="--reveal-i: 2">
         <h3>Метод Springtone</h3>
-        <p class="text--body">Робота на пружинах із постійним контролем техніки.</p>
+        <p>Робота на пружинах із постійним контролем техніки.</p>
       </div>
     </div>
   </div>
@@ -408,7 +408,7 @@ include 'partials/gallery.php';
                 </span>
                 <span class="trainer__name"><?= $name ?></span>
                 <span class="text--sm text--muted"><?= $role ?></span>
-                <q class="trainer__quote text--sm"><?= $quote ?></q>
+                <q class="card__note text--muted"><?= $quote ?></q>
               </a>
             </li>
           <?php endforeach; ?>
@@ -464,7 +464,7 @@ include 'partials/gallery.php';
                 <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
               </figure>
               <div class="review__body">
-                <p class="review__text"><?= $text ?></p>
+                <p class="quote review__text"><?= $text ?></p>
                 <footer class="review__meta">
                   <span class="review__name"><?= $name ?></span>
                   <span class="text--sm text--muted"><?= $role ?></span>

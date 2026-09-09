@@ -235,7 +235,6 @@
 .simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-reg); }
 .simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-reg); }
 .simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
-.simple-text p, .simple-text li { line-height: var(--lh-body); }
 .simple-text ul, .simple-text ol { padding-left: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-2); }
 .simple-text ul { list-style: disc; }
 .simple-text ol { list-style: decimal; }
@@ -350,18 +349,31 @@
 }
 
 /* ============================================================
-   Component: .pull-quote — пряма мова великим кеглем із золотою
-   волосиною зліва. Колір лінії — --clr-accent-light, тож на світлому
-   й на темному полі компонент один.
+   Component: .card__note — підпис під карткою в будь-якій сітці
+   (напрямок, тренер, стаття). Один клас на всі три: за роллю це той
+   самий текст, тож і кегль/колір мусять бути ті самі. Кегль — базовий
+   (--fs-body від body), колір дає .text--muted у розмітці; тут
+   лишається сам відступ.
    ============================================================ */
-.pull-quote {
+.card__note { display: block; margin-top: var(--sp-3); }
+
+/* ============================================================
+   Component: .quote — пряма мова великим кеглем. Один набір
+   (кегль + вага + інтерліньяж + трекінг) на всі цитати сайту: врізка
+   в тексті, цитата тренера в шапці профілю, відгук у слайдері.
+   Модифікатор --rule додає золоту волосину зліва; колір лінії —
+   --clr-accent-light, тож і на світлому, і на темному полі він один.
+   ============================================================ */
+.quote {
   margin: 0;
-  padding-left: var(--sp-5);
-  border-left: 1px solid var(--clr-accent-light);
   font-size: var(--fs-h3);
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
+}
+.quote--rule {
+  padding-left: var(--sp-5);
+  border-left: 1px solid var(--clr-accent);
 }
 
 /* ============================================================
@@ -408,7 +420,7 @@
   margin-bottom: var(--sp-2);
 }
 /* золото як волосина, не заливка */
-.post__rubric { padding-left: var(--sp-4); border-left: 1px solid var(--clr-accent-light); }
+.post__rubric { padding-left: var(--sp-4); border-left: 1px solid var(--clr-accent); }
 
 .post__title {
   display: block;
@@ -418,15 +430,14 @@
   letter-spacing: var(--tracking-tight);
   transition: color .25s var(--ease);
 }
-.post__excerpt { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
 
 /* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
   .post__link:hover .post__title { color: var(--clr-accent); }
-  .post__link:hover .post__media { outline-color: var(--clr-accent-light); }
+  .post__link:hover .post__media { outline-color: var(--clr-accent); }
   .post__link:hover .post__media > img { transform: scale(1.06); }
 }
-.post__link:focus-visible .post__media { outline-color: var(--clr-accent-light); }
+.post__link:focus-visible .post__media { outline-color: var(--clr-accent); }
 
 @media (max-width: 1080px) {
   .post { flex: 0 1 calc(50% - var(--sp-5) / 2); }
@@ -521,7 +532,9 @@
 }
 .rows__item:first-child { border-top: 0; padding-top: 0; }
 
-.rows__title { font-size: var(--fs-h5); font-weight: var(--fw-lt); line-height: var(--lh-tight); }
+/* --lh-tight тут завузький: на кеглі h5 назва в два рядки злипається,
+   1.12 розрахований на --fs-h3 і вище */
+.rows__title { font-size: var(--fs-h5); font-weight: var(--fw-lt); }
 /* рік/час — золото як цифра, ніколи не заливка */
 .rows__num { color: var(--clr-accent); white-space: nowrap; }
 
@@ -800,14 +813,13 @@
   letter-spacing: var(--tracking-tight);
   transition: color .25s var(--ease);
 }
-.direction__note { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
 /* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
   .direction__link:hover .direction__title { color: var(--clr-accent); }
-  .direction__link:hover .direction__media { outline-color: var(--clr-accent-light); }
+  .direction__link:hover .direction__media { outline-color: var(--clr-accent); }
   .direction__link:hover .direction__media > img { transform: scale(1.06); }
 }
-.direction__link:focus-visible .direction__media { outline-color: var(--clr-accent-light); }
+.direction__link:focus-visible .direction__media { outline-color: var(--clr-accent); }
 @media (max-width: 1080px) {
   .direction { flex: 0 1 calc(50% - var(--sp-5) / 2); }
 }
@@ -843,8 +855,8 @@
   gap: var(--sp-5);
   /* власний padding замість .container: секція йде від краю до краю екрана,
      тож відступ тексту мусить жити тут */
-  padding: var(--sp-10) clamp(var(--sp-6), 6vw, var(--sp-10));
-  max-width: calc(60ch + clamp(var(--sp-6), 6vw, var(--sp-10)) * 2);
+  padding: var(--sp-10) var(--gutter);
+  max-width: calc(60ch + var(--gutter) * 2);
 }
 /* Кнопки відходять від тексту далі за базовий крок — дія відділена від
    абзацу, який її пояснює */
@@ -903,7 +915,7 @@
    Асиметрія колонок — текст ширший за портрет, бо тут читають, а не
    дивляться; у 50/50 портрет 3:4 розтягувався б у пейзаж. */
 .split__grid--media-end { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
-.split__grid--media-end .split__body { margin-left: auto; }
+
 
 /* Компактний варіант — CTA в кінці внутрішньої сторінки. На головній
    135svh потрібні паралаксу на повний хід; наприкінці списку статей
@@ -1095,7 +1107,7 @@
   letter-spacing: var(--tracking-tight);
   margin: 0;
 }
-.pinstack__desc { grid-row: 3; line-height: var(--lh-body); }
+.pinstack__desc { grid-row: 3; }
 /* Неактивна панель не ловить кліки: тексти лежать один на одному, і
    прозорий шар зверху перехоплював би вміст активної.
    Прозорість тут НЕ ставимо: opacity веде GSAP на самих .line-mask, і
@@ -1147,7 +1159,7 @@
   background: color-mix(in srgb, black 60%, transparent);
 }
 .why__title { max-width: 24ch; }
-.why__title em { font-style: normal; color: var(--clr-accent-light); }
+.why__title em { font-style: normal; color: var(--clr-accent); }
 /* space-between, а не рівні колонки: підписи різної довжини, і сітка з
    4×1fr лишала б дірки в коротких («7 тренерів») — розгін по краях
    тримає ряд цифр як одну лінію від краю до краю контейнера */
@@ -1168,9 +1180,9 @@
   font-weight: var(--fw-lt);
   line-height: 1;
   letter-spacing: var(--tracking-tight);
-  color: var(--clr-accent-light);
+  color: var(--clr-accent);
 }
-.why__facts dd { margin: var(--sp-3) 0 0; line-height: var(--lh-body); }
+.why__facts dd { margin: var(--sp-3) 0 0; }
 .why__list {
   display: flex;
   flex-wrap: wrap;
@@ -1179,8 +1191,12 @@
   margin-top: var(--sp-8);
 }
 .why__item { flex: 0 1 30ch; }
-.why__item h3 { font-size: var(--fs-h5); color: var(--clr-accent-light); }
-.why__item p { margin-top: var(--sp-2); line-height: var(--lh-body); }
+.why__item h3 { font-size: var(--fs-h5); color: var(--clr-accent); }
+.why__item p { margin-top: var(--sp-2); }
+/* Обидва ряди секції — одна структура «золоте головне + підпис під ним»,
+   тож і підпис у них однаковий: приглушений. */
+.why__facts dd,
+.why__item p { color: var(--clr-ink-mute); }
 @media (max-width: 768px) {
   /* по дві цифри в рядок: space-between на чотирьох тут розтягував би
      пари надто далеко одна від одної */
@@ -1215,7 +1231,7 @@
   --swiper-pagination-bullet-inactive-color: var(--clr-ink);
   --swiper-pagination-bullet-inactive-opacity: .25;
 }
-.slider-controls .swiper-pagination-bullet-active { background: var(--clr-accent-light); }
+.slider-controls .swiper-pagination-bullet-active { background: var(--clr-accent); }
 
 /* ============================================================
    Home 09 — Тренери: портрет-арка, ім'я, напрямок, цитата
@@ -1233,7 +1249,6 @@
 .trainer__media > .ph,
 .trainer__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
 .trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
-.trainer__quote { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
 /* остання плитка — посилання на команду: біла арка з левом із лого */
 .trainer--all .trainer__media {
   display: flex;
@@ -1301,19 +1316,14 @@
 }
 .review__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .review__body { min-width: 0; }
-.review__text {
-  max-width: 28ch;
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-lt);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-}
+/* решту (кегль, вага, трекінг) дає .quote — тут лише міра рядка */
+.review__text { max-width: 28ch; }
 .review__text::before { content: "«"; }
 .review__text::after  { content: "»"; }
 .review__meta { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-6); }
 .review__name { font-weight: var(--fw-med); }
 .reviews .swiper-pagination-bullet { background: var(--clr-page); }
-.reviews .swiper-pagination-bullet-active { background: var(--clr-accent-light); }
+.reviews .swiper-pagination-bullet-active { background: var(--clr-accent); }
 /* контроли живуть у колонці заголовка — тож не центруються, а йдуть від лівого краю */
 .reviews__controls { justify-content: start; }
 @media (max-width: 900px) {
@@ -1339,13 +1349,13 @@
 }
 .faq__head { position: sticky; top: calc(var(--header-h-min) + var(--sp-6)); }
 .faq__head h2 { max-width: 14ch; }
-.faq__head p { margin-top: var(--sp-5); max-width: 30ch; line-height: var(--lh-body); }
+.faq__head p { margin-top: var(--sp-5); max-width: 30ch; }
 /* Решту (волосина, hover, transition) дає .link-arrow — тут лише те, чим
    телефон усередині речення відрізняється від самостійного посилання:
    не гасне разом із .text--muted-абзацом, не дрібнішає до --fs-sm і не
    переноситься посеред номера */
 .faq__phone { color: var(--clr-ink); font-size: inherit; white-space: nowrap; }
-.faq__answer { max-width: 60ch; line-height: var(--lh-body); }
+.faq__answer { max-width: 60ch; }
 @media (max-width: 900px) {
   .faq__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
   .faq__head { position: static; }

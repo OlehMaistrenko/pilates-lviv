@@ -96,7 +96,7 @@ include 'partials/header.php';
             </span>
             <span class="trainer__name"><?= $name ?></span>
             <span class="text--sm text--muted"><?= $role ?></span>
-            <q class="trainer__quote text--sm"><?= $quote ?></q>
+            <q class="card__note text--muted"><?= $quote ?></q>
           </a>
         </li>
       <?php endforeach; ?>
