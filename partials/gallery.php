@@ -29,9 +29,8 @@ if ($gallery_items):
       <div class="section-head section-head--split">
         <h2 data-reveal="lines"><?= $gallery_title ?></h2>
         <?php if ($gallery_link): ?>
-          <a class="link-arrow" href="<?= $gallery_link[1] ?>" target="_blank" rel="noopener" data-reveal>
+          <a class="btn btn--outlined" href="<?= $gallery_link[1] ?>" target="_blank" rel="noopener" data-reveal>
             <?= $gallery_link[0] ?>
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </a>
         <?php endif; ?>
       </div>
