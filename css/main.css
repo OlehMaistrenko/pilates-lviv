@@ -151,7 +151,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+/* Блокові відступи скидаємо всім, хто їх має за замовчуванням — ритм
+   задають компоненти, не браузер. dl/dd тут обовʼязково: у dd є ще й
+   власний margin-inline-start: 40px, через який значення в описових
+   списках стоять зі зсувом. */
+h1, h2, h3, h4, h5, h6,
+p, ul, ol, dl, dd, figure, figcaption, blockquote, pre, hr, fieldset { margin: 0; }
+dl, dd { padding: 0; }
 /* Один шрифт, ніякого курсиву. Ієрархія заголовків тримається на розмірі,
    вазі (--fw-lt на великих, --fw-reg на дрібних) і трекінгу, а не на
    зміні гарнітури чи нахилу — саме тому тут вистачає варіативної Geologica. */
@@ -170,11 +176,35 @@ h2 { font-size: var(--fs-h2); }
 h3 { font-size: var(--fs-h4); }
 h4 { font-size: var(--fs-h5); }
 h3, h4 { font-family: var(--font-body); font-weight: var(--fw-reg); line-height: var(--lh-tight); }
+h5, h6 { font-size: var(--fs-body); font-weight: var(--fw-med); line-height: var(--lh-tight); }
 p { text-wrap: pretty; }
 ul, ol { padding: 0; list-style: none; }
-img { display: block; max-width: 100%; }
+/* .simple-text повертає маркери назад: там список — це контент із CMS,
+   а не елемент інтерфейсу (див. css/styles.css) */
+
+/* max-width, щоб кадр ніколи не розпирав контейнер; display:block —
+   щоб не було зайвого відступу знизу від inline baseline.
+   svg сюди НЕ входить: іконки (.icon) стоять усередині тексту й кнопок,
+   де їм потрібне саме inline-вирівнювання по базовій лінії. */
+img, video, canvas, iframe { display: block; max-width: 100%; }
+img, video { height: auto; }
+
 a { color: inherit; text-decoration: none; }
-button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; text-align: inherit; }
+/* Контроли не успадковують шрифт від body — без цього кнопки й поля
+   лишаються на системному шрифті, і Geologica на них не поширюється */
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; text-align: inherit; }
+/* textarea за замовчуванням inline — дає зайву щілину під полем */
+textarea { display: block; resize: vertical; }
+table { border-collapse: collapse; }
+/* Видимий фокус клавіатури за замовчуванням. :where() — нульова
+   специфічність, тож компонент, який малює фокус по-своєму (картки
+   підсвічують кадр, поля форми — бордер), перебиває це без !important
+   і подвійної обводки не буде. */
+:where(a, button, [role="button"], input, select, textarea, summary):not(.post__link, .direction__link, .trainer__link):focus-visible {
+  outline: 2px solid var(--c-gold);
+  outline-offset: 2px;
+}
 
 ::selection { background: var(--c-ink); color: var(--c-page); }
 main { overflow: clip; }
@@ -588,6 +618,103 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ============================================================
+   Component: .profile — шапка детальної сторінки тренера: портрет-арка
+   ліворуч, імʼя/цитата/факти праворуч. У main.css, а не в styles.css:
+   сторінка тренера починається одразу з цього блоку (без мохового
+   героя), тобто це її перший екран.
+   ============================================================ */
+/* Крихти стоять одразу під хедером, тому секційний --section-py зверху
+   тут завеликий: він відриває їх від хедера на пів екрана. Зверху —
+   мінімальний відступ, повітря лишається під ними, перед профілем. */
+.profile-section { padding-top: var(--sp-5); }
+.profile-section .breadcrumbs { margin-bottom: var(--sp-7); }
+
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 28rem) minmax(0, 1fr);
+  gap: var(--sp-9);
+  align-items: center;
+}
+.profile__media {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-arch);
+  overflow: hidden;
+}
+.profile__media > img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Один вертикальний ритм на всю колонку: відступ між блоками задає тільки
+   gap, власних margin-top у дітей немає. Ширину рядка теж тримає врапер,
+   а не кожен блок окремо — інакше заголовок, цитата й факти отримують
+   різні межі й ряд «їде». */
+.profile__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-6);
+}
+/* Імʼя з напрямком — одна група, тому власний, дрібніший крок усередині:
+   інакше підзаголовок відʼїхав би від імені на загальний gap колонки. */
+.profile__head { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+/* Цитата тримається розміром і вагою — курсиву на сайті немає ніде.
+   Лапки малює сам <q>, тому власного ::before тут не треба. */
+.profile__quote {
+  display: block;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* З чим працює — плашки-обведення. Контур, не заливка: умбра лишається
+   тільки для блоку запису, золото — тільки для ліній і цифр. Не
+   клікабельні, тому й без hover. */
+.profile__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.profile__tags > li {
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-sm);
+}
+
+/* Факти — колонки по контенту, а не рівні третини: у рівних третинах
+   короткий «12 років» лишав під собою пів екрана порожнечі, і трійка
+   читалась розкиданою. Волосина зверху дає їм спільну базу. */
+.profile__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5) var(--sp-8);
+  align-self: stretch;
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--c-line);
+}
+.profile__fact > dd { margin-top: var(--sp-2); font-weight: var(--fw-med); }
+
+.profile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-6);
+}
+
+@media (max-width: 1080px) {
+  .profile { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: var(--sp-7); }
+}
+@media (max-width: 900px) {
+  .profile { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
+  /* портрет на всю ширину виглядав би банером — тримаємо його вужчим
+     за колонку, щоб арка лишалась портретною формою */
+  .profile__media { max-width: 22rem; }
+}
+@media (max-width: 560px) {
+  .profile__facts { gap: var(--sp-5) var(--sp-6); }
+}
+
+/* ============================================================
    Header — три колонки: тумблер меню · лого по центру · запис.
    Fixed поверх контенту; над моховим героєм прозорий (.header-fixed--over),
    після скролу — бежевий, нижчий, з меншим лого. Над відкритим
@@ -601,8 +728,11 @@ html.lenis, html.lenis body { height: auto; }
   z-index: 100;
   background: var(--c-page);
   color: var(--c-ink);
-  border-bottom: 1px solid color-mix(in srgb, currentColor 38%, transparent);
-  transition: background-color .5s var(--ease), color .5s var(--ease);
+  /* Волосина зʼявляється лише коли під хедер поїхав контент: на
+     непроскроленій сторінці вона ділила б навпіл суцільне бежеве поле,
+     тобто була б декоративним кордоном нізвідки. */
+  border-bottom: 1px solid transparent;
+  transition: background-color .5s var(--ease), color .5s var(--ease), border-color .5s var(--ease);
 }
 /* Клас ставить сторінка ($header_over_hero перед include), а не JS — щоб
    не було кадру, у якому темний текст стоїть на темному фоні до першого
@@ -614,8 +744,9 @@ html.lenis, html.lenis body { height: auto; }
 .header-fixed--dark { background: var(--c-moss-deep); color: var(--c-page); border-bottom-color: transparent; }
 /* .is-scrolled / .menu-open ставить js/main.js на <body>; порядок правил
    значущий — відкрите меню важливіше за стан скролу */
+.is-scrolled .header-fixed { border-bottom-color: color-mix(in srgb, currentColor 38%, transparent); }
 .is-scrolled .header-fixed--over,
-.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); border-bottom-color: color-mix(in srgb, currentColor 38%, transparent); }
+.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); }
 .menu-open .header-fixed { background: transparent; color: var(--c-page); }
 
 /* --header-h — «поточна» висота: за замовчуванням = --header-h-max,

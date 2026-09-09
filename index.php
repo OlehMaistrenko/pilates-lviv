@@ -57,7 +57,14 @@ $faq = [
    'Телефоном або через форму на сайті — передзвонимо й підберемо час. Про скасування попереджайте заздалегідь, щоб місце міг зайняти хтось інший.'],
 ];
 
-$gallery = ['Вправа на реформері', 'Cadillac', 'Wunda chair', 'Розтяжка на Cadillac', 'Вправа на килимку', 'Розтяжка на реформері'];
+$gallery = [
+  ['gallery/1.jpg', 'Вправа на реформері'],
+  ['gallery/2.jpg', 'Cadillac'],
+  ['gallery/3.jpg', 'Wunda chair'],
+  ['gallery/4.jpg', 'Розтяжка на Cadillac'],
+  ['gallery/5.jpg', 'Вправа на килимку'],
+  ['gallery/6.jpg', 'Розтяжка на реформері'],
+];
 
 // Реальна тільки перша адреса (Романицького, 24а — з діючого сайту) і її
 // фото (assets/img/location-1). TODO: Брюховичі й Сихів — адреси й описи
@@ -251,7 +258,7 @@ include 'partials/header.php';
      07 · Про студію — історія засновниці, дослівно з діючого сайту
      ============================================================ -->
 <section class="section about">
-  <div class="container">
+  <div class="container container--narrow">
     <div class="about__grid">
       <figure class="about__media" data-reveal>
         <img src="assets/img/founder.jpeg" alt="Засновниця студії" width="1264" height="843" loading="lazy">
@@ -324,43 +331,11 @@ include 'partials/header.php';
 <!-- ============================================================
      08 · Галерея — зал як він є; розміри кадрів різні навмисно
      ============================================================ -->
-<section class="section gallery">
-  <div class="container">
-    <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Зали та тренажери</h2>
-      <a class="link-arrow" href="https://app.lapentor.com/sphere/pilates-2" target="_blank" rel="noopener" data-reveal>
-        3D-тур студією
-        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-      </a>
-    </div>
-  </div>
-
-  <div class="swiper-wrap gallery__slider" data-reveal>
-    <div class="swiper" data-swiper='{"effect":"coverflow","grabCursor":true,"centeredSlides":true,"slidesPerView":1.3,"loop":true,"autoplay":{"delay":2800,"disableOnInteraction":false},"coverflowEffect":{"rotate":35,"stretch":0,"depth":220,"modifier":1,"slideShadows":false},"pagination":{"dynamicBullets":true},"breakpoints":{"768":{"slidesPerView":2},"1080":{"slidesPerView":4}}}'>
-      <div class="swiper-wrapper">
-        <?php foreach ($gallery as $i => $alt): ?>
-          <figure class="swiper-slide gallery__item">
-            <img src="assets/img/gallery/<?= $i + 1 ?>.jpg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
-          </figure>
-        <?php endforeach; ?>
-         <?php foreach ($gallery as $i => $alt): ?>
-          <figure class="swiper-slide gallery__item">
-            <img src="assets/img/gallery/<?= $i + 1 ?>.jpg" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
-          </figure>
-        <?php endforeach; ?>
-      </div>
-    </div>
-    <div class="slider-controls mt-5">
-      <button type="button" class="btn-icon btn-icon--ghost swiper-prev" aria-label="Попереднє фото">
-        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-      </button>
-      <div class="swiper-pagination"></div>
-      <button type="button" class="btn-icon btn-icon--ghost swiper-next" aria-label="Наступне фото">
-        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-      </button>
-    </div>
-  </div>
-</section>
+<?php
+$gallery_items = $gallery;
+$gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+include 'partials/gallery.php';
+?>
 
 <!-- ============================================================
      09 · Тренери — портрет-арка, ім’я, напрямок і власна цитата
@@ -380,7 +355,7 @@ include 'partials/header.php';
         <ul class="swiper-wrapper">
           <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
             <li class="trainer swiper-slide">
-              <a class="trainer__link" href="trainer-<?= $slug ?>.php">
+              <a class="trainer__link" href="trainer-single.php?trainer=<?= $slug ?>">
                 <span class="trainer__media">
                   <img src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>" loading="lazy">
                 </span>
