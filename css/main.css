@@ -1017,13 +1017,11 @@ html.lenis, html.lenis body { height: auto; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* трохи приглушене й тепліше: не «стокове» яскраве відео, а тло під текст */
-  filter: saturate(.6) brightness(.7);
 }
 .hero__tint {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, black 40%, transparent);
+  background: color-mix(in srgb, black 60%, transparent);
 }
 .hero .container { position: relative; display: flex; }
 /* Лінію на місце (близько до половини екрана) виштовхує верхній паддінг

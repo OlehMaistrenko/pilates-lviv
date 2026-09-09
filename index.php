@@ -217,12 +217,12 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     04 · Записатись — split-лейаут (кадр + текст). Фон — градієнт умбри
-     в мох: умбра = колір вуличної вивіски, тому секція означає «двері».
+     04 · Записатись — split-лейаут (кадр + текст). Фон — умбра: колір
+     вуличної вивіски, тому секція означає «двері».
      Два паралакс-шари з різними швидкостями (кадр повільніший за текст).
      ============================================================ -->
-<section class="split split--booking on-dark">
-  <div class="split__grid embossed">
+<section class="split split--umber on-dark">
+  <div class="split__grid patterned">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
            width="2048" height="1365" loading="lazy"
@@ -301,34 +301,37 @@ include 'partials/header.php';
 <!-- ============================================================
      07 · Про студію — історія засновниці, дослівно з діючого сайту
      ============================================================ -->
-<section class="section about">
-  <div class="container container--narrow">
-    <div class="about__grid">
-      <figure class="about__media" data-reveal>
-        <img src="assets/img/founder.jpeg" alt="Засновниця студії" width="1264" height="843" loading="lazy">
-      </figure>
-
-      <div class="about__text">
-        <h2 data-reveal="lines">Як усе почалось</h2>
-        <blockquote class="about__quote" data-reveal>
-          За 15 хвилин прогулянки до метро я побачила аж 4 студії пілатесу
-        </blockquote>
-        <p data-reveal style="--reveal-i: 1">
-          Це був Нью-Йорк. «Ньюйорківці дуже практичні, тому вони не будуть
-          витрачати час на те, що не дає результату». Пілатес на тренажерах
-          там — звична частина тижня, як кава чи метро.
-        </p>
-        <p data-reveal style="--reveal-i: 2">
-          «Я переконана в тому, що бажання дбати про своє тіло є і в нас,
-          українців». Так у 2015 році у Львові з’явилась студія з Cadillac
-          і Reformer — перша й досі єдина в місті.
-        </p>
-        <a class="btn btn--filled" href="about.php" data-reveal style="--reveal-i: 3">
+<section class="split split--moss on-dark">
+  <!-- media-last: кадр іде другим у розмітці, тож на мобільному (один
+       стовпець) текст стоїть першим, а не після повноекранного портрета -->
+  <div class="split__grid split__grid--media-end patterned">
+    <div class="split__body" data-anim="parallax" data-parallax="4">
+      <h2 data-reveal="lines">Як усе почалось</h2>
+      <blockquote class="pull-quote" data-reveal>
+        За 15 хвилин прогулянки до метро я побачила аж 4 студії пілатесу
+      </blockquote>
+      <p class="text--muted" data-reveal style="--reveal-i: 1">
+        Це був Нью-Йорк. «Ньюйорківці дуже практичні, тому вони не будуть
+        витрачати час на те, що не дає результату». Пілатес на тренажерах
+        там — звична частина тижня, як кава чи метро.
+      </p>
+      <p class="text--muted" data-reveal style="--reveal-i: 2">
+        «Я переконана в тому, що бажання дбати про своє тіло є і в нас,
+        українців». Так у 2015 році у Львові з’явилась студія з Cadillac
+        і Reformer — перша й досі єдина в місті.
+      </p>
+      <div class="split__actions" data-reveal style="--reveal-i: 3">
+        <a class="btn btn--filled" href="about.php">
           Про студію
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </a>
       </div>
     </div>
+
+    <figure class="split__media">
+      <img class="split__layer" src="assets/img/founder.jpeg" alt="Засновниця студії"
+           width="1264" height="843" loading="lazy"
+           data-anim="parallax" data-parallax="10">
+    </figure>
   </div>
 </section>
 
@@ -348,24 +351,24 @@ include 'partials/header.php';
     <h2 class="why__title" data-reveal="lines">Єдина у Львові студія з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
 
     <dl class="why__facts">
-      <div data-reveal><dt>2015</dt><dd class="text--sm text--muted">рік у Львові</dd></div>
-      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd class="text--sm text--muted">тренажери — Cadillac і Reformer</dd></div>
-      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd class="text--sm text--muted">напрямків тренувань</dd></div>
-      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd class="text--sm text--muted">тренерів у команді</dd></div>
+      <div data-reveal><dt>2015</dt><dd class="text--body">рік у Львові</dd></div>
+      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd class="text--body">тренажери — Cadillac і Reformer</dd></div>
+      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd class="text--body">напрямків тренувань</dd></div>
+      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd class="text--body">тренерів у команді</dd></div>
     </dl>
 
     <div class="why__list">
       <div class="why__item" data-reveal>
         <h3>Пружина замість ваги</h3>
-        <p class="text--muted text--sm">М’якше для суглобів, техніка кожного руху видно тренеру.</p>
+        <p class="text--body">М’якше для суглобів, техніка кожного руху видно тренеру.</p>
       </div>
       <div class="why__item" data-reveal style="--reveal-i: 1">
         <h3>Тренери, які вчаться</h3>
-        <p class="text--muted text--sm">Молодий колектив, постійні семінари й майстер-класи.</p>
+        <p class="text--body">Молодий колектив, постійні семінари й майстер-класи.</p>
       </div>
       <div class="why__item" data-reveal style="--reveal-i: 2">
         <h3>Метод Springtone</h3>
-        <p class="text--muted text--sm">Робота на пружинах із постійним контролем техніки.</p>
+        <p class="text--body">Робота на пружинах із постійним контролем техніки.</p>
       </div>
     </div>
   </div>
@@ -435,7 +438,7 @@ include 'partials/gallery.php';
 <!-- ============================================================
      10 · Відгуки — третє й останнє мохове поле перед футером
      ============================================================ -->
-<section class="reviews embossed on-dark">
+<section class="reviews patterned on-dark">
   <div class="container">
     <!-- .swiper-wrap огортає всю сітку: initSwiper шукає контроли в межах
          найближчого .swiper-wrap, а вони стоять у колонці заголовка -->

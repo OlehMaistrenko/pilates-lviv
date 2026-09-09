@@ -107,8 +107,8 @@ include 'partials/header.php';
 <!-- ============================================================
      03 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--booking split--cta on-dark">
-  <div class="split__grid embossed">
+<section class="split split--umber split--cta on-dark">
+  <div class="split__grid patterned">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
            width="2048" height="1365" loading="lazy"

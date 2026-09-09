@@ -350,6 +350,21 @@
 }
 
 /* ============================================================
+   Component: .pull-quote — пряма мова великим кеглем із золотою
+   волосиною зліва. Колір лінії — --clr-accent-light, тож на світлому
+   й на темному полі компонент один.
+   ============================================================ */
+.pull-quote {
+  margin: 0;
+  padding-left: var(--sp-5);
+  border-left: 1px solid var(--clr-accent-light);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* ============================================================
    Component: .posts / .post — сітка карток-тизерів (блог, події,
    інші тренування). Та сама візуальна мова, що в .direction/.trainer
    (арка, --fs-h4/--fw-lt, золотий hover), але кадр ширший: портретна
@@ -531,54 +546,34 @@
 }
 
 /* ============================================================
-   Component: .embossed — тиснення патерном з брендбуку (с.13).
+   Component: .patterned — фактура патерном з брендбуку (с.13).
    Патерн підключений маскою, а не картинкою: сам SVG чорний, фарбу
    дає background-color, тож один файл годиться і для темних, і для
-   світлих полів. Ефект витисненого в тканину — два зсунуті шари
-   однієї маски: темний угору (тінь у заглибині), світлий униз (блік
-   на краю). Зсув переважно вертикальний (світло згори), по X —
-   суб-піксельний: у патерні є і горизонтальні, і вертикальні лінії,
-   і чистий діагональний зсув однаково слабко проявляв обидві.
-   Фактура має читатись на просвіт, а не конкурувати з текстом.
-   Силу тиснення на конкретному полі крутити через --emboss-shadow/
-   --emboss-light, колір бліку — через --emboss-c.
+   світлих полів. Фактура має читатись на просвіт, а не конкурувати
+   з текстом — силу на конкретному полі крутити через --pattern-o,
+   колір — через --pattern-c.
    ============================================================ */
-.embossed {
+.patterned {
   position: relative;
-  /* шари сидять на z-index:-1, isolate не дає їм провалитись під
+  /* шар сидить на z-index:-1, isolate не дає йому провалитись під
      фон предка, коли в самої секції фону немає */
   isolation: isolate;
 }
 /* mask-position рахується від власного боксу, тож у двох сусідніх
-   .embossed-блоках (CTA над футером) плитка стартує заново і на стику
-   видно розрив. Зсуваємо початок плитки на власний відступ блоку від
-   верху документа — --emboss-offset ставить сторінка там, де блоки
-   стоять поруч; за замовчуванням 0, тож одиночні блоки не змінюються. */
-.embossed::before,
-.embossed::after {
+   .patterned-блоках (CTA над футером) плитка стартує заново і на стику
+   видно розрив. --pattern-y зсуває початок плитки на власний відступ
+   блоку від верху документа (ставить js/main.js), і патерн через межу
+   йде без розриву. Дефолт 0 — одиночні блоки не змінюються. */
+.patterned::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  -webkit-mask: url(../assets/img/pattern-lion.svg) 0 0 / 16.625rem 17.875rem repeat;
-  mask: url(../assets/img/pattern-lion.svg) 0 0 / 16.625rem 17.875rem repeat;
+  -webkit-mask: url(../assets/img/pattern-lion.svg) 0 calc(-1 * var(--pattern-y, 0px)) / 16.625rem 17.875rem repeat;
+  mask: url(../assets/img/pattern-lion.svg) 0 calc(-1 * var(--pattern-y, 0px)) / 16.625rem 17.875rem repeat;
+  background-color: var(--pattern-c, var(--clr-page));
+  opacity: var(--pattern-o, .05);
   pointer-events: none;
-}
-/* --emboss-y зсуває початок плитки: блок, що стоїть одразу під іншим
-   .embossed, отримує зсув на висоту сусіда, і патерн через межу йде
-   без розриву (див. .split--cta + .site-footer). Дефолт 0 — одиночні
-   блоки поводяться як раніше. */
-.embossed::before {
-  background-color: #000;
-  -webkit-mask-position: -.5px calc(-1px - var(--emboss-y, 0px));
-  mask-position: -.5px calc(-1px - var(--emboss-y, 0px));
-  opacity: var(--emboss-shadow, .09);
-}
-.embossed::after {
-  background-color: var(--emboss-c, var(--clr-page));
-  -webkit-mask-position: .5px calc(1px - var(--emboss-y, 0px));
-  mask-position: .5px calc(1px - var(--emboss-y, 0px));
-  opacity: var(--emboss-light, .04);
 }
 
 /* ============================================================
@@ -824,7 +819,7 @@
 /* ============================================================
    Split — кадр на всю висоту з одного боку, текст із другого.
    Генеричний компонент: сам .split фону не має, його дає модифікатор
-   (.split--booking). Паралакс рухає шари transform-ом, тому .split__media
+   (.split--moss / .split--umber). Паралакс рухає шари transform-ом, тому .split__media
    мусить лишатись overflow:hidden, а сам кадр — вищим за колонку.
    ============================================================ */
 .split__grid {
@@ -894,13 +889,21 @@
   .split__locations { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
 }
 
-/* Умбра в мох: умбра = колір вуличної вивіски, тому це «двері».
-   Токени тексту/ліній/золота йдуть з .on-dark у розмітці — тому
-   utility .text--muted тут працює без власних правил. */
-.split--booking {
-  background: linear-gradient(160deg, var(--clr-surface-alt) 0%, var(--clr-surface) 100%);
-  color: var(--clr-page);
-}
+/* Колірні поля. Токени тексту/ліній/золота йдуть з .on-dark у розмітці —
+   тому utility .text--muted тут працює без власних правил.
+   Умбра = колір вуличної вивіски, тож .split--umber означає «двері» і
+   на сторінці стоїть рівно один раз (блок запису). */
+.split--moss,
+.split--umber { color: var(--clr-page); }
+.split--moss  { background: var(--clr-surface); }
+.split--umber { background: var(--clr-surface-alt); }
+
+/* Кадр справа: порядок задає сама розмітка (текст → кадр), тож на
+   мобільному в один стовпець текст лишається зверху без order-хаків.
+   Асиметрія колонок — текст ширший за портрет, бо тут читають, а не
+   дивляться; у 50/50 портрет 3:4 розтягувався б у пейзаж. */
+.split__grid--media-end { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+.split__grid--media-end .split__body { margin-left: auto; }
 
 /* Компактний варіант — CTA в кінці внутрішньої сторінки. На головній
    135svh потрібні паралаксу на повний хід; наприкінці списку статей
@@ -911,7 +914,8 @@
 @media (max-width: 1080px) {
   /* в один стовпець кадр і текст складаються по висоті — власний мінімум
      гріду вже зайвий, лишається лише мінімум самого кадру */
-  .split__grid { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .split__grid,
+  .split__grid--media-end { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .split__media { min-height: 60svh; }
   .split__body { padding-block: var(--section-py); max-width: none; }
 }
@@ -934,6 +938,11 @@
   --step-vh: 130svh;
   position: relative;
   height: calc(var(--steps, 3) * var(--step-vh));
+  /* Запінений стейдж — рівно 100svh, а секція вища (calc зі --steps) і
+     pinSpacing:false. Тож на стику з сусідньою секцією нижче стейджа
+     лишається смуга самої секції — без фону там просвічував би беж
+     сторінки світлою лінією між двома темними полями. */
+  background: var(--clr-ink);
 }
 /* Хедер фіксований і лежить поверх запіненого кадру, тож центр екрана і
    центр вільного місця — не одне й те саме: без поправки картка стоїть
@@ -1127,16 +1136,15 @@
    Запас мусить перекривати хід: data-parallax="12" — це ±12% висоти шару,
    тож 132% з інсетом -16% лишає ще й невеликий люфт. */
 .why__layer { position: absolute; inset: -16% 0; width: 100%; height: 132%; object-fit: cover; }
-/* затемнення живе на ::after самого .why, а не окремим шаром у розмітці:
-   градієнт трохи щільніший зверху, де стоїть заголовок */
+/* затемнення живе на ::after самого .why, а не окремим шаром у розмітці.
+   Той самий рівний тінт, що й у героя (.hero__tint) — щоб два кадрові
+   поля сторінки читались однаково, а не як два різні прийоми */
 .why::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--clr-ink) 82%, transparent) 0%,
-    color-mix(in srgb, var(--clr-ink) 68%, transparent) 100%);
+  background: color-mix(in srgb, black 60%, transparent);
 }
 .why__title { max-width: 24ch; }
 .why__title em { font-style: normal; color: var(--clr-accent-light); }
@@ -1178,42 +1186,6 @@
      пари надто далеко одна від одної */
   .why__facts > div { flex: 0 1 calc(50% - var(--sp-6) / 2); }
   .why__item { flex: 1 1 100%; }
-}
-
-/* ============================================================
-   Home 07 — Про студію: портрет-арка і цитата засновниці
-   ============================================================ */
-.about__grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-7) var(--sp-8);
-  align-items: center;
-}
-.about__media { flex: 0 0 28.75rem; max-width: 28.75rem; aspect-ratio: 3 / 4; }
-.about__text { flex: 1 1 25rem; }
-.about__media > .ph,
-.about__media > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--r-arch);
-}
-/* золота волосина зліва — єдиний акцент секції, позначає пряму мову */
-.about__quote {
-  margin-top: var(--sp-7);
-  padding-left: var(--sp-5);
-  border-left: 1px solid var(--clr-accent-light);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-lt);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-  font-style: italic;
-  max-width: 24ch;
-}
-.about__text > p { margin-top: var(--sp-5); max-width: 52ch; line-height: var(--lh-body); }
-.about__text > .link-arrow { margin-top: var(--sp-7); }
-@media (max-width: 900px) {
-  .about__media { flex-basis: 31.25rem; max-width: 31.25rem; }
 }
 
 /* ============================================================

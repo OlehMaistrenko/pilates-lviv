@@ -46,7 +46,7 @@
   ];
   ?>
 
-  <footer class="site-footer embossed on-dark">
+  <footer class="site-footer patterned on-dark">
     <?php if (!empty($seo_title) && !empty($seo_text)): ?>
       <div class="container">
         <!-- лінія живе на внутрішньому блоці, а не на .container: бордер
