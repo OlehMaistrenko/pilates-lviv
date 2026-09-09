@@ -16,7 +16,7 @@
   <div class="form__row">
     <label class="form__label" for="callback-phone">Вкажіть, будь ласка, ваш телефон</label>
     <input class="form__input" type="tel" id="callback-phone" name="phone" autocomplete="tel"
-           placeholder="+38 (0__) ___-__-__" required>
+           placeholder="+38 (063) 015-05-17" required>
   </div>
 
   <div class="modal__foot">

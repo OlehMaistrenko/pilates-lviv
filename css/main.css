@@ -19,9 +19,17 @@
   --clr-surface-deep: #23261C;   /* плашка під відео героя */
   --clr-surface-alt:  #84412F;   /* PANTONE 7594 C — тільки блок запису */
 
-  --clr-accent:       #C2A15C;   /* лінії, лев, деталі */
-  --clr-accent-light: #DCC58E;   /* золото на темному полі */
-  --clr-accent-ink:   #8A6A28;   /* золото як ТЕКСТ на бежі: світле не читається */
+  /* Золото має дві версії, бо один відтінок не тримає обидва поля:
+     --clr-accent — «золото на поточному фоні». На бежі це темний тон
+     (світлий на ньому не читається), .on-dark перемикає його на світлий.
+     Тобто компонент завжди пише var(--clr-accent) і не думає про фон.
+     --clr-accent-light — фіксовано світле: декор, який лишається світлим
+     і на бежі (тонкі лінії, буліти, обводки). */
+  --clr-accent:       #8A6A28;
+  --clr-accent-light: #DCC58E;
+  /* текст поверх суцільної акцентної заливки: на бежі акцент темний, тож
+     напис білий; на .on-dark акцент світлий і напис стає темним */
+  --clr-on-accent:    var(--clr-page);
 
   /* приглушений текст і бордери — від --clr-ink через color-mix, без власних hex */
   --clr-ink-mute: color-mix(in srgb, var(--clr-ink) 62%, transparent);
@@ -226,14 +234,15 @@ main { overflow: clip; }
 
 /* ============================================================
    Utility: .on-dark — перевизначає колірні токени на темному полі
-   (moss/umber), щоб .text--muted, лінії (--clr-line) і золото-як-текст
-   (--clr-accent-ink) лишались читабельними без власних правил у секції.
+   (moss/umber), щоб .text--muted, лінії (--clr-line) і золото
+   (--clr-accent) лишались читабельними без власних правил у секції.
    Ставиться на той самий елемент, що задає background/color секції.
    ============================================================ */
 .on-dark {
-  --clr-ink-mute: color-mix(in srgb, var(--clr-page) 68%, transparent);
-  --clr-line:     color-mix(in srgb, var(--clr-page) 20%, transparent);
-  --clr-accent-ink: var(--clr-accent-light);
+  --clr-ink-mute:  color-mix(in srgb, var(--clr-page) 68%, transparent);
+  --clr-line:      color-mix(in srgb, var(--clr-page) 20%, transparent);
+  --clr-accent:    var(--clr-accent-light);
+  --clr-on-accent: var(--clr-ink);
 }
 
 /* ============================================================
@@ -252,17 +261,18 @@ main { overflow: clip; }
 
 /* ============================================================
    Buttons — дві форми: filled (заливка) і outlined (контур).
-   Кольору-модифікаторів немає: filled завжди акцентний, .btn--light
-   поверх нього перемикає заливку на білу (для полів, де акцент уже
-   є в тексті/лініях секції).
+   Filled завжди акцентний, .btn--light поверх нього перемикає заливку
+   на білу (поля, де акцент уже є в тексті/лініях секції). .btn--header —
+   контекстний модифікатор для хедера: сам вирішує колір за поточним
+   станом хедера (світлий/темний), див. коментар нижче.
    ============================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--sp-2);
-  min-height: 3rem;
-  padding-inline: var(--sp-6);
+  min-height: var(--btn-size, 3rem);
+  padding-inline: var(--btn-pad, var(--sp-6));
   border: 1px solid transparent;
   border-radius: var(--r-pill);
   font-family: var(--font-body);
@@ -272,38 +282,58 @@ main { overflow: clip; }
   text-align: center;
   transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.btn--filled { background: var(--clr-accent); color: var(--clr-ink); }
+.btn--filled { background: var(--clr-accent); color: var(--clr-on-accent); }
 .btn--filled.btn--light { background: var(--clr-page); color: var(--clr-ink); }
 .btn--outlined {
   background: transparent;
   color: var(--clr-accent);
   border-color: var(--clr-accent);
 }
-.btn--sm { min-height: 2.5rem; padding-inline: var(--sp-4); }
+/* біла рамка/текст — темні (.on-dark) поля: акцентний контур там губиться
+   в золоті лінійок/лева, білий лишається контрастним контролом. */
+.btn--outlined.btn--light {
+  color: var(--clr-page);
+  border-color: color-mix(in srgb, var(--clr-page) 38%, transparent);
+}
+/* Хедер має рівно 2 стани, а не 4: темний (банер на першому екрані АБО
+   відкрите меню — .header-fixed--over/--dark, поки НЕ .is-scrolled, і
+   .menu-open) і світлий (усе інше). У світлому кнопка виглядає як
+   звичайна .btn--outlined, тож окремих правил не треба — .btn--header
+   лише перемикає її на білу в темному стані. */
+body:not(.is-scrolled) .header-fixed--over .btn--outlined.btn--header,
+body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
+.menu-open .header-fixed .btn--outlined.btn--header {
+  color: var(--clr-page);
+  border-color: color-mix(in srgb, var(--clr-page) 38%, transparent);
+}
+.btn--sm { --btn-size: 2.5rem; --btn-pad: var(--sp-4); }
 /* на всю ширину контейнера; width замало — .btn інлайновий флекс, і в
    grid/flex-батька з центруванням він однаково лишився б по контенту */
 .btn--block { display: flex; width: 100%; }
 
+/* Hover міняє форму, не тільки відтінок: filled ⇄ outlined тим самим
+   кольором — рамка з'являється/зникає разом із заливкою. */
 @media (min-width: 1081px) {
-  .btn--filled:hover { background: var(--clr-accent-light); }
-  .btn--filled.btn--light:hover { background: var(--clr-accent-light); }
-  .btn--outlined:hover { background: color-mix(in srgb, var(--clr-accent) 12%, transparent); }
+  .btn--filled:hover { background: transparent; border-color: var(--clr-accent); color: var(--clr-accent); }
+  .btn--filled.btn--light:hover { background: transparent; border-color: var(--clr-page); color: var(--clr-page); }
+  .btn--outlined:hover { background: var(--clr-accent); border-color: var(--clr-accent); color: var(--clr-on-accent); }
+  .btn--outlined.btn--light:hover { background: var(--clr-page); border-color: var(--clr-page); color: var(--clr-ink); }
+  body:not(.is-scrolled) .header-fixed--over .btn--outlined.btn--header:hover,
+  body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header:hover,
+  .menu-open .header-fixed .btn--outlined.btn--header:hover {
+    background: var(--clr-page);
+    border-color: var(--clr-page);
+    color: var(--clr-ink);
+  }
 }
-.btn-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid transparent;
-  border-radius: var(--r-pill);
-  color: inherit;
-  transition: background-color .2s var(--ease);
-}
-.btn-icon--sm { width: 2.5rem; height: 2.5rem; }
-.btn-icon--outlined { border-color: color-mix(in srgb, currentColor 38%, transparent); }
-@media (min-width: 1081px) {
-  .btn-icon:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+/* Кнопка-іконка — не окремий компонент, а форма звичайної: коло замість
+   пігулки з падінгами. Кольори, стани й hover-інверсія — ті самі
+   .btn--filled/--outlined/--light/--header, дублювати їх не треба.
+   Розмір теж спільний: width бере ту саму --btn-size, тож .btn--sm
+   стискає іконку в коло меншого діаметра без власного правила. */
+.btn--icon {
+  --btn-pad: 0;
+  width: var(--btn-size, 3rem);
 }
 
 /* ============================================================
@@ -859,7 +889,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 /* Без підписів контроли лишаються самими іконками — паддінг .btn--sm
    (--sp-5 з кожного боку) розтягував би їх у зайво широкі пігулки, тож
-   тут вони стають колом сталої ширини, як .btn-icon деінде. */
+   тут вони стають колом сталої ширини, як .btn--icon деінде. */
 @media (max-width: 560px) {
   .nav-toggle__label, .account__label { display: none; }
   .site-header__lead { gap: var(--sp-2); }
@@ -891,7 +921,10 @@ html.lenis, html.lenis body { height: auto; }
   list-style: none;   /* Firefox */
 }
 .dropdown > summary::-webkit-details-marker { display: none; }
-.dropdown[open] > .btn { background: color-mix(in srgb, currentColor 12%, transparent); }
+/* :not(:hover) — інакше на hover+open разом цей напівпрозорий тон лягає
+   поверх suцільного hover-фону кнопки й тим самим кольором зафарбовує
+   і текст, роблячи його невидимим на власному фоні */
+.dropdown[open] > .btn:not(:hover) { background: color-mix(in srgb, currentColor 12%, transparent); }
 /* шеврон — CSS-фігура, той самий прийом, що й .accordion__icon */
 .dropdown__caret {
   width: 0.3125rem;

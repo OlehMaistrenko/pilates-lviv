@@ -31,7 +31,7 @@ $directions = [
   <div class="form__row">
     <label class="form__label" for="booking-phone">Телефон</label>
     <input class="form__input" type="tel" id="booking-phone" name="phone" autocomplete="tel"
-           placeholder="+38 (0__) ___-__-__" required>
+           placeholder="+38 (063) 015-05-17" required>
   </div>
 
   <div class="form__row">

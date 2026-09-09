@@ -79,7 +79,7 @@ include 'partials/header.php';
      (.hero--inner): під ним одразу список статей. Замість відео — кадр:
      заради шапки списку окреме відео не вантажимо.
      ============================================================ -->
-<section class="hero hero--inner">
+<section class="hero hero--inner on-dark">
   <!-- Панорамний кадр (2.49:1) — під пропорції банера. Постать ліворуч,
        праворуч порожня стіна: лід лягає на чисту площину, а не на тіло.
        Окремий файл, а не path/2.jpeg: оригінал 2.7 МБ, а це перший
@@ -183,7 +183,7 @@ include 'partials/header.php';
 
       <div class="split__actions" data-reveal>
         <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
-        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
+        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>

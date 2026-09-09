@@ -42,7 +42,7 @@ include 'partials/header.php';
 <!-- ============================================================
      01 · Банер — той самий .hero--inner, що на blog.php
      ============================================================ -->
-<section class="hero hero--inner">
+<section class="hero hero--inner on-dark">
   <img class="hero__video" src="assets/img/gallery/4.jpg" alt="" aria-hidden="true"
        width="2400" height="1100" loading="eager">
   <div class="hero__tint" aria-hidden="true"></div>
@@ -124,7 +124,7 @@ include 'partials/header.php';
 
       <div class="split__actions" data-reveal>
         <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
-        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
+        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>

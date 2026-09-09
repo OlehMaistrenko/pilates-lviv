@@ -49,11 +49,11 @@ if ($gallery_items):
       </div>
     </div>
     <div class="slider-controls mt-5">
-      <button type="button" class="btn-icon btn-icon--outlined swiper-prev" aria-label="Попереднє фото">
+      <button type="button" class="btn btn--icon btn--outlined swiper-prev" aria-label="Попереднє фото">
         <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
       </button>
       <div class="swiper-pagination"></div>
-      <button type="button" class="btn-icon btn-icon--outlined swiper-next" aria-label="Наступне фото">
+      <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступне фото">
         <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
       </button>
     </div>

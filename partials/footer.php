@@ -87,10 +87,10 @@
           <button type="button" class="btn btn--filled btn--light btn--sm" data-modal="callback">Замовити дзвінок</button>
 
           <div class="site-footer__social">
-            <a class="btn-icon btn-icon--sm" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
+            <a class="btn btn--icon btn--sm btn--outlined btn--light" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
             </a>
-            <a class="btn-icon btn-icon--sm" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
+            <a class="btn btn--icon btn--sm btn--outlined btn--light" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
             </a>
           </div>
@@ -122,7 +122,7 @@
   <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-overlay-title" data-lenis-prevent hidden>
     <div class="modal-overlay__backdrop" data-modal-close></div>
     <div class="modal-overlay__panel">
-      <button type="button" class="btn-icon btn-icon--sm modal-overlay__close" data-modal-close aria-label="Закрити">
+      <button type="button" class="btn btn--icon btn--sm btn--outlined modal-overlay__close" data-modal-close aria-label="Закрити">
         <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
       </button>
       <div class="modal-overlay__content" id="modal-overlay-content"></div>

@@ -82,7 +82,7 @@ include 'partials/header.php';
 <!-- ============================================================
      01 · Герой — єдине мохове поле у верхній частині сторінки
      ============================================================ -->
-<section class="hero">
+<section class="hero on-dark">
   <!-- Відео без звуку в петлі; постер — кадр із нього, показується до
        першого кадру й там, де autoplay заборонений (економія трафіку). -->
   <video class="hero__video" src="assets/video/hero.mp4" poster="assets/img/hero-poster.jpg"
@@ -106,7 +106,7 @@ include 'partials/header.php';
 
         <div class="hero__actions" data-reveal style="--reveal-i: 1">
           <button type="button" class="btn btn--filled" data-modal="booking">Записатись на заняття</button>
-          <a class="btn btn--outlined" href="schedule.php">Дивитись розклад</a>
+          <a class="btn btn--outlined btn--light" href="schedule.php">Дивитись розклад</a>
         </div>
       </div>
     </div>
@@ -207,7 +207,7 @@ include 'partials/header.php';
 
       <div class="split__actions" data-reveal>
         <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
-        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
+        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>
@@ -279,7 +279,7 @@ include 'partials/header.php';
           українців». Так у 2015 році у Львові з’явилась студія з Cadillac
           і Reformer — перша й досі єдина в місті.
         </p>
-        <a class="link-arrow" href="about.php" data-reveal style="--reveal-i: 3">
+        <a class="btn btn--filled" href="about.php" data-reveal style="--reveal-i: 3">
           Про студію
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </a>
@@ -376,11 +376,11 @@ include 'partials/gallery.php';
         </ul>
       </div>
       <div class="slider-controls mt-5">
-        <button type="button" class="btn-icon btn-icon--outlined swiper-prev" aria-label="Попередній тренер">
+        <button type="button" class="btn btn--icon btn--outlined swiper-prev" aria-label="Попередній тренер">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </button>
         <div class="swiper-pagination"></div>
-        <button type="button" class="btn-icon btn-icon--outlined swiper-next" aria-label="Наступний тренер">
+        <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступний тренер">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </button>
       </div>
@@ -399,11 +399,11 @@ include 'partials/gallery.php';
       <div class="reviews__head">
         <h2 data-reveal="lines">Що кажуть клієнти</h2>
         <div class="slider-controls reviews__controls mt-5">
-          <button type="button" class="btn-icon swiper-prev" aria-label="Попередній відгук">
+          <button type="button" class="btn btn--icon btn--outlined btn--light swiper-prev" aria-label="Попередній відгук">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </button>
           <div class="swiper-pagination"></div>
-          <button type="button" class="btn-icon swiper-next" aria-label="Наступний відгук">
+          <button type="button" class="btn btn--icon btn--outlined btn--light swiper-next" aria-label="Наступний відгук">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </button>
         </div>

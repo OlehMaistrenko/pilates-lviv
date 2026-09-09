@@ -52,7 +52,6 @@
   top: var(--sp-3);
   right: var(--sp-3);
   z-index: 2;
-  background: color-mix(in srgb, var(--clr-ink) 6%, transparent);
 }
 .modal__head { margin-bottom: var(--sp-5); }
 .modal__title {
@@ -197,7 +196,6 @@
 .menu__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-5); }
 @media (min-width: 1081px) {
   .menu__foot a:hover { color: var(--clr-accent-light); }
-  .menu__links .btn-icon:hover { background: color-mix(in srgb, var(--clr-page) 12%, transparent); color: var(--clr-accent-light); }
 }
 
 @media (max-width: 1080px) {
@@ -254,7 +252,7 @@
 .simple-text a { text-decoration: underline; }
 .simple-text strong { font-weight: var(--fw-sb); }
 /* курсиву на сайті немає ніде — виділення через колір, а не нахил */
-.simple-text em { font-style: normal; color: var(--clr-accent-ink); }
+.simple-text em { font-style: normal; color: var(--clr-accent); }
 
 .simple-text iframe {
   width: 100%;
@@ -332,7 +330,7 @@
 
 /* ============================================================
    Component: .link-arrow — текстове посилання зі стрілкою і волосиною.
-   Колір hover — --clr-accent-ink; темні секції перевизначають цей токен
+   Колір hover — --clr-accent; темні секції перевизначають цей токен
    локально на світле золото, тож компонент один на обидва поля.
    ============================================================ */
 .link-arrow {
@@ -347,7 +345,7 @@
 }
 .link-arrow .icon { transition: transform .25s var(--ease); }
 @media (min-width: 1081px) {
-  .link-arrow:hover { color: var(--clr-accent-ink); border-bottom-color: currentColor; }
+  .link-arrow:hover { color: var(--clr-accent); border-bottom-color: currentColor; }
   .link-arrow:hover .icon { transform: translateX(0.1875rem); }
 }
 
@@ -395,7 +393,7 @@
   margin-bottom: var(--sp-2);
 }
 /* золото як волосина, не заливка */
-.post__rubric { padding-left: var(--sp-4); border-left: 1px solid var(--clr-accent); }
+.post__rubric { padding-left: var(--sp-4); border-left: 1px solid var(--clr-accent-light); }
 
 .post__title {
   display: block;
@@ -409,11 +407,11 @@
 
 /* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
-  .post__link:hover .post__title { color: var(--clr-accent-ink); }
-  .post__link:hover .post__media { outline-color: var(--clr-accent); }
+  .post__link:hover .post__title { color: var(--clr-accent); }
+  .post__link:hover .post__media { outline-color: var(--clr-accent-light); }
   .post__link:hover .post__media > img { transform: scale(1.06); }
 }
-.post__link:focus-visible .post__media { outline-color: var(--clr-accent); }
+.post__link:focus-visible .post__media { outline-color: var(--clr-accent-light); }
 
 @media (max-width: 1080px) {
   .post { flex: 0 1 calc(50% - var(--sp-5) / 2); }
@@ -510,7 +508,7 @@
 
 .rows__title { font-size: var(--fs-h5); font-weight: var(--fw-lt); line-height: var(--lh-tight); }
 /* рік/час — золото як цифра, ніколи не заливка */
-.rows__num { color: var(--clr-accent-ink); white-space: nowrap; }
+.rows__num { color: var(--clr-accent); white-space: nowrap; }
 
 /* Сертифікат: назва тягнеться, організація під нею, рік праворуч */
 .rows__item--cert { grid-template-columns: minmax(0, 1fr) auto; }
@@ -590,7 +588,7 @@
    Кожен крок займає половину екрана, щоб одометру було де крутитись.
    ============================================================ */
 .path__title { max-width: 26ch; }
-.path__title em { font-style: normal; color: var(--clr-accent-ink); }
+.path__title em { font-style: normal; color: var(--clr-accent); }
 /* Цифра непрозора, тож вона не може лежати під текстом — у неї власна
    ліва колонка, кроки в правій. */
 /* Колонки по вмісту, а не 1fr/1.2fr: текст кроку обмежений 34ch, тож
@@ -615,7 +613,7 @@
   align-content: start;
   /* --gold-ink, не --clr-accent: світле золото суцільною заливкою на бежі дає
      ~2:1 і зникає; той самий токен уже стоїть на .path__num */
-  color: var(--clr-accent-ink);
+  color: var(--clr-accent);
   pointer-events: none;
 }
 /* маска на висоту одної цифри; стовпчик усередині зсуває GSAP */
@@ -645,7 +643,7 @@
 /* крок закінчується кадром, а наступний починається текстом — без цього
    відступу фото щільно підпирає наступний абзац */
 .path__item + .path__item { margin-top: var(--sp-9); }
-.path__num { display: none; color: var(--clr-accent-ink); }
+.path__num { display: none; color: var(--clr-accent); }
 .path__text {
   max-width: 34ch;
   font-size: var(--fs-h4);
@@ -748,11 +746,11 @@
 .direction__note { display: block; margin-top: var(--sp-3); line-height: var(--lh-body); }
 /* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
-  .direction__link:hover .direction__title { color: var(--clr-accent-ink); }
-  .direction__link:hover .direction__media { outline-color: var(--clr-accent); }
+  .direction__link:hover .direction__title { color: var(--clr-accent); }
+  .direction__link:hover .direction__media { outline-color: var(--clr-accent-light); }
   .direction__link:hover .direction__media > img { transform: scale(1.06); }
 }
-.direction__link:focus-visible .direction__media { outline-color: var(--clr-accent); }
+.direction__link:focus-visible .direction__media { outline-color: var(--clr-accent-light); }
 @media (max-width: 1080px) {
   .direction { flex: 0 1 calc(50% - var(--sp-5) / 2); }
 }
@@ -871,7 +869,7 @@
   text-align: center;
 }
 /* Маркер один на всі зали — зі зміною слайда не анімується й не міняється */
-.locations__pin { color: var(--clr-accent-ink);width: 2.5rem;height: 2.5rem; }
+.locations__pin { color: var(--clr-accent);width: 2.5rem;height: 2.5rem; }
 
 /* Панелі — стек в одній комірці: висота арки не стрибає при зміні залу.
    Сама панель теж grid — щоб посилання внизу центрувалось по своїй ширині,
@@ -902,7 +900,7 @@
   letter-spacing: var(--tracking-tight);
   margin: 0;
 }
-.locations__addr { margin-top: var(--sp-4); color: var(--clr-accent-ink); }
+.locations__addr { margin-top: var(--sp-4); color: var(--clr-accent); }
 /* Останній блок перед кнопкою: margin-bottom:auto відпихає її на дно.
    min-height через padding не годиться — потрібен саме гарантований зазор,
    коли auto стиснувся до нуля на довгому описі, тому padding-bottom. */
@@ -1015,7 +1013,7 @@
 .about__quote {
   margin-top: var(--sp-7);
   padding-left: var(--sp-5);
-  border-left: 1px solid var(--clr-accent);
+  border-left: 1px solid var(--clr-accent-light);
   font-size: var(--fs-h3);
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
@@ -1046,7 +1044,7 @@
 
 /* ============================================================
    Slider controls — генерична панель під будь-яким .swiper-wrap:
-   стрілки (.btn-icon) + .swiper-pagination. У спрайті лише стрілка
+   стрілки (.btn--icon) + .swiper-pagination. У спрайті лише стрілка
    вправо, тож .slider-prev дзеркалиться тут же.
    ============================================================ */
 .slider-controls { display: flex; align-items: center; gap: var(--sp-4);  position: relative; justify-content: center; }
@@ -1056,7 +1054,7 @@
   --swiper-pagination-bullet-inactive-color: var(--clr-ink);
   --swiper-pagination-bullet-inactive-opacity: .25;
 }
-.slider-controls .swiper-pagination-bullet-active { background: var(--clr-accent); }
+.slider-controls .swiper-pagination-bullet-active { background: var(--clr-accent-light); }
 
 /* ============================================================
    Home 09 — Тренери: портрет-арка, ім'я, напрямок, цитата
@@ -1088,9 +1086,9 @@
 .trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); transition: color .25s var(--ease); }
 @media (min-width: 1081px) {
   .trainer__link:hover .trainer__media > img:not(.trainer__all-mark) { transform: scale(1.06); }
-  .trainer__link:hover .trainer__name { color: var(--clr-accent-ink); }
-  .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); color: var(--clr-accent-ink); }
-  .trainer--all .trainer__link:hover .trainer__all { color: var(--clr-accent-ink); }
+  .trainer__link:hover .trainer__name { color: var(--clr-accent); }
+  .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); color: var(--clr-accent); }
+  .trainer--all .trainer__link:hover .trainer__all { color: var(--clr-accent); }
 }
 
 /* .team-grid — ті самі .trainer картки, але сіткою (team.php), а не в
@@ -1153,10 +1151,6 @@
 .review__text::after  { content: "»"; }
 .review__meta { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-6); }
 .review__name { font-weight: var(--fw-med); }
-.reviews .btn-icon { border: 1px solid color-mix(in srgb, currentColor 38%, transparent); transition: border-color .2s var(--ease), background-color .2s var(--ease); }
-@media (min-width: 1081px) {
-  .reviews .btn-icon:hover { border-color: currentColor; }
-}
 .reviews .swiper-pagination-bullet { background: var(--clr-page); }
 .reviews .swiper-pagination-bullet-active { background: var(--clr-accent-light); }
 /* контроли живуть у колонці заголовка — тож не центруються, а йдуть від лівого краю */

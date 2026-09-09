@@ -223,7 +223,7 @@ include 'partials/gallery.php';
 
       <div class="split__actions" data-reveal>
         <button type="button" class="btn btn--filled btn--light" data-modal="booking?direction=pilates">Записатись</button>
-        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
+        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>

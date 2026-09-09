@@ -21,7 +21,7 @@ include 'partials/header.php';
        01 · Банер — той самий .hero--inner, що на blog.php, тільки без
        заголовка/ліда: тут вони йдуть окремим блоком нижче (02).
        ============================================================ -->
-  <section class="hero hero--inner">
+  <section class="hero hero--inner on-dark">
     <img class="hero__video" src="assets/img/gallery/1.jpg" alt="" aria-hidden="true"
          width="2400" height="1100" loading="eager">
     <div class="hero__tint" aria-hidden="true"></div>
@@ -185,11 +185,11 @@ include 'partials/header.php';
             </div>
           </div>
           <div class="slider-controls mt-5">
-            <button type="button" class="btn-icon btn-icon--outlined swiper-prev" aria-label="Попереднє фото">
+            <button type="button" class="btn btn--icon btn--outlined swiper-prev" aria-label="Попереднє фото">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
             </button>
             <div class="swiper-pagination"></div>
-            <button type="button" class="btn-icon btn-icon--outlined swiper-next" aria-label="Наступне фото">
+            <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступне фото">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
             </button>
           </div>
