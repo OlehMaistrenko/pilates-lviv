@@ -1249,22 +1249,31 @@
 .trainer__media > .ph,
 .trainer__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
 .trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
-/* остання плитка — посилання на команду: біла арка з левом із лого */
+/* Остання плитка — посилання на команду: арка-контур із левом із лого.
+   Кольори й поведінка ті самі, що в .btn--outlined: контур і вміст на
+   --clr-accent, на hover інверсія в заливку. Лев і підпис беруть
+   currentColor, тож перемикаються разом одним правилом на плитці. */
 .trainer--all .trainer__media {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--sp-3);
-  background: #fff;
+  background: transparent;
+  color: var(--clr-accent);
+  border: 1px solid var(--clr-accent);
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.trainer__all-mark { width: 3.5rem; height: auto; fill: currentColor; color: var(--clr-ink); transition: transform .4s var(--ease), color .25s var(--ease); }
-.trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); transition: color .25s var(--ease); }
+.trainer__all-mark { width: 3.5rem; height: auto; fill: currentColor; transition: transform .4s var(--ease); }
+.trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); }
 @media (min-width: 1081px) {
   .trainer__link:hover .trainer__media > img:not(.trainer__all-mark) { transform: scale(1.06); }
   .trainer__link:hover .trainer__name { color: var(--clr-accent); }
-  .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); color: var(--clr-accent); }
-  .trainer--all .trainer__link:hover .trainer__all { color: var(--clr-accent); }
+  .trainer--all .trainer__link:hover .trainer__media {
+    background: var(--clr-accent);
+    color: var(--clr-on-accent);
+  }
+  .trainer--all .trainer__link:hover .trainer__all-mark { transform: scale(1.08); }
 }
 
 /* .team-grid — ті самі .trainer картки, але сіткою (team.php), а не в
