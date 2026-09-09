@@ -640,6 +640,191 @@
     document.querySelectorAll('.swiper').forEach(initSwiper);
   })();
 
+  /* ---- Card stack: фото стосом, передню картку тягнемо вказівником.
+     Відпущена за порогом картка йде В КІНЕЦЬ стосу незалежно від напрямку
+     жесту — назад повертає тільки кнопка «Попереднє».
+     Swiper тут навмисно не використаний: секція мусить працювати й на
+     сторінці, яка не виставила $vendor_swiper.
+     Порядок тримає масив індексів + CSS-змінна --i на кожній картці.
+     Переставляти вузли в DOM не можна: це скидало б transition карток,
+     що саме їдуть, губило б фокус і змушувало браузер перемальовувати
+     <img>. --------------------------------------------------------- */
+  function initCardStack(root) {
+    const frame = root.querySelector('.cardstack__frame');
+    const section = root.closest('.cardstack') ?? root;
+    const cards = [...root.querySelectorAll('[data-card]')];
+    // усі, не querySelector: розмітка дублює лічильник (десктоп/мобільний)
+    const out = [...root.querySelectorAll('[data-stack-current]')];
+    if (!frame || cards.length < 2) return;
+
+    // order[0] — картка попереду; значення — індекс у cards
+    let order = cards.map((_, i) => i);
+    let busy = false;   // поки картка відлітає, нові жести ігноруємо
+
+    // скільки карток видно, рахуючи передню — те саме число, що --stack-depth
+    // у CSS: рамка резервує під «хвости» рівно (depth - 1) кроків
+    const depth = parseInt(getComputedStyle(frame).getPropertyValue('--stack-depth'), 10) || 4;
+
+    const render = () => {
+      order.forEach((cardIdx, pos) => {
+        const card = cards[cardIdx];
+        // картку в польоті не чіпаємо: її позицію тримає .is-flying, поки
+        // вона не долетить (інлайновий --i переважив би клас)
+        if (card.classList.contains('is-flying')) return;
+        // Приховані стоять на позиції depth — на крок ГЛИБШЕ за останню
+        // видиму, а не на її місці: інакше вихід із глибини не мав би куди
+        // рухатись, і нова картка проявлялась би самою прозорістю, без
+        // зсуву й скейлу, якими їде решта стосу.
+        card.style.setProperty('--i', Math.min(pos, depth));
+        card.classList.toggle('is-deep', pos > depth - 1);
+        card.classList.toggle('cardstack__card--front', pos === 0);
+        // фокус лише на передній: табом не треба проходити крізь увесь стос
+        card.tabIndex = pos === 0 ? 0 : -1;
+      });
+      // data-photo, а не order[0]: коли карток у DOM більше, ніж унікальних
+      // фото (мало кадрів — PHP добирає стос дублями), номер картки й номер
+      // фото розходяться, а лічильник мусить показувати саме друге
+      if (out.length) {
+        const front = cards[order[0]];
+        const photo = parseInt(front.dataset.photo ?? order[0], 10);
+        const text = String(photo + 1).padStart(2, '0');
+        out.forEach((el) => { el.textContent = text; });
+      }
+    };
+
+    // повертає картку до чистої стосової форми, порахованої в CSS
+    const clearDrag = (card) => {
+      card.style.removeProperty('--dx');
+      card.style.removeProperty('--dy');
+    };
+
+    /* Уперед: картка падає ВНИЗ за край кадру, і стос їде вперед ОДРАЗУ,
+       разом із початком падіння, — не чекаючи, поки вона долетить. Тобто
+       наступна картка виїжджає на передній план своїм же transition (у неї
+       міняється --i, а з ним translate і scale), а лічильник перемикається
+       тієї ж миті.
+       Щоб та, що падає, не стрибнула в кінець стосу просто в польоті,
+       .is-flying тримає її на позиції 0 (CSS), поки не долетить.
+       transitionend, а не setTimeout — тривалість живе в CSS. */
+    const next = () => {
+      if (busy) return;
+      busy = true;
+      const card = cards[order[0]];
+      card.classList.remove('is-dragging');
+      card.classList.add('is-leaving', 'is-flying');
+      // --dx лишався б від жесту й тягнув би картку вбік — падіння рівно вниз
+      card.style.setProperty('--dx', '0px');
+      card.style.setProperty('--dy', '120%');
+      // стос і лічильник рушають зараз, а не в transitionend
+      order.push(order.shift());
+      render();
+      card.addEventListener('transitionend', function done(e) {
+        // opacity їде тим самим переходом — без перевірки спрацювало б двічі
+        if (e.target !== card || e.propertyName !== 'transform') return;
+        card.removeEventListener('transitionend', done);
+        /* Повернення в стос НЕ анімуємо: картка вже впала й невидима, а
+           будь-який перехід тут означав би, що вона їде з-під низу кадру
+           назад на своє місце — тобто знову з'являється в кадрі.
+           Порядок значущий: .is-dragging глушить transition, далі знімаємо
+           зсув і .is-flying (тепер render() дасть їй справжній --i), і аж
+           після подвійного rAF — коли браузер намалював її на новому
+           місці — перехід вертається. */
+        card.classList.add('is-dragging');
+        card.classList.remove('is-leaving', 'is-flying');
+        clearDrag(card);
+        render();
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          card.classList.remove('is-dragging');
+          busy = false;
+        }));
+      });
+    };
+
+    /* Назад: остання картка вертається ЗГОРИ — рух, зворотний до падіння.
+       Спершу ставимо її за кадром із заглушеним переходом, потім
+       відпускаємо на місце. Подвійний rAF — той самий прийом, що у fadeIn
+       (Tabs нижче): з одинарним браузер склеїв би обидві зміни стилю в
+       один recalculation і руху не було б. */
+    const prev = () => {
+      if (busy) return;
+      busy = true;
+      order.unshift(order.pop());
+      const card = cards[order[0]];
+      card.classList.add('is-dragging');
+      card.style.setProperty('--dy', '-120%');
+      render();
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        card.classList.remove('is-dragging');
+        clearDrag(card);
+        card.addEventListener('transitionend', function done(e) {
+          if (e.target !== card || e.propertyName !== 'transform') return;
+          card.removeEventListener('transitionend', done);
+          busy = false;
+        });
+      }));
+    };
+
+    /* Жест. setPointerCapture обовʼязковий: палець може зійти з картки й
+       навіть із вікна — без захоплення pointerup прилетів би не сюди, і
+       картка застрягла б у зсунутому стані. */
+    const THRESHOLD = 90;   // px; менший зсув — картка вертається на місце
+    let startX = 0, startY = 0, dx = 0, dy = 0, dragCard = null;
+
+    frame.addEventListener('pointerdown', (e) => {
+      if (busy || e.button !== 0) return;
+      const card = e.target.closest('.cardstack__card--front');
+      if (!card) return;
+      dragCard = card;
+      startX = e.clientX;
+      startY = e.clientY;
+      dx = dy = 0;
+      card.setPointerCapture(e.pointerId);
+      card.classList.add('is-dragging');
+    });
+
+    frame.addEventListener('pointermove', (e) => {
+      if (!dragCard) return;
+      dx = e.clientX - startX;
+      dy = e.clientY - startY;
+      dragCard.style.setProperty('--dx', dx + 'px');
+      dragCard.style.setProperty('--dy', dy + 'px');
+      // setPointerCapture ловить рух і за межами кадру — без цієї перевірки
+      // картку можна було б тягнути будь-як далеко, поки палець не підняли.
+      // Межа — вся секція (не сама рамка): заголовок і контроли лишаються
+      // «своєю» територією жесту, відпускає тільки вихід за секцію повністю.
+      const r = section.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+        endDrag();
+      }
+    });
+
+    const endDrag = () => {
+      if (!dragCard) return;
+      const card = dragCard;
+      dragCard = null;
+      card.classList.remove('is-dragging');
+      // кидок у будь-який бік відправляє картку вниз
+      if (Math.hypot(dx, dy) > THRESHOLD) next();
+      else clearDrag(card);   // під поріг — пружина назад, веде CSS
+    };
+    frame.addEventListener('pointerup', endDrag);
+    frame.addEventListener('pointercancel', endDrag);
+
+    root.querySelector('[data-stack-next]')?.addEventListener('click', () => next());
+    root.querySelector('[data-stack-prev]')?.addEventListener('click', prev);
+    frame.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') next();
+      else if (e.key === 'ArrowLeft') prev();
+      else return;
+      e.preventDefault();
+    });
+
+    frame.classList.add('is-live');
+    render();
+  }
+
+  document.querySelectorAll('[data-cardstack]').forEach(initCardStack);
+
   /* ---- In-page anchor scroll: Lenis lerp-easing (той самий плавний рух,
      що й решта сторінки). Lenis тепер один на всі ширини, тож і якір іде
      через нього; нативний smooth-scroll (html{scroll-behavior:smooth},
