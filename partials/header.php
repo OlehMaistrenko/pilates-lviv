@@ -104,7 +104,7 @@ $primary = [
     <header class="site-header">
       <div class="site-header__row">
         <div class="site-header__lead">
-          <button class="btn btn--ghost btn--sm nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
+          <button class="btn btn--outlined btn--sm nav-toggle" type="button" aria-expanded="false" aria-controls="menu">
             <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i></span>
             <span class="nav-toggle__label">Меню</span>
           </button>
@@ -113,7 +113,7 @@ $primary = [
                кнопки — від браузера. JS (js/main.js) додає лише закриття
                кліком повз і по Escape, чого <details> сам не вміє. -->
           <details class="lang dropdown">
-            <summary class="btn btn--ghost btn--sm" aria-label="Мова сайту: українська">
+            <summary class="btn btn--outlined btn--sm" aria-label="Мова сайту: українська">
               UA<i class="dropdown__caret" aria-hidden="true"></i>
             </summary>
             <ul class="lang__list dropdown__panel">
@@ -134,7 +134,7 @@ $primary = [
 
         <div class="site-header__actions">
           <details class="dropdown account">
-            <summary class="btn btn--ghost btn--sm" aria-label="Кабінет клієнта">
+            <summary class="btn btn--outlined btn--sm" aria-label="Кабінет клієнта">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
               <span class="account__label">Ірина</span>
             </summary>
@@ -186,10 +186,10 @@ $primary = [
           <?php endforeach; ?>
         </div>
         <div class="menu__links">
-          <a class="btn-icon btn-icon--sm btn-icon--ghost" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
+          <a class="btn-icon btn-icon--sm btn-icon--outlined" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
           </a>
-          <a class="btn-icon btn-icon--sm btn-icon--ghost" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
+          <a class="btn-icon btn-icon--sm btn-icon--outlined" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
           </a>
         </div>

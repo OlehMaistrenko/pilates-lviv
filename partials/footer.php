@@ -46,7 +46,7 @@
   ];
   ?>
 
-  <footer class="site-footer embossed">
+  <footer class="site-footer embossed on-dark">
     <?php if (!empty($seo_title) && !empty($seo_text)): ?>
       <div class="container">
         <!-- лінія живе на внутрішньому блоці, а не на .container: бордер
@@ -84,7 +84,7 @@
             </a>
           </address>
 
-          <button type="button" class="btn btn--sand btn--sm" data-modal="callback">Замовити дзвінок</button>
+          <button type="button" class="btn btn--filled btn--light btn--sm" data-modal="callback">Замовити дзвінок</button>
 
           <div class="site-footer__social">
             <a class="btn-icon btn-icon--sm" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">

@@ -20,6 +20,6 @@
   </div>
 
   <div class="modal__foot">
-    <button type="submit" class="btn btn--umber">Передзвоніть мені</button>
+    <button type="submit" class="btn btn--filled">Передзвоніть мені</button>
   </div>
 </form>

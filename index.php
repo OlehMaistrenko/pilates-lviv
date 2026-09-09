@@ -105,8 +105,8 @@ include 'partials/header.php';
         <h1 class="hero__title" data-reveal="lines"><em>ПІЛАТЕС</em> У ЛЬВОВІ</h1>
 
         <div class="hero__actions" data-reveal style="--reveal-i: 1">
-          <button type="button" class="btn btn--sand" data-modal="booking">Записатись на заняття</button>
-          <a class="btn btn--ghost" href="schedule.php">Дивитись розклад</a>
+          <button type="button" class="btn btn--filled" data-modal="booking">Записатись на заняття</button>
+          <a class="btn btn--outlined" href="schedule.php">Дивитись розклад</a>
         </div>
       </div>
     </div>
@@ -190,7 +190,7 @@ include 'partials/header.php';
      в мох: умбра = колір вуличної вивіски, тому секція означає «двері».
      Два паралакс-шари з різними швидкостями (кадр повільніший за текст).
      ============================================================ -->
-<section class="split split--booking">
+<section class="split split--booking on-dark">
   <div class="split__grid embossed">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
@@ -206,8 +206,8 @@ include 'partials/header.php';
       </p>
 
       <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--sand" data-modal="booking">Записатись</button>
-        <a class="btn btn--ghost" href="schedule.php">Розклад занять</a>
+        <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
+        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>
@@ -246,7 +246,7 @@ include 'partials/header.php';
           <?php endif; ?>
           <p class="locations__addr">Львів, <?= $l[1] ?></p>
           <p class="locations__desc"><?= $l[2] ?></p>
-          <a class="btn btn--block" href="locations.php">
+          <a class="btn btn--filled btn--block" href="locations.php">
             Про локацію
           </a>
         </article>
@@ -293,7 +293,7 @@ include 'partials/header.php';
      06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
      пунктирний розділювач, три аргументи знизу.
      ============================================================ -->
-<section class="why">
+<section class="why on-dark">
   <div class="why__bg" aria-hidden="true">
     <img class="why__layer" src="assets/img/gallery/1.jpg" alt=""
          width="2048" height="1365" loading="lazy"
@@ -376,11 +376,11 @@ include 'partials/gallery.php';
         </ul>
       </div>
       <div class="slider-controls mt-5">
-        <button type="button" class="btn-icon btn-icon--ghost swiper-prev" aria-label="Попередній тренер">
+        <button type="button" class="btn-icon btn-icon--outlined swiper-prev" aria-label="Попередній тренер">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </button>
         <div class="swiper-pagination"></div>
-        <button type="button" class="btn-icon btn-icon--ghost swiper-next" aria-label="Наступний тренер">
+        <button type="button" class="btn-icon btn-icon--outlined swiper-next" aria-label="Наступний тренер">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </button>
       </div>
@@ -391,7 +391,7 @@ include 'partials/gallery.php';
 <!-- ============================================================
      10 · Відгуки — третє й останнє мохове поле перед футером
      ============================================================ -->
-<section class="reviews embossed">
+<section class="reviews embossed on-dark">
   <div class="container">
     <!-- .swiper-wrap огортає всю сітку: initSwiper шукає контроли в межах
          найближчого .swiper-wrap, а вони стоять у колонці заголовка -->

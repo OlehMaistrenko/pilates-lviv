@@ -100,7 +100,7 @@ include 'partials/header.php';
         </dl>
 
         <div class="profile__actions" data-reveal style="--reveal-i: 4">
-          <button type="button" class="btn" data-modal="booking?direction=pilates">
+          <button type="button" class="btn btn--filled" data-modal="booking?direction=pilates">
             Записатись до Галини
           </button>
           <a class="link-arrow" href="#schedule">
@@ -206,7 +206,7 @@ include 'partials/gallery.php';
 <!-- ============================================================
      06 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--booking split--cta">
+<section class="split split--booking split--cta on-dark">
   <div class="split__grid embossed">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
@@ -222,8 +222,8 @@ include 'partials/gallery.php';
       </p>
 
       <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--sand" data-modal="booking?direction=pilates">Записатись</button>
-        <a class="btn btn--ghost" href="schedule.php">Розклад занять</a>
+        <button type="button" class="btn btn--filled btn--light" data-modal="booking?direction=pilates">Записатись</button>
+        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>

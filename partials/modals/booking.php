@@ -45,7 +45,7 @@ $directions = [
   </div>
 
   <div class="modal__foot">
-    <button type="submit" class="btn btn--umber">Записатись</button>
-    <a class="btn btn--ghost" href="tel:+380630150517">Подзвонити</a>
+    <button type="submit" class="btn btn--filled">Записатись</button>
+    <a class="btn btn--outlined" href="tel:+380630150517">Подзвонити</a>
   </div>
 </form>

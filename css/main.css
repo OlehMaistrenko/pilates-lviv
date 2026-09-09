@@ -9,24 +9,23 @@
      Палітра брендбуку (Moss / Beige Sand / Burnt Umber / Deep Black) плюс
      золото: воно є в застосуванні логотипа, але як фарба в брендбуку не
      описане. Основний фон сайту — беж; мох і умбра лише як рідкісні поля. */
-  --c-page: #EAE5DF;   /* Beige Sand — PANTONE 9043 C */
-  --c-ink:  #22251B;   /* темний мох замість чистого чорного: на бежі
+  --clr-page: #EAE5DF;   /* Beige Sand — PANTONE 9043 C */
+  --clr-ink:  #22251B;   /* темний мох замість чистого чорного: на бежі
                           #000 дає різкий, «екранний» контраст */
 
   /* Мох узято темнішим із двох брендбучних відтінків: світлий (#4A4F3C,
      PANTONE 5743 C) на екрані читався оливковим, темний тримає глибину */
-  --c-moss:      #31352A;
-  --c-moss-deep: #23261C;   /* плашка під відео героя */
-  --c-umber:     #84412F;   /* PANTONE 7594 C — тільки блок запису */
-  --c-black:     #000000;
+  --clr-surface:      #31352A;
+  --clr-surface-deep: #23261C;   /* плашка під відео героя */
+  --clr-surface-alt:  #84412F;   /* PANTONE 7594 C — тільки блок запису */
 
-  --c-gold:     #C2A15C;   /* лінії, лев, деталі */
-  --c-gold-lt:  #DCC58E;   /* золото на темному полі */
-  --c-gold-ink: #8A6A28;   /* золото як ТЕКСТ на бежі: світле не читається */
+  --clr-accent:       #C2A15C;   /* лінії, лев, деталі */
+  --clr-accent-light: #DCC58E;   /* золото на темному полі */
+  --clr-accent-ink:   #8A6A28;   /* золото як ТЕКСТ на бежі: світле не читається */
 
-  /* приглушений текст і бордери — від --c-ink через color-mix, без власних hex */
-  --c-ink-mute: color-mix(in srgb, var(--c-ink) 62%, transparent);
-  --c-line:     color-mix(in srgb, var(--c-ink) 12%, transparent);
+  /* приглушений текст і бордери — від --clr-ink через color-mix, без власних hex */
+  --clr-ink-mute: color-mix(in srgb, var(--clr-ink) 62%, transparent);
+  --clr-line:     color-mix(in srgb, var(--clr-ink) 12%, transparent);
 
   /* ---- Type ----
      Одна гарнітура на весь сайт — Geologica, варіативна. --font-display
@@ -145,8 +144,8 @@ body {
   font-size: var(--fs-body);
   font-weight: var(--fw-lt);
   line-height: 1.4;
-  color: var(--c-ink);
-  background: var(--c-page);
+  color: var(--clr-ink);
+  background: var(--clr-page);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -202,11 +201,11 @@ table { border-collapse: collapse; }
    підсвічують кадр, поля форми — бордер), перебиває це без !important
    і подвійної обводки не буде. */
 :where(a, button, [role="button"], input, select, textarea, summary):not(.post__link, .direction__link, .trainer__link):focus-visible {
-  outline: 2px solid var(--c-gold);
+  outline: 2px solid var(--clr-accent);
   outline-offset: 2px;
 }
 
-::selection { background: var(--c-ink); color: var(--c-page); }
+::selection { background: var(--clr-ink); color: var(--clr-page); }
 main { overflow: clip; }
 
 /* ============================================================
@@ -223,7 +222,19 @@ main { overflow: clip; }
 .text--sm { font-size: var(--fs-sm); }
 .text--body { font-size: var(--fs-body); }
 .text--lead { font-size: var(--fs-lead); }
-.text--muted { color: var(--c-ink-mute); }
+.text--muted { color: var(--clr-ink-mute); }
+
+/* ============================================================
+   Utility: .on-dark — перевизначає колірні токени на темному полі
+   (moss/umber), щоб .text--muted, лінії (--clr-line) і золото-як-текст
+   (--clr-accent-ink) лишались читабельними без власних правил у секції.
+   Ставиться на той самий елемент, що задає background/color секції.
+   ============================================================ */
+.on-dark {
+  --clr-ink-mute: color-mix(in srgb, var(--clr-page) 68%, transparent);
+  --clr-line:     color-mix(in srgb, var(--clr-page) 20%, transparent);
+  --clr-accent-ink: var(--clr-accent-light);
+}
 
 /* ============================================================
    Utility: .label — дрібний службовий напис у розрядку
@@ -240,9 +251,10 @@ main { overflow: clip; }
 }
 
 /* ============================================================
-   Buttons
-   --btn-c / --btn-bg — локальні змінні, щоб модифікатор міняв дві
-   величини замість дублювання всього правила.
+   Buttons — дві форми: filled (заливка) і outlined (контур).
+   Кольору-модифікаторів немає: filled завжди акцентний, .btn--light
+   поверх нього перемикає заливку на білу (для полів, де акцент уже
+   є в тексті/лініях секції).
    ============================================================ */
 .btn {
   display: inline-flex;
@@ -258,17 +270,14 @@ main { overflow: clip; }
   font-weight: var(--fw-med);
   line-height: 1.2;
   text-align: center;
-  color: var(--btn-c, var(--c-page));
-  background: var(--btn-bg, var(--c-ink));
   transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
-.btn--umber { --btn-bg: var(--c-umber); --btn-c: var(--c-page); }
-.btn--sand  { --btn-bg: var(--c-page);  --btn-c: var(--c-ink); }
-/* контурна: фон прозорий, колір успадковується від поля, на якому лежить */
-.btn--ghost {
-  --btn-bg: transparent;
-  --btn-c: currentColor;
-  border-color: color-mix(in srgb, currentColor 38%, transparent);
+.btn--filled { background: var(--clr-accent); color: var(--clr-ink); }
+.btn--filled.btn--light { background: var(--clr-page); color: var(--clr-ink); }
+.btn--outlined {
+  background: transparent;
+  color: var(--clr-accent);
+  border-color: var(--clr-accent);
 }
 .btn--sm { min-height: 2.5rem; padding-inline: var(--sp-4); }
 /* на всю ширину контейнера; width замало — .btn інлайновий флекс, і в
@@ -276,13 +285,9 @@ main { overflow: clip; }
 .btn--block { display: flex; width: 100%; }
 
 @media (min-width: 1081px) {
-  .btn:hover { --btn-bg: var(--c-moss); --btn-c: var(--c-page); }
-  .btn--umber:hover { --btn-bg: var(--c-moss); }
-  .btn--sand:hover  { --btn-bg: var(--c-gold-lt); --btn-c: var(--c-ink); }
-  /* .btn:hover вище перемикає --btn-c на світлий (для суцільних кнопок) —
-     ghost мусить його повернути назад, інакше текст стає --c-page на
-     власному ж бежевому/прозорому фоні й губиться */
-  .btn--ghost:hover { --btn-c: currentColor; background: color-mix(in srgb, currentColor 12%, transparent); }
+  .btn--filled:hover { background: var(--clr-accent-light); }
+  .btn--filled.btn--light:hover { background: var(--clr-accent-light); }
+  .btn--outlined:hover { background: color-mix(in srgb, var(--clr-accent) 12%, transparent); }
 }
 .btn-icon {
   display: inline-flex;
@@ -296,7 +301,7 @@ main { overflow: clip; }
   transition: background-color .2s var(--ease);
 }
 .btn-icon--sm { width: 2.5rem; height: 2.5rem; }
-.btn-icon--ghost { border-color: color-mix(in srgb, currentColor 38%, transparent); }
+.btn-icon--outlined { border-color: color-mix(in srgb, currentColor 38%, transparent); }
 @media (min-width: 1081px) {
   .btn-icon:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 }
@@ -316,8 +321,8 @@ main { overflow: clip; }
   gap: var(--sp-2);
   padding: var(--sp-5);
   overflow: hidden;
-  background: color-mix(in srgb, var(--c-ink) 10%, var(--c-page));
-  color: var(--c-ink-mute);
+  background: color-mix(in srgb, var(--clr-ink) 10%, var(--clr-page));
+  color: var(--clr-ink-mute);
   text-align: center;
 }
 .ph__name {
@@ -330,8 +335,8 @@ main { overflow: clip; }
 .ph__note { font-size: var(--fs-sm); max-width: 34ch; line-height: var(--lh-body); }
 /* на моховому/умбровому полі плейсхолдер має бути світлішим за фон, а не темнішим */
 .ph--on-dark {
-  background: color-mix(in srgb, var(--c-page) 12%, transparent);
-  color: color-mix(in srgb, var(--c-page) 70%, transparent);
+  background: color-mix(in srgb, var(--clr-page) 12%, transparent);
+  color: color-mix(in srgb, var(--clr-page) 70%, transparent);
 }
 
 /* ============================================================
@@ -500,8 +505,8 @@ main { overflow: clip; }
   left: var(--sp-4);
   top: -6.25rem;
   z-index: 200;
-  background: var(--c-ink);
-  color: var(--c-page);
+  background: var(--clr-ink);
+  color: var(--clr-page);
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--r-chip);
   transition: top .2s var(--ease);
@@ -603,7 +608,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: var(--sp-2);
   /* приглушення від поточного кольору тексту, а не .text--muted: у банері
-     крихти стоять на темному полі, де --c-ink-mute нечитабельний */
+     крихти стоять на темному полі, де --clr-ink-mute нечитабельний */
   color: color-mix(in srgb, currentColor 70%, transparent);
 }
 /* Лінія відділяє крихти від заголовка — та сама пунктирна волосина, що
@@ -614,7 +619,7 @@ html.lenis, html.lenis body { height: auto; }
   border-bottom: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
 }
 @media (min-width: 1081px) {
-  .breadcrumbs a:hover { color: var(--c-gold-lt); }
+  .breadcrumbs a:hover { color: var(--clr-accent-light); }
 }
 
 /* ============================================================
@@ -676,7 +681,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .profile__tags > li {
   padding: var(--sp-2) var(--sp-4);
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--clr-line);
   border-radius: var(--r-pill);
   font-size: var(--fs-sm);
 }
@@ -690,7 +695,7 @@ html.lenis, html.lenis body { height: auto; }
   gap: var(--sp-5) var(--sp-8);
   align-self: stretch;
   padding-top: var(--sp-6);
-  border-top: 1px solid var(--c-line);
+  border-top: 1px solid var(--clr-line);
 }
 .profile__fact > dd { margin-top: var(--sp-2); font-weight: var(--fw-med); }
 
@@ -726,8 +731,8 @@ html.lenis, html.lenis body { height: auto; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: var(--c-page);
-  color: var(--c-ink);
+  background: var(--clr-page);
+  color: var(--clr-ink);
   /* Волосина зʼявляється лише коли під хедер поїхав контент: на
      непроскроленій сторінці вона ділила б навпіл суцільне бежеве поле,
      тобто була б декоративним кордоном нізвідки. */
@@ -737,17 +742,17 @@ html.lenis, html.lenis body { height: auto; }
 /* Клас ставить сторінка ($header_over_hero перед include), а не JS — щоб
    не було кадру, у якому темний текст стоїть на темному фоні до першого
    спрацювання скрипта. */
-.header-fixed--over { background: transparent; color: var(--c-page); border-bottom-color: transparent; }
+.header-fixed--over { background: transparent; color: var(--clr-page); border-bottom-color: transparent; }
 /* Сторінка без героя, але з темним (моховим) першим екраном під хедером:
    $header_theme='dark' — той самий світлий текст, що й --over, але фон
    лишається непрозорим (немає героя, що просвічував би крізь нього) */
-.header-fixed--dark { background: var(--c-moss-deep); color: var(--c-page); border-bottom-color: transparent; }
+.header-fixed--dark { background: var(--clr-surface-deep); color: var(--clr-page); border-bottom-color: transparent; }
 /* .is-scrolled / .menu-open ставить js/main.js на <body>; порядок правил
    значущий — відкрите меню важливіше за стан скролу */
 .is-scrolled .header-fixed { border-bottom-color: color-mix(in srgb, currentColor 38%, transparent); }
 .is-scrolled .header-fixed--over,
-.is-scrolled .header-fixed--dark { background: var(--c-page); color: var(--c-ink); }
-.menu-open .header-fixed { background: transparent; color: var(--c-page); }
+.is-scrolled .header-fixed--dark { background: var(--clr-page); color: var(--clr-ink); }
+.menu-open .header-fixed { background: transparent; color: var(--clr-page); }
 
 /* --header-h — «поточна» висота: за замовчуванням = --header-h-max,
    .is-scrolled стискає до --header-h-min. Відкрите меню висоту не чіпає —
@@ -879,7 +884,7 @@ html.lenis, html.lenis body { height: auto; }
    може з прозорого хедера, де currentColor піщаний. */
 .dropdown { position: relative; }
 /* Спільне для будь-якого <summary>-тумблера дропдауна: сам вигляд
-   контрола (border, паддінги, hover) — від .btn/.btn--ghost на кнопці,
+   контрола (border, паддінги, hover) — від .btn/.btn--outlined на кнопці,
    тут лишається тільки те, що знімає нативний <details>-вигляд. */
 .dropdown > summary {
   cursor: pointer;
@@ -905,9 +910,9 @@ html.lenis, html.lenis body { height: auto; }
   z-index: 1;
   min-width: 10.75rem;
   padding: var(--sp-2);
-  background: var(--c-page);
-  color: var(--c-ink);
-  border: 1px solid color-mix(in srgb, var(--c-gold) 45%, transparent);
+  background: var(--clr-page);
+  color: var(--clr-ink);
+  border: 1px solid color-mix(in srgb, var(--clr-accent) 45%, transparent);
   border-radius: var(--r-card);
 }
 
@@ -918,13 +923,13 @@ html.lenis, html.lenis body { height: auto; }
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-card);
   font-size: var(--fs-sm);
-  color: var(--c-ink-mute);
+  color: var(--clr-ink-mute);
   transition: background-color .2s var(--ease), color .2s var(--ease);
 }
 @media (min-width: 1081px) {
-  .lang__opt:hover { background: color-mix(in srgb, var(--c-ink) 6%, transparent); color: var(--c-ink); }
+  .lang__opt:hover { background: color-mix(in srgb, var(--clr-ink) 6%, transparent); color: var(--clr-ink); }
 }
-.lang__opt.is-active { color: var(--c-ink); font-weight: var(--fw-med); }
+.lang__opt.is-active { color: var(--clr-ink); font-weight: var(--fw-med); }
 .lang__opt.is-active::after {
   content: "";
   display: inline-block;
@@ -932,7 +937,7 @@ html.lenis, html.lenis body { height: auto; }
   height: 0.25rem;
   margin-left: var(--sp-2);
   border-radius: 50%;
-  background: var(--c-gold);
+  background: var(--clr-accent);
   vertical-align: middle;
 }
 
@@ -952,8 +957,8 @@ html.lenis, html.lenis body { height: auto; }
      заголовок іде одразу під нею, тож знизу вистачає меншого кроку */
   padding-top: calc(var(--header-h-max) + var(--sp-7));
   padding-bottom: var(--sp-7);
-  background: var(--c-moss);
-  color: var(--c-page);
+  background: var(--clr-surface);
+  color: var(--clr-page);
   overflow: hidden;
 }
 .hero__video {
@@ -968,7 +973,7 @@ html.lenis, html.lenis body { height: auto; }
 .hero__tint {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, black 60%, transparent);
+  background: color-mix(in srgb, black 40%, transparent);
 }
 .hero .container { position: relative; display: flex; }
 /* Лінію на місце (близько до половини екрана) виштовхує верхній паддінг
@@ -987,7 +992,7 @@ html.lenis, html.lenis body { height: auto; }
   gap: var(--sp-5);
   margin: 0;
   padding-bottom: var(--sp-3);
-  border-bottom: 1px dashed color-mix(in srgb, var(--c-page) 45%, transparent);
+  border-bottom: 1px dashed color-mix(in srgb, var(--clr-page) 45%, transparent);
 }
 /* Ліве й праве слово тиснуться до країв, середнє лишається по центру
    рядка — тому саме text-align, а не justify-content на кожному span. */
@@ -996,36 +1001,24 @@ html.lenis, html.lenis body { height: auto; }
 
 .hero__bottom {
   display: flex;
-  align-items: flex-end;
-  gap: var(--sp-8);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-5);
 }
-/* flex: 1 + min-width: 0 — заголовок віддає кнопкам рівно їхню ширину
-   й переносить рядки сам; без min-width довге слово розпирало б флекс
-   і кнопки все одно з'їхали б за край.
-   Від'ємний margin-left гасить бокову напівапрош гліфа: без нього літера
-   стоїть правіше за край кнопки на ширину порожнього поля в шрифті.
-   margin-bottom опускає заголовок до рівня кнопок: при --lh-display
-   line-box нижчий за гліфи, тож flex-end ставить текст вище кнопок.
-   Саме margin, а не transform — [data-reveal="lines"] тримає власний
-   transform і перебив би зсув. Обидва в em: кегль fluid. */
+/* Від'ємний margin-left гасить бокову напівапрош гліфа: без нього літера
+   стоїть правіше за край кнопки на ширину порожнього поля в шрифті. em —
+   кегль fluid. */
 .hero__title {
-  flex: 1;
-  min-width: 0;
   margin-left: -0.06em;
-  margin-bottom: -0.15em;
   font-size: var(--fs-mega);
 }
 /* «пілатесу» золотим — одне акцентне слово на екран, більше ніде */
-.hero__title em { font-style: normal; color: var(--c-gold-lt); }
+.hero__title em { font-style: normal; color: var(--clr-accent); }
 
-/* Кнопки в стовпчик: поруч із заголовком у --fs-mega рядок із двох кнопок
-   тягнув би --sp-8 зайвої ширини, а стовпчик лишається в межах його
-   останнього рядка — герой стає нижчим, лінія піднімається до центру. */
 .hero__actions {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  flex: none;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--sp-3);
 }
 /* Банер внутрішньої сторінки — той самий герой, але не на весь екран:
@@ -1078,9 +1071,6 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 1080px) {
   .hero { min-height: min(92svh, 51.25rem); }
   .hero--inner { min-height: min(56svh, 31.25rem); }
-  /* лід під заголовок, а не збоку: поруч із --fs-hero йому лишається
-     занадто вузька колонка */
-  .hero--inner .hero__bottom { flex-direction: column; align-items: stretch; gap: var(--sp-5); }
   .hero__lead { flex: none; margin-bottom: 0; }
 }
 @media (max-width: 768px) {
@@ -1096,9 +1086,6 @@ html.lenis, html.lenis body { height: auto; }
   }
   .hero--inner .hero__inner { gap: var(--sp-6); }
   .hero__rule { gap: var(--sp-3); }
-  /* кнопки поруч із заголовком тут уже не влазять — під нього, у рядок */
-  .hero__bottom { flex-direction: column; align-items: stretch; gap: var(--sp-6); }
-  .hero__actions { flex-direction: row; flex-wrap: wrap; }
 }
 /* Усі три слова лишаються й на найвужчому екрані: тримає їх зняте
    трекінгове розрідження .label плюс мінімальний gap, а не приховування

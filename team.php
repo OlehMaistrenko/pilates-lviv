@@ -107,7 +107,7 @@ include 'partials/header.php';
 <!-- ============================================================
      03 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--booking split--cta">
+<section class="split split--booking split--cta on-dark">
   <div class="split__grid embossed">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
@@ -123,8 +123,8 @@ include 'partials/header.php';
       </p>
 
       <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--sand" data-modal="booking">Записатись</button>
-        <a class="btn btn--ghost" href="schedule.php">Розклад занять</a>
+        <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
+        <a class="btn btn--outlined" href="schedule.php">Розклад занять</a>
       </div>
     </div>
   </div>
