@@ -140,7 +140,7 @@ include 'partials/header.php';
 
       <ol class="path__list">
         <?php foreach ($path as $i => [$n, $text, $alt]): ?>
-          <li class="path__item" data-anim="focus">
+          <li class="path__item">
             <span class="path__num"><?= $n ?> <span class="label">занять</span></span>
             <p class="path__text"><?= $text ?></p>
             <figure class="path__shot">
