@@ -302,8 +302,8 @@
   padding-block: var(--sp-4);
   cursor: pointer;
 }
-/* питання FAQ — гротеск: серифний курсив у розмірі h5 читається як декор */
-.accordion__title { font-family: var(--font-body); font-weight: var(--fw-reg); font-size: var(--fs-h5); }
+/* h3, тож гарнітуру/вагу дає база — тут лишається тільки кегль */
+.accordion__title { font-size: var(--fs-h5); }
 .accordion__icon {
   flex: none;
   position: relative;
@@ -845,7 +845,7 @@
   padding: var(--sp-10) clamp(var(--sp-6), 6vw, var(--sp-10));
   max-width: calc(60ch + clamp(var(--sp-6), 6vw, var(--sp-10)) * 2);
 }
-.split__lead { margin-top: var(--sp-5); line-height: var(--lh-body); color: var(--clr-ink-mute); }
+.split__lead { margin-top: var(--sp-5); }
 .split__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-8); }
 
 /* Умбра в мох: умбра = колір вуличної вивіски, тому це «двері».
@@ -955,11 +955,13 @@
    під час зміни веде GSAP інлайном, тому тут лише pointer-events. */
 .locations__panel:not(.is-active) { opacity: 0; pointer-events: none; }
 /* Назва залу — тепер сам заголовок панелі, тож більший кегль */
+/* h3 за рівнем, але кегль h2 за роллю в макеті — назва залу тут головна */
 .locations__title {
   font-size: var(--fs-h2);
   font-weight: var(--fw-lt);
   line-height: var(--lh-display);
   letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
   margin: 0;
 }
 .locations__addr { margin-top: var(--sp-4); color: var(--clr-accent); }

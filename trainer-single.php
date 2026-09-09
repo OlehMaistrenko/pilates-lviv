@@ -216,7 +216,7 @@ include 'partials/gallery.php';
 
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Записатись на заняття</h2>
-      <p class="text--lead split__lead" data-reveal>
+      <p class="text--lead text--muted split__lead" data-reveal>
         Передзвонимо, підберемо час у розкладі Галини і відповімо на
         питання. Перше заняття — знайомство.
       </p>

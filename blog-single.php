@@ -225,7 +225,7 @@ include 'partials/header.php';
       foreach ($post_faq as $i => [$q, $a]): ?>
         <div class="accordion" data-accordion-group="post-faq">
           <div class="accordion__summary" role="button" tabindex="0" aria-expanded="false" aria-controls="post-faq-<?= $i ?>">
-            <span class="accordion__title"><?= $q ?></span>
+            <h3 class="accordion__title"><?= $q ?></h3>
             <span class="accordion__icon" aria-hidden="true"></span>
           </div>
           <div class="accordion__body" id="post-faq-<?= $i ?>">

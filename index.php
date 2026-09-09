@@ -221,7 +221,7 @@ include 'partials/header.php';
 
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Перше заняття — знайомство</h2>
-      <p class="text--lead split__lead" data-reveal>
+      <p class="text--lead text--muted split__lead" data-reveal>
         Приходьте подивитись зал, познайомитись із тренером і спробувати
         тренажери. Далі вирішуєте самі.
       </p>
@@ -240,6 +240,10 @@ include 'partials/header.php';
      data-anim="locations"); без нього видно перший зал статично.
      ============================================================ -->
 <section class="locations" data-anim="locations">
+  <!-- Макет — фулскрін-кадр без місця під видимий заголовок, але секції
+       потрібен свій рівень: інакше h2 бере на себе назва першої локації
+       і три зали читаються як три окремі секції. -->
+  <h2 class="sr-only">Локації</h2>
   <div class="locations__stage">
     <!-- По шару на зал, цілим кадром. Жалюзі — маска зі смуг
          (mask-image, збирає js/main.js): смуги розширюються, і кадр
@@ -256,15 +260,10 @@ include 'partials/header.php';
       <svg class="locations__pin icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
 
       <!-- Панелі складені в один стек (grid-area 1/1); активну веде скрол.
-           Заголовок секції — h2 лише в першій панелі, решта — p: три h2 з
-           різними текстами читались би як три різні секції. -->
+           Усі три — h3 під h2 секції: зали однорідні, тож і рівень однаковий. -->
       <?php foreach ($locations as $i => $l): ?>
         <article class="locations__panel<?= $i ? '' : ' is-active' ?>">
-          <?php if ($i === 0): ?>
-            <h2 class="locations__title"><?= $l[0] ?></h2>
-          <?php else: ?>
-            <p class="locations__title"><?= $l[0] ?></p>
-          <?php endif; ?>
+          <h3 class="locations__title"><?= $l[0] ?></h3>
           <p class="locations__addr">Львів, <?= $l[1] ?></p>
           <p class="locations__desc"><?= $l[2] ?></p>
           <a class="btn btn--filled btn--block" href="locations.php">
@@ -470,7 +469,7 @@ include 'partials/gallery.php';
         <?php foreach ($faq as $i => [$q, $a]): ?>
           <div class="accordion" data-accordion-group="faq">
             <div class="accordion__summary" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-<?= $i ?>">
-              <span class="accordion__title"><?= $q ?></span>
+              <h3 class="accordion__title"><?= $q ?></h3>
               <span class="accordion__icon" aria-hidden="true"></span>
             </div>
             <div class="accordion__body" id="faq-<?= $i ?>">
