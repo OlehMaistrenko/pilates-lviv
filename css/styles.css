@@ -799,7 +799,7 @@
 .direction__body { display: block; }
 .direction__title {
   display: block;
-  font-size: var(--fs-h4);
+  font-size: var(--fs-h3);
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
