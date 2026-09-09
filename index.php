@@ -135,15 +135,36 @@ include 'partials/header.php';
             <?php foreach ($path as [$n]): ?><span><?= $n ?></span><?php endforeach; ?>
           </div>
         </div>
-        <span class="label">занять</span>
+        <!-- лейбл котиться тим самим одометром, що й цифра: якщо крок задає
+             свій підпис (3-й елемент $path), він доїде разом зі своїм числом -->
+        <div class="path__roll path__roll--label">
+          <div data-anim="odometer" data-odometer-for=".path__list">
+            <?php foreach ($path as $row): ?><span class="label"><?= $row[3] ?? 'занять' ?></span><?php endforeach; ?>
+          </div>
+        </div>
+      </div>
+
+      <!-- кадри винесені зі списку в один вертикальний пін між одометром і
+           текстом: усі три лежать стосом, скрол відкриває наступний
+           жалюзі-витиранням (js/main.js, data-anim="blinds") -->
+      <div class="path__stage" data-anim="pin" data-pin-track=".path__list" aria-hidden="true">
+        <div class="path__shots" data-anim="blinds" data-blinds-for=".path__list">
+          <?php foreach ($path as $i => [$n, $text, $alt]): ?>
+            <figure class="path__shot">
+              <img src="assets/img/path/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>"
+                   width="3264" height="1312" loading="<?= $i ? 'lazy' : 'eager' ?>">
+            </figure>
+          <?php endforeach; ?>
+        </div>
       </div>
 
       <ol class="path__list">
-        <?php foreach ($path as $i => [$n, $text, $alt]): ?>
+        <?php foreach ($path as $i => $row): ?>
+          <?php [$n, $text, $alt] = $row; ?>
           <li class="path__item">
-            <span class="path__num"><?= $n ?> <span class="label">занять</span></span>
+            <span class="path__num"><?= $n ?> <span class="label"><?= $row[3] ?? 'занять' ?></span></span>
             <p class="path__text"><?= $text ?></p>
-            <figure class="path__shot">
+            <figure class="path__shot path__shot--inline">
               <img src="assets/img/path/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>"
                    width="3264" height="1312" loading="lazy">
             </figure>

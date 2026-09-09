@@ -193,6 +193,37 @@
         });
       });
 
+      /* data-anim="blinds" — стос кадрів, де кожен наступний відкривається
+         жалюзі: одна секція на всю висоту, тож це не N планок, а одна
+         горизонтальна щілина, що росте зверху вниз. Робимо clip-path'ом по
+         inset: анімується композитором, layout не чіпає (див. CLAUDE.md).
+         Той самий відрізок скролу, що й в одометра (центр першого кроку →
+         центр останнього), — кадр міняється рівно тоді, коли клацає цифра. */
+      document.querySelectorAll('[data-anim="blinds"]').forEach((el) => {
+        const items = document.querySelector(el.dataset.blindsFor)?.children;
+        const shots = el.children;
+        if (!items || items.length < 2 || shots.length < 2) return;
+
+        /* прогрес ділиться на (N-1) переходів; кожен наступний кадр
+           відкривається на своєму відрізку, решту часу — повністю
+           закритий (100%) або повністю відкритий (0%) */
+        const steps = shots.length - 1;
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: items[0], start: 'center center',
+            endTrigger: items[items.length - 1], end: 'center center',
+            scrub: true,
+          },
+        }).fromTo([...shots].slice(1),
+          { clipPath: 'inset(100% 0 0 0)' },
+          {
+            clipPath: 'inset(0% 0 0 0)',
+            ease: 'none',
+            stagger: { each: 1 / steps },
+            duration: 1 / steps,
+          }, 0);
+      });
+
       /* data-anim="focus" — блок у повний колір, поки проходить центр
          екрана; вище й нижче — приглушений */
       document.querySelectorAll('[data-anim="focus"]').forEach((el) => {

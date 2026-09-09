@@ -597,20 +597,32 @@
    пару «цифра + текст» рівно посередині контейнера. */
 .path__grid {
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: repeat(3, max-content);
   justify-content: center;
-  gap: clamp(var(--sp-8), 7vw, 9rem);
+  gap: clamp(var(--sp-8), 5vw, 6rem);
   align-items: start;
+  /* ширина кадру й похідна від неї висота (2/3) — в одному місці, бо на них
+     міряється і спільна висота одометра */
+  --path-stage-w: clamp(13rem, 18vw, 20rem);
+  --path-stage-h: calc(var(--path-stage-w) * 3 / 2);
+  /* line-height: 1 на .path__roll, тож висота цифри = її кегль */
+  --path-digit-h: clamp(9rem, 26vw, 22rem);
 }
-/* Висота — рівно кадр цифри, без 100vh-боксу: той центрував цифру всередині
+/* Бокс має висоту кадру, НЕ 100vh: 100vh колись центрував цифру всередині
    себе, тож поки секція ще не доскролила до верху екрана, цифра висіла пів
    екрана нижче й заходила під обріз. Позицію по вертикалі задає pin
-   (js/main.js, start: 'center center'), а не висота боксу. */
+   (js/main.js, start: 'center center'). */
 .path__counter {
   grid-column: 1;
   grid-row: 1;
   display: grid;
-  align-content: start;
+  /* та сама висота, що й у кадру: пін центрує КОЖЕН елемент по його власній
+     висоті, тож із різними висотами цифра й фото стають на різні лінії
+     (видно на початку та в кінці треку). Спільна висота — спільний центр.
+     Цифра центрована всередині, лейбл лишається під нею. */
+  height: var(--path-stage-h);
+  align-content: center;
+  justify-items: start;
   /* --gold-ink, не --clr-accent: світле золото суцільною заливкою на бежі дає
      ~2:1 і зникає; той самий токен уже стоїть на .path__num */
   color: var(--clr-accent);
@@ -623,17 +635,63 @@
   /* цифра заповнює свою колонку (1fr від сітки контейнера) — не токен
      шкали: --fs-mega тут дрібний, а більший крок міряний під повну
      ширину сітки й у колонку не влазить */
-  font-size: clamp(9rem, 26vw, 22rem);
+  font-size: var(--path-digit-h);
   font-weight: var(--fw-lt);
   line-height: 1;
   letter-spacing: var(--tracking-tight);
   font-variant-numeric: tabular-nums;
 }
 .path__roll span { display: block; height: 1em; }
-.path__counter > .label { display: block; margin-top: var(--sp-4); }
+/* поза потоком: інакше лейбл додає собі висоту до боксу й зсуває цифру вище
+   спільного центру — саме те, що ламало вирівнювання з текстом */
+.path__counter { position: relative; }
+.path__roll--label {
+  position: absolute;
+  top: calc(50% + var(--path-digit-h) / 2 + var(--sp-4));
+  left: 0;
+  /* маска в один рядок лейбла — решта стовпчика чекає свого кроку.
+     Кегль/трекінг лишає собі .label на самих span'ах */
+  height: 1lh;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-body);
+}
+.path__roll--label span { height: 1lh; }
+
+/* Вертикальний кадр між цифрою і текстом. Пін ловить його за center center —
+   так само, як одометр, тож обидва стоять на одній лінії й міняються разом. */
+.path__stage {
+  grid-column: 2;
+  grid-row: 1;
+  pointer-events: none;
+}
+.path__shots {
+  position: relative;
+  width: var(--path-stage-w);
+  height: var(--path-stage-h);
+  /* пігулка, а не арка: кадр вертикальний, тож --r-pill скруглює його
+     однаково зверху й знизу */
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--clr-ink) 7%, transparent);
+}
+/* стос: кожен наступний кадр лежить поверх попереднього й відкривається
+   жалюзі-витиранням (clip-path рахує js) */
+.path__shots .path__shot {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  max-width: none;
+  /* форму й фон тримає сам .path__shots — тут кадр лише заповнює його
+     цілком, інакше лежача 5/2 пігулка з базового правила лишилась би */
+  aspect-ratio: auto;
+  border-radius: 0;
+  background: none;
+}
+/* перший кадр відкритий завжди — під ним нічого немає */
+.path__shots .path__shot:first-child { clip-path: none; }
 
 .path__list {
-  grid-column: 2;
+  grid-column: 3;
   grid-row: 1;
   margin: 0;
   padding: 0;
@@ -673,13 +731,17 @@
   height: 100%;
   object-fit: cover;
 }
+/* кадр усередині кроку — лише на мобілці, де піна й стосу немає */
+.path__shot--inline { display: none; }
 
 /* без одометра (мобілка) цифру показує кожен крок сам */
 @media (max-width: 900px) {
   /* justify-content з десктопу тут зайвий: одна колонка мусить тягнутись
      на всю ширину, а не стискатись по вмісту й центруватись */
   .path__grid { grid-template-columns: minmax(0, 1fr); justify-content: stretch; }
-  .path__counter { display: none; }
+  .path__counter,
+  .path__stage { display: none; }
+  .path__shot--inline { display: block; }
   .path__list { grid-column: auto; grid-row: auto; }
   .path__item { min-height: 0; }
   .path__item + .path__item { margin-top: var(--sp-8); }
