@@ -358,22 +358,56 @@
 .card__note { display: block; margin-top: var(--sp-3); }
 
 /* ============================================================
+   Component: .media-swap — кадр, що на hover лінка міняється на другий
+   (напрямок → фото тренування, тренер → теж фото тренування, не інший
+   портрет). База і hover-шар лежать один на одному (hover — position:
+   absolute), обидва завжди в DOM, тож перемикання — просто crossfade
+   opacity, без перезавантаження зображення. .media-swap__hover — сам
+   абсолютний шар; .media-swap__img — спільні transform/opacity на
+   обох картинках, щоб fade-in і fade-out йшли з однаковою швидкістю.
+   ============================================================ */
+.media-swap { display: block; position: relative; overflow: hidden; }
+.media-swap__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s var(--ease), opacity .4s var(--ease);
+}
+.media-swap__hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+@media (min-width: 1081px) {
+  a:hover .media-swap .media-swap__img { transform: scale(1.06); }
+  a:hover .media-swap .media-swap__img:not(.media-swap__hover) { opacity: 0; }
+  a:hover .media-swap .media-swap__hover { opacity: 1; }
+}
+
+/* ============================================================
    Component: .quote — пряма мова великим кеглем. Один набір
    (кегль + вага + інтерліньяж + трекінг) на всі цитати сайту: врізка
    в тексті, цитата тренера в шапці профілю, відгук у слайдері.
-   Модифікатор --rule додає золоту волосину зліва; колір лінії —
-   --clr-accent-light, тож і на світлому, і на темному полі він один.
+   font-style: normal скидає курсив UA-стилю <blockquote>/<q> — курсиву
+   на сайті немає ніде. Модифікатор --rule додає іконку лапок зліва
+   від тексту замість вертикальної лінії.
    ============================================================ */
 .quote {
   margin: 0;
   font-size: var(--fs-h3);
   font-weight: var(--fw-lt);
+  font-style: normal;
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
 }
 .quote--rule {
-  padding-left: var(--sp-5);
-  border-left: 1px solid var(--clr-accent);
+  display: flex;
+  gap: var(--sp-3);
+}
+.quote--rule .icon {
+  flex: none;
+  margin-top: 0.2em;
+  color: var(--clr-accent);
 }
 
 /* ============================================================
@@ -787,21 +821,13 @@
   height: 100%;
 }
 .direction__media {
-  display: block;
   width: 100%;
   aspect-ratio: 3 / 4;
   margin-bottom: var(--sp-3);
   border-radius: var(--r-arch);
-  overflow: hidden;
   outline: 1px solid transparent;
   outline-offset: -1px;
   transition: outline-color .3s var(--ease);
-}
-.direction__media > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .5s var(--ease);
 }
 
 .direction__body { display: block; }
@@ -816,8 +842,6 @@
 /* картка — це <a> цілком, тому hover тут чесний сигнал, а не декор */
 @media (min-width: 1081px) {
   .direction__link:hover .direction__title { color: var(--clr-accent); }
-  .direction__link:hover .direction__media { outline-color: var(--clr-accent); }
-  .direction__link:hover .direction__media > img { transform: scale(1.06); }
 }
 .direction__link:focus-visible .direction__media { outline-color: var(--clr-accent); }
 @media (max-width: 1080px) {
@@ -1448,14 +1472,11 @@
 .team .swiper-slide { height: auto; }
 .trainer__link { display: flex; flex-direction: column; gap: var(--sp-1); height: 100%; }
 .trainer__media {
-  display: block;
   aspect-ratio: 3 / 4;
   margin-bottom: var(--sp-3);
   border-radius: var(--r-arch);
-  overflow: hidden;
 }
-.trainer__media > .ph,
-.trainer__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
+.trainer__media > .ph { width: 100%; height: 100%; object-fit: cover; }
 .trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
 /* Остання плитка — посилання на команду: арка-контур із левом із лого.
    Кольори й поведінка ті самі, що в .btn--outlined: контур і вміст на
@@ -1475,7 +1496,6 @@
 .trainer__all-mark { width: 3.5rem; height: auto; fill: currentColor; transition: transform .4s var(--ease); }
 .trainer__all { font-size: var(--fs-h4); font-weight: var(--fw-lt); }
 @media (min-width: 1081px) {
-  .trainer__link:hover .trainer__media > img:not(.trainer__all-mark) { transform: scale(1.06); }
   .trainer__link:hover .trainer__name { color: var(--clr-accent); }
   .trainer--all .trainer__link:hover .trainer__media {
     background: var(--clr-accent);

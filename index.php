@@ -202,8 +202,9 @@ include 'partials/header.php';
       <?php foreach ($directions as $i => [$title, $href, $note, $slug]): ?>
         <li class="direction" data-reveal style="--reveal-i: <?= $i % 3 ?>">
           <a class="direction__link" href="<?= $href ?>">
-            <span class="direction__media">
-              <img src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
+            <span class="direction__media media-swap">
+              <img class="media-swap__img" src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
+              <img class="media-swap__img media-swap__hover" src="assets/img/directions/<?= $i + 1 ?>-hover.jpg" alt="" width="2048" height="1365" loading="lazy">
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
@@ -308,6 +309,7 @@ include 'partials/header.php';
     <div class="split__body" data-anim="parallax" data-parallax="4">
       <h2 data-reveal="lines">Як усе почалось</h2>
       <blockquote class="quote quote--rule" data-reveal>
+        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-quote"></use></svg>
         За 15 хвилин прогулянки до метро я побачила аж 4 студії пілатесу
       </blockquote>
       <p class="text--muted" data-reveal style="--reveal-i: 1">
@@ -414,8 +416,9 @@ include 'partials/cardstack.php';
           <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
             <li class="trainer swiper-slide">
               <a class="trainer__link" href="trainer-single.php?trainer=<?= $slug ?>">
-                <span class="trainer__media">
-                  <img src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>" loading="lazy">
+                <span class="trainer__media media-swap">
+                  <img class="media-swap__img" src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>" loading="lazy">
+                  <img class="media-swap__img media-swap__hover" src="assets/img/team/<?= $slug ?>-hover.jpg" alt="" loading="lazy">
                 </span>
                 <span class="trainer__name"><?= $name ?></span>
                 <span class="text--sm text--muted"><?= $role ?></span>

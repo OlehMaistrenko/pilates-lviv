@@ -639,10 +639,11 @@ html.lenis, html.lenis body { height: auto; }
    кнопка має власну висоту й вирівнюється по своєму боксу — їй цей зсув
    лише підняв би пігулку над рядком */
 .section-head--split > a { justify-self: start; margin-bottom: 0.35em; }
-.section-head--split > a.btn { margin-bottom: 0; }
+.section-head--split > a.btn { justify-self: end; margin-bottom: 0; }
 @media (max-width: 900px) {
   .section-head--split { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .section-head--split > a { margin-bottom: 0; }
+  .section-head--split > a.btn { justify-self: start; }
 }
 
 
