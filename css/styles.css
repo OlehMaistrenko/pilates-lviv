@@ -217,8 +217,10 @@
    Vendor: Swiper — базові оверрайди (усі каруцелі сайту, гейт
    $vendor_swiper у partials/footer.php)
    ============================================================ */
-.swiper-pagination-bullet { background: var(--clr-ink); opacity: .3; }
-.swiper-pagination-bullet-active { opacity: 1; }
+/* opacity: 1 — вендор за замовчуванням глушить неактивну кульку до .2
+   через --swiper-pagination-bullet-inactive-opacity; колір несе --clr-line */
+.swiper-pagination-bullet { background: var(--clr-line); opacity: 1; }
+.swiper-pagination-bullet-active { background: var(--clr-accent); }
 
 /* ============================================================
    Component: .post-header — заголовок детальної сторінки статті.
@@ -1270,10 +1272,7 @@
 .slider-controls .swiper-prev .icon { transform: scaleX(-1); }
 .slider-controls .swiper-pagination {
   position: relative; width: auto; left: unset!important; transform: none!important; margin: 0; top: unset!important; bottom: unset!important;
-  --swiper-pagination-bullet-inactive-color: var(--clr-ink);
-  --swiper-pagination-bullet-inactive-opacity: .25;
 }
-.slider-controls .swiper-pagination-bullet-active { background: var(--clr-accent); }
 
 /* ============================================================
    Component: .cardstack — фото стосом на весь екран; передню картку
@@ -1579,8 +1578,6 @@
 .review__text::after  { content: "»"; }
 .review__meta { display: flex; flex-direction: column; gap: 2px; }
 .review__name { font-weight: var(--fw-med); }
-.reviews .swiper-pagination-bullet { background: var(--clr-page); }
-.reviews .swiper-pagination-bullet-active { background: var(--clr-accent); }
 /* контроли живуть у колонці заголовка — тож не центруються, а йдуть від лівого краю */
 .reviews__controls { justify-content: start; }
 @media (max-width: 900px) {
