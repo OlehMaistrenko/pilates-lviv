@@ -130,7 +130,7 @@ include 'partials/header.php';
      вʼюпорта (pin + scrub), кроки з кадрами йдуть поверх неї.
      ============================================================ -->
 <section class="section path">
-  <div class="container">
+  <div class="container container--full">
     <div class="section-head">
       <h2 class="path__title" data-reveal="lines">Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</h2>
       <p class="text--sm text--accent" data-reveal>Джозеф Пілатес</p>
