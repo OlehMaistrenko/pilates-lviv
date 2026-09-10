@@ -70,7 +70,7 @@
         <div class="site-footer__brand">
           <!-- золотий логотип на моховому полі — дозволений варіант із брендбуку -->
           <a class="brand brand--footer" href="index.php" aria-label="Пілатес Львів — на головну">
-            <span class="brand__logo" role="img" aria-label="Pilates Lviv"></span>
+            <img class="brand__logo" src="assets/logo/pilates-lviv-gold-light.svg" alt="Pilates Lviv" width="464" height="303" loading="lazy">
           </a>
 
           <address class="site-footer__contacts">

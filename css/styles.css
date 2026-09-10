@@ -107,6 +107,7 @@
   overflow-y: auto;
   background: var(--clr-surface);
   color: var(--clr-page);
+  --clr-line: color-mix(in srgb, var(--clr-page) 20%, transparent);
   opacity: 0;
   transition: opacity .35s var(--ease);
 }
@@ -185,7 +186,7 @@
   gap: var(--sp-4) var(--sp-7);
   padding-top: var(--sp-6);
   /* єдина лінія в меню — відділяє навігацію від реквізитів */
-  border-top: 1px solid color-mix(in srgb, var(--clr-page) 18%, transparent);
+  border-top: 1px solid var(--clr-line);
   font-size: var(--fs-sm);
 }
 .menu__foot a { transition: color .2s var(--ease); }
@@ -1664,14 +1665,8 @@
 }
 .brand--footer .brand__logo {
   display: block;
-  width: 8rem;
-  height: 5.22rem;
-  /* сам файл — фіксований #C2A15C; перефарбовуємо в --clr-accent-light маскою
-     на суцільному блоці (не <img> — img завжди малює власний растр поверх
-     будь-якого background), а не тримаємо другий SVG-файл заради кольору */
-  -webkit-mask: url('../assets/logo/pilates-lviv-gold.svg') center / contain no-repeat;
-  mask: url('../assets/logo/pilates-lviv-gold.svg') center / contain no-repeat;
-  background: var(--clr-accent-light);
+  width: 12rem;
+  height: auto;
 }
 .site-footer__contacts {
   display: flex;

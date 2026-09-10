@@ -805,19 +805,29 @@ html.lenis, html.lenis body { height: auto; }
 .header-fixed--dark { background: var(--clr-surface-deep); color: var(--clr-page); border-bottom-color: transparent; }
 /* .is-scrolled / .menu-open ставить js/main.js на <body>; порядок правил
    значущий — відкрите меню важливіше за стан скролу */
-.is-scrolled .header-fixed { border-bottom-color: color-mix(in srgb, currentColor 38%, transparent); }
+.is-scrolled .header-fixed { border-bottom-color: var(--clr-accent); }
 .is-scrolled .header-fixed--over,
 .is-scrolled .header-fixed--dark { background: var(--clr-page); color: var(--clr-ink); }
-.menu-open .header-fixed { background: transparent; color: var(--clr-page); }
+/* --clr-line тут — та сама формула, що й .on-dark/.menu: єдина світла
+   волосина для темного поля на весь сайт. Фон — той самий --clr-surface,
+   що й .menu під хедером: інакше при скролі відкритого меню крізь
+   прозорий хедер просвічує контент списку. */
+.menu-open .header-fixed {
+  background: var(--clr-surface);
+  color: var(--clr-page);
+  --clr-line: color-mix(in srgb, var(--clr-page) 20%, transparent);
+  border-bottom-color: var(--clr-line);
+}
 
 /* --header-h — «поточна» висота: за замовчуванням = --header-h-max,
-   .is-scrolled стискає до --header-h-min. Відкрите меню висоту не чіпає —
-   хедер лишається таким, яким був до відкриття (маленьким, якщо сторінку
-   вже проскролено). Усе, що має РЕАГУВАТИ на скрол (рядок хедера, лого),
-   рахує висоту від --header-h; усе, що має лишатись незмінним (спейсер,
-   паддінг героя — інакше контент стрибав би на порозі скролу), береться
-   прямо від --header-h-max. */
-.is-scrolled { --header-h: var(--header-h-min); }
+   .is-scrolled/.menu-open стискають до --header-h-min (відкрите меню
+   виглядає як проскролений стан хедера, незалежно від реального скролу).
+   Усе, що має РЕАГУВАТИ на скрол (рядок хедера, лого), рахує висоту від
+   --header-h; усе, що має лишатись незмінним (спейсер, паддінг героя —
+   інакше контент стрибав би на порозі скролу), береться прямо від
+   --header-h-max. */
+.is-scrolled,
+.menu-open { --header-h: var(--header-h-min); }
 
 /* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
    після нього резервує цей простір, щоб контент не ліз під хедер. */
@@ -856,8 +866,8 @@ html.lenis, html.lenis body { height: auto; }
   aspect-ratio: 464 / 303;
   transition: height .5s var(--ease), opacity .5s var(--ease);
 }
-/* Світлий і темний варіанти лежать один на одному: <img> не успадковує
-   колір, а перефарбовувати логотип фільтром брендбук забороняє. */
+/* Світлий і темний варіанти лежать один на одному: <img> не приймає колір
+   через CSS, перемикання — кросфейд opacity двох файлів. */
 .brand__logo--dark { position: absolute; inset-block-start: 0; inset-inline-start: 0; }
 .brand__logo--light { opacity: 0; }
 .header-fixed--over .brand__logo--light,
@@ -947,10 +957,6 @@ html.lenis, html.lenis body { height: auto; }
   list-style: none;   /* Firefox */
 }
 .dropdown > summary::-webkit-details-marker { display: none; }
-/* :not(:hover) — інакше на hover+open разом цей напівпрозорий тон лягає
-   поверх suцільного hover-фону кнопки й тим самим кольором зафарбовує
-   і текст, роблячи його невидимим на власному фоні */
-.dropdown[open] > .btn:not(:hover) { background: color-mix(in srgb, currentColor 12%, transparent); }
 /* шеврон — CSS-фігура, той самий прийом, що й .accordion__icon */
 .dropdown__caret {
   width: 0.3125rem;
