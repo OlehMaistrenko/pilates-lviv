@@ -379,9 +379,9 @@ include 'partials/header.php';
      08 · Галерея — зал як він є; розміри кадрів різні навмисно
      ============================================================ -->
 <?php
-$gallery_items = $gallery;
-$gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
-include 'partials/gallery.php';
+// $gallery_items = $gallery;
+// $gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+// include 'partials/gallery.php';
 ?>
 
 <!-- ============================================================
@@ -391,7 +391,7 @@ include 'partials/gallery.php';
 <?php
 $stack_items = $gallery;
 $stack_title = 'Зали та тренажери';
-$stack_lead  = 'Перетягніть картку — під нею наступна.';
+$stack_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
 include 'partials/cardstack.php';
 ?>
 

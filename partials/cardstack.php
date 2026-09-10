@@ -8,6 +8,8 @@
  *   $stack_items — [[файл відносно assets/img/, alt], …]. Обовʼязково.
  *   $stack_title — заголовок секції; '' — секція без шапки.
  *   $stack_lead  — абзац праворуч у шапці. Опційно.
+ *   $stack_link  — ['текст', 'href'] праворуч у шапці замість лід-абзацу
+ *                  (напр. 3D-тур). Опційно, взаємовиключне з $stack_lead.
  *   $stack_class — додатковий клас на <section> (напр. 'pt-0'). Опційно.
  *
  * Swiper НЕ потрібен: блок самодостатній і працює на сторінці, яка не
@@ -17,6 +19,7 @@
 $stack_items = $stack_items ?? [];
 $stack_title = $stack_title ?? 'Зали та тренажери';
 $stack_lead  = $stack_lead  ?? null;
+$stack_link  = $stack_link  ?? null;
 $stack_class = $stack_class ?? '';
 
 if ($stack_items):
@@ -41,6 +44,10 @@ if ($stack_items):
         <h2 data-reveal="lines"><?= $stack_title ?></h2>
         <?php if ($stack_lead): ?>
           <p class="text--lead text--muted" data-reveal><?= $stack_lead ?></p>
+        <?php elseif ($stack_link): ?>
+          <a class="btn btn--outlined" href="<?= $stack_link[1] ?>" target="_blank" rel="noopener" data-reveal>
+            <?= $stack_link[0] ?>
+          </a>
         <?php endif; ?>
       </div>
     <?php endif; ?>
@@ -100,4 +107,4 @@ if ($stack_items):
 </section>
 <?php endif;
 
-unset($stack_items, $stack_title, $stack_lead, $stack_class, $stack_total, $stack_depth, $stack_cards);
+unset($stack_items, $stack_title, $stack_lead, $stack_link, $stack_class, $stack_total, $stack_depth, $stack_cards);
