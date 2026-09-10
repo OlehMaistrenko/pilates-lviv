@@ -1039,6 +1039,29 @@
     if (requested) load(requested, pageParams);
   })();
 
+  /* ---- Cookie-інформер: показуємо, поки його не закрили. Просто
+     повідомлення, не згода — вибору «прийняти/відхилити» немає, бо немає
+     й скриптів, які треба було б під нього гейтити. Прапорець у
+     localStorage, не в самій cookie: бек про нього нічого не питає. */
+  (() => {
+    const el = document.getElementById('cookie');
+    if (!el) return;
+    const KEY = 'cookie-notice';
+    let seen = null;
+    // приватний режим Safari кидає на самому доступі до localStorage
+    try { seen = localStorage.getItem(KEY); } catch { /* показуємо інформер */ }
+    if (seen) return;
+
+    el.hidden = false;
+    requestAnimationFrame(() => el.classList.add('is-visible'));
+
+    el.querySelector('[data-cookie-close]')?.addEventListener('click', () => {
+      try { localStorage.setItem(KEY, '1'); } catch { /* закриття не переживе перезавантаження */ }
+      el.classList.remove('is-visible');
+      el.addEventListener('transitionend', () => { el.hidden = true; }, { once: true });
+    });
+  })();
+
   /* ---- Сабміт будь-якої .form → модалка подяки замість реального POST
      (беку під форми поки немає). Делеговано на document: форми живуть у
      модалках і в DOM на момент підписки ще не існують. */

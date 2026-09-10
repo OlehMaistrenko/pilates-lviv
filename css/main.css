@@ -592,6 +592,12 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
    розширює border-box, від якого рахується маска — тому виносні елементи
    (у, р, Ї, Й) при --lh-display (0.95) не зрізаються.
 
+   По горизонталі те саме робить від'ємний margin у парі з паддінгом:
+   паддінг розширює border-box (від нього рахується маска), margin тут же
+   знімає цей приріст із лейауту, тож набір і кернінг не рухаються.
+   Запас потрібен через --tracking-tight (-0.02em): літери стягнуті, бокс
+   спана вужчий за гліф, і без нього маска зрізала б бокові виноси.
+
    Без @property (Safari < 16.4) змінна не анімується — літери просто
    зʼявляються стрибком, без стагеру. */
 @property --slat {
@@ -603,6 +609,8 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 [data-reveal="lines"] .char {
   --slat: 0px;
   padding-block: .25em;
+  padding-inline: .15em;
+  margin-inline: -0.15em;
   opacity: 0;
   mask-image: repeating-linear-gradient(to bottom, #000 0 var(--slat), transparent 0 .3em);
   transition: --slat .9s var(--ease), opacity .9s var(--ease);

@@ -1808,3 +1808,45 @@
   .site-footer__nav > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   .site-footer__bottom { flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3); }
 }
+
+/* ============================================================
+   Cookie — банер згоди (footer.php, показує js/main.js)
+   ============================================================ */
+/* z-index 190: під модалкою (200), над хедером (100) — банер лишається
+   видимим на будь-якій сторінці, але не перекриває відкриту модалку.
+   [hidden] мусить перемагати display:flex — той самий випадок, що й
+   .modal-overlay[hidden] вище. */
+.cookie {
+  position: fixed;
+  z-index: 190;
+  inset-inline: var(--sp-4);
+  bottom: var(--sp-4);
+  margin-inline: auto;
+  max-width: 45rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--clr-surface);
+  color: var(--clr-page);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.cookie[hidden] { display: none; }
+.cookie.is-visible { opacity: 1; transform: none; }
+.cookie__text { flex: 1 1 20rem; }
+/* .on-dark у розмітці вже перемкнув --clr-accent на світле золото */
+.cookie__text a { color: var(--clr-accent); text-decoration: underline; text-underline-offset: 0.2em; }
+.cookie__close { flex: 0 0 auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie { transition: none; transform: none; }
+}
+@media (max-width: 560px) {
+  .cookie { padding: var(--sp-4); }
+  .cookie__close { width: 100%; }
+}

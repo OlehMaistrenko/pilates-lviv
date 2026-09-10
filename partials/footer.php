@@ -135,6 +135,16 @@
     </div>
   </div>
 
+  <!-- Cookie-інформер. hidden знімає js/main.js, якщо його ще не закривали —
+       так банер не блимає на кожному завантаженні до перевірки localStorage. -->
+  <div class="cookie on-dark" id="cookie" role="region" aria-label="Використання cookie" hidden>
+    <p class="cookie__text text text--sm">
+      Ми використовуємо cookie, щоб сайт працював і щоб розуміти, які сторінки вам корисні.
+      Деталі — у <a href="privacy.php">політиці конфіденційності</a>.
+    </p>
+    <button type="button" class="btn btn--sm btn--filled cookie__close" data-cookie-close>Зрозуміло</button>
+  </div>
+
   <!-- Deferred CSS: секції нижче першого екрана + повна стилізація модалок/
        мобільного меню. Вендорські стилі — перед цим лінком, за тією самою
        логікою. Swiper/Mapbox вантажаться лише там, де сторінка виставила
