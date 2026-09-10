@@ -1538,32 +1538,34 @@
 }
 .reviews__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-  gap: var(--sp-8) var(--sp-9);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--sp-7) var(--sp-8);
   align-items: start;
 }
 /* .swiper як grid-item не має власної ширини-основи — Swiper без цього
    рахує слайди по контенту й вилазить за колонку */
 .reviews__grid > .swiper { min-width: 0; width: 100%; }
-.review { margin: 0; display: flex; gap: var(--sp-7); align-items: center; }
+.review { margin: 0; display: flex; gap: var(--sp-7); align-items: stretch; }
 /* вертикальна пігулка — та сама свідома «пігулка як кадр», що й .path__shot,
    лише повернута: 3/5 замість 5/2 */
 .review__shot {
   flex: none;
   margin: 0;
-  width: clamp(8rem, 16vw, 12rem);
-  aspect-ratio: 1 / 2;
+  width: clamp(10rem, 22vw, 21rem);
+  aspect-ratio: 2/3;
   overflow: hidden;
   border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--clr-page) 12%, transparent);
 }
 .review__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.review__body { min-width: 0; }
+/* розтягнуто на висоту фото (align-items: stretch на .review) — текст
+   лишається зверху, meta притиснуто донизу через space-between */
+.review__body { min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
 /* решту (кегль, вага, трекінг) дає .quote — тут лише міра рядка */
 .review__text { max-width: 28ch; }
 .review__text::before { content: "«"; }
 .review__text::after  { content: "»"; }
-.review__meta { display: flex; flex-direction: column; gap: 2px; margin-top: var(--sp-6); }
+.review__meta { display: flex; flex-direction: column; gap: 2px; }
 .review__name { font-weight: var(--fw-med); }
 .reviews .swiper-pagination-bullet { background: var(--clr-page); }
 .reviews .swiper-pagination-bullet-active { background: var(--clr-accent); }
@@ -1578,7 +1580,7 @@
 }
 @media (max-width: 768px) {
   .review { gap: var(--sp-5); }
-  .review__shot { width: clamp(4.5rem, 22vw, 6rem); }
+  .review__shot { width: clamp(5.5rem, 26vw, 7.5rem); }
 }
 
 /* ============================================================
@@ -1586,11 +1588,11 @@
    ============================================================ */
 .faq__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-  gap: var(--sp-8) var(--sp-9);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: var(--sp-8) var(--sp-9);
   align-items: start;
 }
-.faq__head { position: sticky; top: calc(var(--header-h-min) + var(--sp-6)); }
+
 .faq__head h2 { max-width: 14ch; }
 .faq__head p { margin-top: var(--sp-5); max-width: 30ch; }
 /* Решту (волосина, hover, transition) дає .link-arrow — тут лише те, чим
@@ -1693,6 +1695,7 @@
 @media (min-width: 1081px) {
   .site-footer__bottom a:hover { color: var(--clr-page); }
 }
+.site-footer__dev a { display: inline-flex; align-items: center; gap: var(--sp-2); }
 /* бренд-колонка тісна вже ~75rem — раніше складаємо бренд над нав-меню */
 @media (max-width: 1200px) {
   .site-footer__top { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }

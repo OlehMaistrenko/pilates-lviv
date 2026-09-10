@@ -114,6 +114,11 @@
         <!-- «est. 2015» повторювати тут не треба — воно вже є в самому логотипі -->
         <p class="text text--sm">© 2015–<?= date('Y') ?> Студія «Пілатес Львів»</p>
         <p class="text text--sm"><a href="privacy.php">Політика конфіденційності</a></p>
+        <p class="site-footer__dev text text--sm">
+          <a href="https://redstone.media/" target="_blank" rel="noopener" title="Розроблено RedStone">
+            Developed by <img src="assets/logo/redstone.svg" alt="RedStone" width="93" height="14" loading="lazy">
+          </a>
+        </p>
       </div>
     </div>
   </footer>
