@@ -500,10 +500,13 @@ include 'partials/cardstack.php';
     <div class="faq__grid">
       <div class="faq__head">
         <h2 data-reveal="lines">Питання перед першим заняттям</h2>
-        <p class="text--muted" data-reveal>
-          Не знайшли своє — подзвоніть:
-          <a class="link-arrow faq__phone" href="<?= $contact['phone_href'] ?>"><?= $contact['phone'] ?></a>
-        </p>
+        <p class="text--muted" data-reveal>Не знайшли своє — подзвоніть:</p>
+        <div data-reveal>
+          <a class="icon-link faq__phone" href="<?= $contact['phone_href'] ?>" >
+            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
+            <?= $contact['phone'] ?>
+          </a>
+        </div>
       </div>
 
       <div class="faq__list" data-reveal style="--reveal-i: 1">

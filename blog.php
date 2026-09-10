@@ -154,10 +154,7 @@ include 'partials/header.php';
         <span class="pagination__page is-current" aria-current="page">1</span>
         <a class="pagination__page" href="blog.php?p=2">2</a>
         <a class="pagination__page" href="blog.php?p=3">3</a>
-        <a class="pagination__next link-arrow" href="blog.php?p=2">
-          Далі
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-        </a>
+        <a class="btn btn--outlined pagination__next" href="blog.php?p=2">Далі</a>
       </nav>
     <?php endif; ?>
   </div>

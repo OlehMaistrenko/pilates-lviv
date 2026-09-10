@@ -355,6 +355,16 @@
 }
 
 /* ============================================================
+   Component: .icon-link — текстове посилання з іконкою зліва
+   (телефон, адреса тощо), без волосини й стрілки .link-arrow
+   ============================================================ */
+.icon-link { display: inline-flex; align-items: flex-start; gap: var(--sp-2); transition: color .2s var(--ease); }
+.icon-link .icon { margin-top: 1px; color: var(--clr-accent); flex: none; }
+@media (min-width: 1081px) {
+  .icon-link:hover { color: var(--clr-accent); }
+}
+
+/* ============================================================
    Component: .card__note — підпис під карткою в будь-якій сітці
    (напрямок, тренер, стаття). Один клас на всі три: за роллю це той
    самий текст, тож і кегль/колір мусять бути ті самі. Кегль — базовий
@@ -920,10 +930,11 @@
 .split__loc-name {
   font-size: var(--fs-h5);
   font-weight: var(--fw-med);
-  color: var(--clr-accent);
+  color: var(--clr-page);
+  transition: color .25s var(--ease);
 }
 @media (min-width: 1081px) {
-  .split__locations a:hover .split__loc-name { color: var(--clr-page); }
+  .split__locations a:hover .split__loc-name { color: var(--clr-accent); }
 }
 @media (max-width: 560px) {
   /* три колонки на телефоні лишили б по слову в рядок — назви залів
@@ -1595,11 +1606,7 @@
 
 .faq__head h2 { max-width: 14ch; }
 .faq__head p { margin-top: var(--sp-5); max-width: 30ch; }
-/* Решту (волосина, hover, transition) дає .link-arrow — тут лише те, чим
-   телефон усередині речення відрізняється від самостійного посилання:
-   не гасне разом із .text--muted-абзацом, не дрібнішає до --fs-sm і не
-   переноситься посеред номера */
-.faq__phone { color: var(--clr-ink); font-size: inherit; white-space: nowrap; }
+.faq__phone { margin-top: var(--sp-3); }
 .faq__answer { max-width: 60ch; }
 @media (max-width: 900px) {
   .faq__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
@@ -1655,7 +1662,17 @@
   align-items: flex-start;
   gap: var(--sp-5);
 }
-.brand--footer .brand__logo { height: 6.5rem; }
+.brand--footer .brand__logo {
+  display: block;
+  width: 8rem;
+  height: 5.22rem;
+  /* сам файл — фіксований #C2A15C; перефарбовуємо в --clr-accent-light маскою
+     на суцільному блоці (не <img> — img завжди малює власний растр поверх
+     будь-якого background), а не тримаємо другий SVG-файл заради кольору */
+  -webkit-mask: url('../assets/logo/pilates-lviv-gold.svg') center / contain no-repeat;
+  mask: url('../assets/logo/pilates-lviv-gold.svg') center / contain no-repeat;
+  background: var(--clr-accent-light);
+}
 .site-footer__contacts {
   display: flex;
   flex-direction: column;
@@ -1664,8 +1681,6 @@
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
 }
-.site-footer__contacts a { display: inline-flex; align-items: flex-start; gap: var(--sp-2); }
-.site-footer__contacts .icon { margin-top: 1px; color: var(--clr-accent); }
 .site-footer__social { display: flex; gap: var(--sp-2); }
 
 .site-footer__nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-6); }

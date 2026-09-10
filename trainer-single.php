@@ -103,9 +103,8 @@ include 'partials/header.php';
           <button type="button" class="btn btn--filled" data-modal="booking?direction=pilates">
             Записатись до Галини
           </button>
-          <a class="link-arrow" href="#schedule">
+          <a class="btn btn--outlined" href="#schedule">
             Розклад Галини
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
           </a>
         </div>
       </div>
@@ -186,10 +185,7 @@ include 'partials/header.php';
       <?php endforeach; ?>
     </ul>
 
-    <a class="link-arrow mt-5" href="schedule.php">
-      Повний розклад студії
-      <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-    </a>
+    <a class="btn btn--outlined mt-5" href="schedule.php">Повний розклад студії</a>
   </div>
 </section>
 
@@ -236,10 +232,7 @@ include 'partials/gallery.php';
   <div class="container">
     <div class="section-head section-head--split">
       <h2 data-reveal="lines">Інші тренери</h2>
-      <a class="link-arrow" href="team.php">
-        Уся команда
-        <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-      </a>
+      <a class="btn btn--outlined" href="team.php">Уся команда</a>
     </div>
 
     <ul class="posts">

@@ -57,7 +57,7 @@
           <div class="simple-text text--muted footer-seo__text" id="footer-seo-text">
             <?= $seo_text ?>
           </div>
-          <button type="button" class="link-arrow footer-seo__toggle" aria-expanded="false" aria-controls="footer-seo-text"
+          <button type="button" class="btn btn--outlined btn--light btn--sm footer-seo__toggle" aria-expanded="false" aria-controls="footer-seo-text"
                   data-label-more="Читати більше" data-label-less="Читати менше">
             <span class="footer-seo__toggle-label">Читати більше</span>
           </button>
@@ -70,21 +70,21 @@
         <div class="site-footer__brand">
           <!-- золотий логотип на моховому полі — дозволений варіант із брендбуку -->
           <a class="brand brand--footer" href="index.php" aria-label="Пілатес Львів — на головну">
-            <img class="brand__logo" src="assets/logo/pilates-lviv-gold.svg" alt="Pilates Lviv" width="464" height="303" loading="lazy">
+            <span class="brand__logo" role="img" aria-label="Pilates Lviv"></span>
           </a>
 
           <address class="site-footer__contacts">
-            <a href="<?= $contact['map'] ?>" target="_blank" rel="noopener">
+            <a class="icon-link" href="<?= $contact['map'] ?>" target="_blank" rel="noopener">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
               <?= $contact['address'] ?>
             </a>
-            <a href="<?= $contact['phone_href'] ?>">
+            <a class="icon-link" href="<?= $contact['phone_href'] ?>">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
               <?= $contact['phone'] ?>
             </a>
           </address>
 
-          <button type="button" class="btn btn--filled btn--light btn--sm" data-modal="callback">Замовити дзвінок</button>
+          <button type="button" class="btn btn--outlined btn--light btn--sm" data-modal="callback">Замовити дзвінок</button>
 
           <div class="site-footer__social">
             <a class="btn btn--icon btn--sm btn--outlined btn--light" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
