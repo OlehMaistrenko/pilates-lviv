@@ -3,6 +3,7 @@ $nav = 'blog';
 $page_title = 'Reformer vs Mat: в чому різниця — блог студії «Пілатес Львів»';
 $page_description = 'Пружина тримає й одночасно опирається — тому вправа, яка на маті не виходить, на реформері виходить із першого разу. Розбираємо, кому з чого починати.';
 $vendor_swiper = true;   // галерея фото всередині статті
+$vendor_lightbox = true; // клік по кадру галереї
 
 // Приклад-демо детальної сторінки статті: два варіанти зверстані одним
 // шаблоном через прапорець, а не окремими файлами.
@@ -162,25 +163,39 @@ include 'partials/header.php';
           <div class="swiper" data-swiper='{"spaceBetween":16}'>
             <div class="swiper-wrapper">
               <figure class="swiper-slide">
-                <img src="assets/img/gallery/2.jpg" alt="Reformer у залі студії" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/gallery/2.jpg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/gallery/2.jpg" alt="Reformer у залі студії" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/gallery/3.jpg" alt="Cadillac у залі студії" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/gallery/3.jpg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/gallery/3.jpg" alt="Cadillac у залі студії" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/gallery/4.jpg" alt="Групове заняття на матах" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/gallery/4.jpg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/gallery/4.jpg" alt="Групове заняття на матах" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/directions/3.jpeg" alt="Індивідуальне заняття з тренером" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/directions/3.jpeg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/directions/3.jpeg" alt="Індивідуальне заняття з тренером" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/gallery/5.jpg" alt="Розтяжка на Cadillac" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/gallery/5.jpg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/gallery/5.jpg" alt="Розтяжка на Cadillac" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/gallery/6.jpg" alt="Зал студії з тренажерами" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/gallery/6.jpg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/gallery/6.jpg" alt="Зал студії з тренажерами" loading="lazy">
+                </a>
               </figure>
               <figure class="swiper-slide">
-                <img src="assets/img/directions/5.jpeg" alt="Вправа на Reformer з тренером" loading="lazy">
+                <a class="gallery__zoom" href="assets/img/directions/5.jpeg" data-glightbox aria-label="Відкрити фото на весь екран">
+                  <img src="assets/img/directions/5.jpeg" alt="Вправа на Reformer з тренером" loading="lazy">
+                </a>
               </figure>
             </div>
           </div>

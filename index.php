@@ -4,6 +4,7 @@ $page_title = 'Студія пілатесу у Львові — Pilates Lviv';
 $page_description = 'Пілатес на професійних тренажерах Cadillac і Reformer, йога, танці та функціональне відновлення. Львів, вул. Б. Романицького, 24а. Працюємо з 2015 року.';
 $header_over_hero = true;   // герой моховий — хедер лягає поверх нього прозорим
 $vendor_swiper = true;      // слайдер відгуків
+$vendor_lightbox = true;    // клік по кадру галереї
 
 // Реальний каталог занять із instasport.ua/uk/club/pilates_lviv
 $directions = [
@@ -381,9 +382,9 @@ include 'partials/header.php';
      08 · Галерея — зал як він є; розміри кадрів різні навмисно
      ============================================================ -->
 <?php
-// $gallery_items = $gallery;
-// $gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
-// include 'partials/gallery.php';
+$gallery_items = $gallery;
+$gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+include 'partials/gallery.php';
 ?>
 
 <!-- ============================================================
@@ -391,10 +392,10 @@ include 'partials/header.php';
      Другий варіант подачі галереї, поруч із каруселлю вище.
      ============================================================ -->
 <?php
-$stack_items = $gallery;
-$stack_title = 'Зали та тренажери';
-$stack_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
-include 'partials/cardstack.php';
+// $stack_items = $gallery;
+// $stack_title = 'Зали та тренажери';
+// $stack_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+// include 'partials/cardstack.php';
 ?>
 
 <!-- ============================================================

@@ -56,7 +56,8 @@ if ($stack_items):
       <!-- role=group, а не список: це керована карусель без автоплею, і
            порядок карток у DOM навмисно не збігається з видимим -->
       <div class="cardstack__frame" role="group"
-           aria-roledescription="галерея-стос" aria-label="Фото студії">
+           aria-roledescription="галерея-стос"
+           aria-label="Фото студії: стрілки — гортати, Enter — відкрити кадр на весь екран">
         <?php foreach ($stack_cards as $i => [$file, $alt]): ?>
           <!-- --i друкує PHP, а не JS: без скрипта стос усе одно
                намальований правильно, передня картка зверху. Глибші за

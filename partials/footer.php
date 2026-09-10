@@ -155,6 +155,9 @@
   <?php if (!empty($vendor_map)): ?>
     <link rel="stylesheet" href="css/vendor/mapbox/mapbox-gl.css">
   <?php endif; ?>
+  <?php if (!empty($vendor_lightbox)): ?>
+    <link rel="stylesheet" href="css/vendor/glightbox/glightbox.min.css">
+  <?php endif; ?>
   <!-- SlimSelect + IMask без гейта: поля форм живуть у модалках
        (partials/modals/*), які відкриваються з будь-якої сторінки -->
   <link rel="stylesheet" href="css/vendor/slimselect/slimselect.css">
@@ -168,6 +171,9 @@
     <!-- Без defer, як swiper: main.js читає window.mapboxgl у момент свого
          запуску. Сама карта створюється ліниво (IntersectionObserver). -->
     <script defer src="js/vendor/mapbox/mapbox-gl.js"></script>
+  <?php endif; ?>
+  <?php if (!empty($vendor_lightbox)): ?>
+    <script defer src="js/vendor/glightbox/glightbox.min.js"></script>
   <?php endif; ?>
 
   <!-- Lenis + GSAP на всіх сторінках без гейта: плавний скрол — частина

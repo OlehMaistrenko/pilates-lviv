@@ -22,6 +22,7 @@ if ($gallery_items):
   // його не вистачить на найширшу розкладку (4 слайди).
   $slides = $gallery_items;
   while (count($slides) < 8) $slides = array_merge($slides, $gallery_items);
+  $unique = count($gallery_items);
 ?>
 <section class="section gallery<?= $gallery_class ? ' ' . $gallery_class : '' ?>">
   <?php if ($gallery_title): ?>
@@ -40,9 +41,18 @@ if ($gallery_items):
   <div class="swiper-wrap gallery__slider" data-reveal>
     <div class="swiper" data-swiper='{"effect":"coverflow","grabCursor":true,"centeredSlides":true,"slidesPerView":1.3,"loop":true,"autoplay":{"delay":2800,"disableOnInteraction":false},"coverflowEffect":{"rotate":35,"stretch":0,"depth":220,"modifier":1,"slideShadows":false},"pagination":{"dynamicBullets":true},"breakpoints":{"768":{"slidesPerView":2},"1080":{"slidesPerView":4}}}'>
       <div class="swiper-wrapper">
-        <?php foreach ($slides as [$file, $alt]): ?>
+        <?php foreach ($slides as $i => [$file, $alt]): ?>
+          <?php /* Слайди після першого проходу — дублікати заради loop.
+                   У лайтбокс потрапляє лише перший прохід (data-glightbox),
+                   інакше той самий кадр ішов би в галереї по кілька разів;
+                   дублікат відкриває оригінал за спільним data-gl-index. */ ?>
           <figure class="swiper-slide gallery__item">
-            <img src="assets/img/<?= $file ?>" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
+            <a class="gallery__zoom" href="assets/img/<?= $file ?>"
+               data-gl-index="<?= $i % $unique ?>"
+               <?= $i < $unique ? 'data-glightbox' : '' ?>
+               aria-label="Відкрити фото на весь екран">
+              <img src="assets/img/<?= $file ?>" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
+            </a>
           </figure>
         <?php endforeach; ?>
       </div>
@@ -60,4 +70,4 @@ if ($gallery_items):
 </section>
 <?php endif;
 
-unset($gallery_items, $gallery_title, $gallery_link, $gallery_class, $slides);
+unset($gallery_items, $gallery_title, $gallery_link, $gallery_class, $slides, $unique);

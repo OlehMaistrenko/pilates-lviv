@@ -638,6 +638,57 @@
     document.querySelectorAll('.swiper').forEach(initSwiper);
   })();
 
+  /* ---- GLightbox: фулскрін-перегляд галерей (vendor підключає лише
+     сторінка, що виставила $vendor_lightbox перед include footer.php).
+     Esc, клавіатуру, свайп, лічильник і фокус вендор бере на себе. ----- */
+  (() => {
+    if (typeof GLightbox === 'undefined') return;
+    /* Стрілка в спрайті одна (icon-arrow-right) — «назад» це вона ж,
+       відзеркалена класом .glightbox-prev-icon у styles.css. */
+    const glIcon = (id) => `<svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#${id}"></use></svg>`;
+    const OPTIONS = {
+      loop: true,
+      touchNavigation: true,
+      svg: {
+        close: glIcon('icon-close'),
+        next: `<span class="glightbox-next-icon">${glIcon('icon-arrow-right')}</span>`,
+        prev: `<span class="glightbox-prev-icon">${glIcon('icon-arrow-right')}</span>`,
+      },
+    };
+    /* Lenis рухає сторінку через window.scrollTo — клас glightbox-open з
+       overflow:hidden на це не впливає, і фон їхав би під відкритим
+       лайтбоксом. Глушимо явно, як це роблять модалки через body overflow. */
+    const bindScrollLock = (lb) => {
+      lb.on('open', () => lenisInstance?.stop());
+      lb.on('close', () => lenisInstance?.start());
+      return lb;
+    };
+
+    const lightbox = bindScrollLock(GLightbox({ ...OPTIONS, selector: '[data-glightbox]' }));
+
+    /* Loop-дублікати слайдера в галерею не входять (див. partials/gallery.php),
+       тож клік по них вендор не ловить — відкриваємо оригінал за їх індексом. */
+    document.addEventListener('click', (e) => {
+      const dup = e.target.closest('.gallery__zoom[data-gl-index]:not([data-glightbox])');
+      if (!dup) return;
+      e.preventDefault();
+      lightbox.openAt(Number(dup.dataset.glIndex));
+    });
+
+    /* Для галерей, які не тримаються на посиланнях у розмітці (стос карток:
+       картку тягнуть вказівником, тож <a> там був би пасткою для жесту).
+       Набір кадрів приходить масивом — інстанс живе рівно одне відкриття. */
+    window._functions.openLightbox = (items, index = 0) => {
+      const lb = bindScrollLock(GLightbox({
+        ...OPTIONS,
+        elements: items.map(({ href, alt }) => ({ href, type: 'image', alt })),
+        startAt: index,
+      }));
+      lb.on('close', () => setTimeout(() => lb.destroy(), 0));
+      lb.open();
+    };
+  })();
+
   /* ---- Card stack: фото стосом, передню картку тягнемо вказівником.
      Відпущена за порогом картка йде В КІНЕЦЬ стосу незалежно від напрямку
      жесту — назад повертає тільки кнопка «Попереднє».
@@ -796,14 +847,32 @@
       }
     });
 
+    /* Кадри для лайтбокса — лише унікальні: PHP добирає стос дублями до
+       глибини (див. partials/cardstack.php), а data-photo несе номер
+       оригіналу, за яким дублікати й відсіюються. */
+    const photos = [];
+    cards.forEach((card) => {
+      const idx = parseInt(card.dataset.photo ?? '0', 10);
+      const img = card.querySelector('img');
+      if (photos[idx] || !img) return;
+      photos[idx] = { href: img.currentSrc || img.src, alt: img.alt };
+    });
+
     const endDrag = () => {
       if (!dragCard) return;
       const card = dragCard;
       dragCard = null;
       card.classList.remove('is-dragging');
       // кидок у будь-який бік відправляє картку вниз
-      if (Math.hypot(dx, dy) > THRESHOLD) next();
-      else clearDrag(card);   // під поріг — пружина назад, веде CSS
+      if (Math.hypot(dx, dy) > THRESHOLD) { next(); return; }
+      clearDrag(card);   // під поріг — пружина назад, веде CSS
+      /* Той самий жест під порогом — це вже не кидок, а тап: відкриваємо
+         кадр на весь екран. Тому лайтбокс висить тут, а не на click:
+         click прилітає й після справжнього перетягування, і картка
+         відкривалась би щоразу, коли її просто гортають. */
+      if (Math.hypot(dx, dy) < 6) {
+        window._functions.openLightbox?.(photos, parseInt(card.dataset.photo ?? '0', 10));
+      }
     };
     frame.addEventListener('pointerup', endDrag);
     frame.addEventListener('pointercancel', endDrag);
@@ -813,7 +882,10 @@
     frame.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       else if (e.key === 'ArrowLeft') prev();
-      else return;
+      else if (e.key === 'Enter' || e.key === ' ') {
+        const front = cards[order[0]];
+        window._functions.openLightbox?.(photos, parseInt(front.dataset.photo ?? '0', 10));
+      } else return;
       e.preventDefault();
     });
 

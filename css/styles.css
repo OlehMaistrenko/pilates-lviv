@@ -1353,6 +1353,55 @@
   border-radius: var(--r-arch);
 }
 .gallery__item > img { width: 100%; height: 100%; object-fit: cover; }
+/* посилання-обгортка навколо кадру існує лише заради лайтбокса — власної
+   форми не має, тягнеться на всю картку */
+.gallery__zoom { display: block; width: 100%; height: 100%; }
+.gallery__zoom > img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ============================================================
+   GLightbox — фулскрін-перегляд галерей. Вендорські контроли
+   перемальовуємо у власні кнопки-іконки: та сама форма й поведінка,
+   що в .btn--icon.btn--outlined.btn--light (світлий контур на темному
+   полі), бо тло лайтбокса завжди темне.
+   ============================================================ */
+.glightbox-clean .gclose,
+.glightbox-clean .gnext,
+.glightbox-clean .gprev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--clr-page) 38%, transparent);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--clr-page);
+  opacity: 1;
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+/* вендорський скін красить свою дефолтну іконку через path{fill}; наші
+   зі спрайту — обведення по currentColor, тож заливку знімаємо */
+.glightbox-clean .gclose path,
+.glightbox-clean .gnext path,
+.glightbox-clean .gprev path { fill: none; }
+.glightbox-clean .gclose svg,
+.glightbox-clean .gnext svg,
+.glightbox-clean .gprev svg { width: 1.25rem; height: 1.25rem; }
+.glightbox-prev-icon { display: inline-flex; transform: scaleX(-1); }
+@media (min-width: 1081px) {
+  .glightbox-clean .gclose:hover,
+  .glightbox-clean .gnext:hover,
+  .glightbox-clean .gprev:hover {
+    background-color: var(--clr-page);
+    border-color: var(--clr-page);
+    color: var(--clr-ink);
+    opacity: 1;
+  }
+}
+/* лічильник і підпис — тією ж типографікою, що решта сайту */
+.glightbox-container .gslide-description { font-family: var(--font-body); }
+.glightbox-container .gslide-title { font-family: var(--font-display); }
 
 /* ============================================================
    Slider controls — генерична панель під будь-яким .swiper-wrap:
