@@ -105,23 +105,47 @@
 .form { display: flex; flex-direction: column; gap: var(--sp-4); }
 .form__row { display: flex; flex-direction: column; gap: var(--sp-2); }
 .form__label { font-size: var(--fs-sm); font-weight: var(--fw-reg); }
+/* Висота — через --field-size, тим самим прийомом, що --btn-size у .btn:
+   властивість оголошена один раз тут, а модифікатор перебиває саму
+   змінну, не повторюючи правило. Радіус рахується від висоти: половина —
+   це рівно капсула на будь-якому розмірі, тож форма й висота ніколи не
+   розходяться (змінили --field-size — радіус перерахувався сам).
+   Однорядкове поле однакове з кнопкою поруч висотою й пігулкою, але не
+   набором: вага кнопки (--fw-med) — це вага дії, а в полі стоїть введений
+   текст, тож він лишається звичайним.
+   Кегль — рівно --fs-body (16px), і це не косметика: Safari на iOS
+   зумить сторінку, коли фокусується поле дрібніше за 16px. Тому поле
+   НЕ бере --fs-sm кнопки. */
 .form__input,
 .form__textarea {
+  --field-size: 3rem;
+  --field-radius: calc(var(--field-size) / 2);
   width: 100%;
-  padding: var(--sp-3) var(--sp-4);
+  padding-inline: var(--sp-5);
   border: 1px solid var(--clr-line);
-  border-radius: var(--r-chip);
-  font: inherit;
+  border-radius: var(--field-radius);
   color: var(--clr-ink);
   background: var(--clr-page);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
   transition: border-color .2s var(--ease);
+}
+/* min-height і нульовий вертикальний паддінг — лише на однорядкових:
+   висоту тримає --field-size, а не падінг */
+.form__input { min-height: var(--field-size); padding-block: 0; }
+/* Багаторядкове поле — не капсула: половина висоти на textarea дала б
+   овал. Власна висота, прямокутна форма й звичайний вертикальний падінг. */
+.form__textarea {
+  --field-radius: var(--r-chip);
+  padding-block: var(--sp-3);
+  resize: vertical;
+  min-height: 7.5rem;
 }
 .form__input:focus,
 .form__textarea:focus {
   outline: none;
   border-color: var(--clr-accent);
 }
-.form__textarea { resize: vertical; min-height: 7.5rem; }
 .form__error { font-size: var(--fs-xs); color: #c0392b; }
 
 /* ============================================================
@@ -282,10 +306,16 @@
 .ss-main.ss-open-above { box-shadow: none; border-color: var(--clr-accent); }
 .ss-main .ss-values .ss-placeholder { padding: 0; line-height: inherit; }
 .ss-main .ss-arrow path { stroke: var(--clr-ink); }
-/* .ss-open-* скидає радіус на стику з випадайкою — при --r-chip 2px
-   різниці не видно, а стрибок форми на відкритті прибираємо */
+/* Вендор скидає радіус на стику з випадайкою — на пігулці це був би
+   стрибок форми в момент відкриття, тож тримаємо той самий --field-radius,
+   що й у закритому стані. Значення приходить із .form__input (вендор
+   копіює клас на .ss-main), фолбек — на випадок .ss-main без нього. */
 .ss-main.ss-open-below,
-.ss-main.ss-open-above { border-radius: var(--r-chip); }
+.ss-main.ss-open-above { border-radius: var(--field-radius, var(--r-chip)); }
+/* Вендор малює значення власним рядком, а висоту поля тримає min-height
+   із --field-size (padding-block у поля нульовий) — без цього текст
+   сидів би вище середини. */
+.ss-main .ss-values { min-height: var(--field-size, 3rem); }
 /* .ss-content успадковує --ss-bg-color з :root — той самий беж, що й фон
    сторінки під ним, тож без власного фону/рамки картка зникає. Вендор
    монтує його в <body> як position: fixed, тож border/shadow тут не
@@ -1946,4 +1976,187 @@
 @media (max-width: 560px) {
   .cookie { padding: var(--sp-4); }
   .cookie__close { width: 100%; }
+}
+
+/* ============================================================
+   Component: .schedule — календар занять (partials/schedule.php).
+   Один компонент на чотири сторінки: розклад, тренер, напрямок,
+   локація. Стан (вид, дата, фільтри) живе в URL, тож перемикачі —
+   звичайні посилання .filters, а не таби: працює без JS.
+   ============================================================ */
+.schedule__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-6);
+  margin-bottom: var(--sp-7);
+}
+/* власний margin .filters тут зайвий — відступ тримає .schedule__bar */
+.schedule__views { margin-bottom: 0; }
+
+.schedule__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+/* стрілка в спрайті одна (icon-arrow-right) — «назад» це вона ж, відзеркалена */
+.schedule__arrow--prev .icon { transform: scaleX(-1); }
+/* підпис періоду не стрибає при зміні довжини назви місяця */
+.schedule__caption {
+  min-width: 12rem;
+  text-align: center;
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-lt);
+}
+
+.schedule__day-head {
+  margin-top: var(--sp-7);
+  margin-bottom: var(--sp-4);
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-reg);
+  /* ::first-letter, а не text-transform: capitalize — intl віддає день
+     тижня з малої («понеділок»), а capitalize зачепив би й друге слово */
+}
+.schedule__day-head::first-letter { text-transform: uppercase; }
+.schedule__list > .schedule__day-head:first-child { margin-top: 0; }
+/* сьогодні — золота цифра, як .rows__num: колір, не заливка */
+.schedule__day-head.is-today { color: var(--clr-accent); }
+
+/* Час замість дня тижня в першій колонці — той самий грід .rows__item--slot */
+.schedule__slot > .rows__num { font-size: var(--fs-h5); }
+.schedule__variant { margin-left: var(--sp-2); }
+.schedule__meta { display: block; margin-top: var(--sp-1); }
+
+.schedule__slot-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  justify-self: end;
+}
+
+.schedule__empty { margin-block: var(--sp-8); }
+
+@media (max-width: 768px) {
+  .schedule__bar { gap: var(--sp-4); }
+  .schedule__nav { width: 100%; justify-content: space-between; }
+  .schedule__caption { min-width: 0; }
+  /* кнопка запису під рядком, а не праворуч: у дві колонки .rows__item--slot
+     на мобільному вона інакше тисне назву заняття */
+  .schedule__slot-actions {
+    grid-column: 1 / -1;
+    justify-self: start;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: var(--sp-2);
+  }
+}
+
+/* ---- Місяць: сітка 7 колонок. Під 768px нечитабельна (7 × ~4 символи),
+   тому там її ховаємо й показуємо .schedule__list — той самий список
+   днів, що й у видах «день»/«тиждень». -------------------------------- */
+.schedule-month {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--clr-line);
+  border: 1px solid var(--clr-line);
+}
+.schedule-month__wd {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--clr-page);
+  color: var(--clr-ink-mute);
+  text-align: center;
+}
+.schedule-month__day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 8rem;
+  padding: var(--sp-3);
+  background: var(--clr-page);
+}
+/* хвіст сусіднього місяця приглушений, але не прихований — сітка мусить
+   лишатись цілим прямокутником */
+.schedule-month__day.is-outside { opacity: .45; }
+.schedule-month__day.is-today .schedule-month__date {
+  color: var(--clr-accent);
+  font-weight: var(--fw-med);
+}
+.schedule-month__date { font-size: var(--fs-sm); }
+
+.schedule-month__slots {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.schedule-month__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--sp-2);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-chip);
+  font-size: var(--fs-xs);
+  text-align: left;
+  transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+}
+.schedule-month__time { color: var(--clr-accent); font-weight: var(--fw-med); }
+.schedule-month__name { color: var(--clr-ink-mute); }
+@media (min-width: 1081px) {
+  .schedule-month__slot:hover {
+    background: var(--clr-surface);
+    border-color: var(--clr-surface);
+    color: var(--clr-page);
+  }
+  .schedule-month__slot:hover .schedule-month__time,
+  .schedule-month__slot:hover .schedule-month__name { color: inherit; }
+  a.schedule-month__date:hover { color: var(--clr-accent); }
+}
+
+/* Місяць і його мобільний список — взаємовиключні: показуємо рівно один */
+@media (max-width: 768px) {
+  .schedule-month { display: none; }
+}
+@media (min-width: 769px) {
+  .schedule-month + .schedule__list { display: none; }
+}
+
+/* ============================================================
+   Component: .schedule-filters — фільтри розкладу селектами.
+   GET-форма: стан лишається в URL, тож без JS фільтр застосовує
+   кнопка, а з JS — сам вибір у селекті (js/main.js ховає кнопку).
+   Кольори й фокус поля беруть із .form__input (блок Form вище), а
+   форму — пігулку, висоту й кегль кнопки — перебиває цей блок: у ряду
+   з .btn поле мусить читатись як контрол, а не як поле форми.
+   ============================================================ */
+.schedule-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-7);
+}
+.schedule-filters__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  /* три селекти в ряд на десктопі, але кожен лишається читабельним */
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+/* Власних правил на поля тут немає навмисно: висоту, пігулку, кегль і
+   вагу вони беруть із .form__input (блок Form вище) — тепер це поведінка
+   всіх полів сайту, а не лише фільтрів. */
+
+/* кнопка стоїть у ряд із селектами, тож не тягнеться на всю ширину */
+.schedule-filters__apply { flex: 0 0 auto; }
+/* «Скинути» — текстове посилання, вирівняне по нижній лінії полів */
+.schedule-filters__reset { flex: 0 0 auto; margin-bottom: var(--sp-3); }
+
+@media (max-width: 768px) {
+  /* на мобільному селекти йдуть у стовпчик: два в ряд дають ~8 символів */
+  .schedule-filters__row { flex: 1 1 100%; }
+  .schedule-filters__apply { width: 100%; }
 }

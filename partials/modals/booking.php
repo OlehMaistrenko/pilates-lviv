@@ -17,7 +17,7 @@ $directions = [
 ?>
 <div class="modal__head">
   <h2 class="modal__title" id="modal-overlay-title">Записатись на заняття</h2>
-  <p class="text text--sm text--muted mt-3">
+  <p class="text text--muted mt-3">
     Передзвонимо, підберемо час і відповімо на питання. Перше заняття — знайомство.
   </p>
 </div>

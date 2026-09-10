@@ -7,7 +7,7 @@
 ?>
 <div class="modal__head">
   <h2 class="modal__title" id="modal-overlay-title">Замовити дзвінок</h2>
-  <p class="text text--sm text--muted mt-3">
+  <p class="text text--muted mt-3">
     Ми передзвонимо та відповімо на питання.
   </p>
 </div>

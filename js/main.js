@@ -1272,4 +1272,26 @@
     new ResizeObserver(sync).observe(document.body);
   })();
 
+  /* ---- Фільтри розкладу: вибір у селекті одразу застосовує фільтр ------
+     Форма (partials/schedule.php) — звичайна GET-форма й без JS працює
+     кнопкою «Показати». Тут вибір сабмітить її сам, а кнопка ховається:
+     з JS вона стає зайвим другим кроком.
+     Делегування на document, а не listener на кожному <select>: SlimSelect
+     підміняє вигляд поля, але подію change кидає на нативному елементі,
+     який лишається в DOM. */
+  (() => {
+    const forms = document.querySelectorAll('[data-schedule-filters]');
+    if (!forms.length) return;
+
+    forms.forEach((form) => {
+      form.querySelector('.schedule-filters__apply')?.setAttribute('hidden', '');
+    });
+
+    document.addEventListener('change', (e) => {
+      const select = e.target.closest('[data-schedule-filters] select');
+      if (!select) return;
+      select.form?.submit();
+    });
+  })();
+
 })();

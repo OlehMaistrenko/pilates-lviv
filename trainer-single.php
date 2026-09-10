@@ -34,14 +34,6 @@ $certs = [
   ['Робота з осанкою у дорослих', 'Springtone Education', '2024'],
 ];
 
-$schedule = [
-  ['Понеділок', '09:00', 'Пілатес Springtone, група', 'Чупринки'],
-  ['Понеділок', '19:00', 'Здорова спина', 'Чупринки'],
-  ['Середа',    '09:00', 'Пілатес Springtone, група', 'Чупринки'],
-  ['Середа',    '18:00', 'Персональне заняття', 'Брюховичі'],
-  ['Пʼятниця', '10:30', 'Пілатес-Реформер, мінігрупа', 'Брюховичі'],
-];
-
 include 'partials/header.php';
 ?>
 
@@ -50,7 +42,7 @@ include 'partials/header.php';
      ============================================================ -->
 <section class="section profile-section patterned on-dark">
   <div class="container">
-    <nav class="breadcrumbs text--sm" aria-label="Хлібні крихти">
+    <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
       <a href="index.php">Головна</a>
       <span aria-hidden="true">·</span>
       <a href="team.php">Команда</a>
@@ -167,29 +159,16 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     04 · Які заняття і де проводить
+     04 · Які заняття і де проводить — спільний календар
+     (partials/schedule.php), пришпилений до цього тренера
      ============================================================ -->
-<section class="section pt-0" id="schedule">
-  <div class="container container--narrow">
-    <h2 class="mb-5" data-reveal="lines">Які заняття і де проводить</h2>
-
-    <ul class="rows" data-reveal>
-      <?php foreach ($schedule as [$day, $time, $class, $place]): ?>
-        <li class="rows__item rows__item--slot">
-          <span class="rows__day"><?= $day ?></span>
-          <span class="label rows__num"><?= $time ?></span>
-          <span class="rows__title"><?= $class ?></span>
-          <span class="text--sm text--muted rows__place">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
-            <?= $place ?>
-          </span>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-
-    <a class="btn btn--outlined mt-5" href="schedule.php">Повний розклад студії</a>
-  </div>
-</section>
+<?php
+$schedule_trainer = 3;   // TODO: id інструктора з CMS замість константи
+$schedule_title = 'Які заняття і де проводить';
+$schedule_link = ['Повний розклад студії', 'schedule.php'];
+$schedule_class = 'pt-0';
+include 'partials/schedule.php';
+?>
 
 <!-- ============================================================
      05 · Галерея занять — спільний блок (partials/gallery.php)

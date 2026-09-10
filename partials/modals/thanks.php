@@ -9,5 +9,5 @@ $text  = trim($_GET['text'] ?? '') ?: 'Зазвичай протягом год�
 ?>
 <div class="modal__head">
   <h2 class="modal__title" id="modal-overlay-title"><?= htmlspecialchars($title) ?></h2>
-  <p class="text text--sm text--muted mt-3"><?= htmlspecialchars($text) ?></p>
+  <p class="text text--muted mt-3"><?= htmlspecialchars($text) ?></p>
 </div>
