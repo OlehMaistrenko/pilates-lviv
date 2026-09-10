@@ -291,7 +291,7 @@
    main.js (initAccordions); клас .accordion--open + max-height на
    .accordion__body для плавної анімації.
    ============================================================ */
-.accordion { border-top: 1px solid var(--clr-line); }
+.accordion { border-top: 1px solid var(--clr-line);cursor: pointer; }
 .accordion:last-child { border-bottom: 1px solid var(--clr-line); }
 .accordion__summary {
   display: flex;
@@ -302,12 +302,18 @@
   cursor: pointer;
 }
 /* h3, тож гарнітуру/вагу дає база — тут лишається тільки кегль */
-.accordion__title { font-size: var(--fs-h5); }
+.accordion__title { font-size: var(--fs-h5); transition: color .25s var(--ease); }
+.accordion--open .accordion__title { color: var(--clr-accent); }
 .accordion__icon {
   flex: none;
   position: relative;
   width: 1.25rem;
   height: 1.25rem;
+  color: inherit;
+}
+@media (min-width: 1081px) {
+  .accordion:hover .accordion__title { color: var(--clr-accent); }
+  .accordion:hover .accordion__icon { color: var(--clr-accent); }
 }
 .accordion__icon::before, .accordion__icon::after {
   content: "";
