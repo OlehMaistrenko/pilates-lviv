@@ -921,24 +921,58 @@
     });
   })();
 
+  /* ---- Форми: маска телефону (IMask) + кастомний <select> (SlimSelect).
+     Обидві функції в window._functions: поля живуть у модалках, які
+     приходять через AJAX пізніше, тож модальний loader нижче кличе їх
+     на вставлений фрагмент. Селектор по type="tel", не по класу —
+     покриває будь-яку форму, наявну чи майбутню. ----------------------- */
+  window._functions.applyPhoneMask = (root) => {
+    if (typeof window.IMask === 'undefined') return;
+    root.querySelectorAll('input[type="tel"]:not([data-imask-bound])').forEach((el) => {
+      el.dataset.imaskBound = '';
+      const mask = IMask(el, { mask: '+{380} 00 000 00 00' });
+      // Неповний номер на blur скидаємо в порожнє поле: нативний required
+      // тоді ловить його як звичайне незаповнене, без setCustomValidity.
+      el.addEventListener('blur', () => {
+        if (el.value && !mask.masked.isComplete) mask.value = '';
+      });
+    });
+  };
+  window._functions.applySlimSelect = (root) => {
+    if (typeof window.SlimSelect === 'undefined') return;
+    // showSearch: false — переліки короткі, поле пошуку в них лише шум.
+    // Клас із <select> вендор копіює на свій .ss-main, тож .form__input
+    // на селекті дає полю той самий вигляд, що й інпутам.
+    root.querySelectorAll('select[data-slimselect]:not([data-ss-bound])').forEach((el) => {
+      el.dataset.ssBound = '';
+      new window.SlimSelect({ select: el, settings: { showSearch: false } });
+    });
+  };
+  window._functions.applyPhoneMask(document);
+  window._functions.applySlimSelect(document);
+
   /* ---- Modal overlay: shared AJAX loader for partials/modals/* -------- */
   (() => {
     const overlay = document.getElementById('modal-overlay');
     const content = document.getElementById('modal-overlay-content');
-    if (!overlay || !content) return;
+    const panel = document.getElementById('modal-overlay-panel');
+    const loader = document.getElementById('modal-loader');
+    if (!overlay || !content || !panel || !loader) return;
 
     let trigger = null;
 
     const open = () => {
       overlay.hidden = false;
+      // подвійний rAF, не одинарний: перший показ оверлея (ще ніколи не був
+      // видимим) браузер інколи склеює з hidden→false в один кадр без переходу
       requestAnimationFrame(() => {
-        overlay.classList.add('is-open');
-        overlay.querySelector('.modal-overlay__close')?.focus();
+        requestAnimationFrame(() => overlay.classList.add('is-open'));
       });
       document.body.style.overflow = 'hidden';
     };
     const close = () => {
       overlay.classList.remove('is-open');
+      panel.classList.remove('is-ready');
       document.body.style.overflow = '';
       // те саме, що й у мобільного меню: transitionend спливає з панелі
       // та з елементів форми всередині, слухаємо тільки корінь
@@ -956,12 +990,29 @@
     const load = async (name, params = '') => {
       const qs = new URLSearchParams(params);
       qs.set('name', name);
+      // спінер — окремий елемент поза .modal-overlay__panel: панель ховаємо
+      // цілком, щоб її розмір не стрибав при заміні спінера на контент
+      panel.classList.remove('is-ready');
+      panel.hidden = true;
+      loader.hidden = false;
+      open();
       try {
         const res = await fetch(`partials/modals/loader.php?${qs}`);
-        if (!res.ok) return;
+        if (!res.ok) { close(); return; }
         content.innerHTML = await res.text();
-        open();
-      } catch { /* тихо ігноруємо — href лишається робочим fallback-ом */ }
+        loader.hidden = true;
+        panel.hidden = false;
+        // panel щойно з'явився в DOM (був display:none) — is-open на overlay
+        // вже стоїть, тож перехід без власного кадру «до» не запуститься;
+        // is-ready — окремий контрол саме на панелі, подвійний rAF як в open()
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => panel.classList.add('is-ready'));
+        });
+        overlay.querySelector('.modal-overlay__close')?.focus();
+        // поля модалки щойно в DOM — стартовий прохід по document їх не бачив
+        window._functions.applyPhoneMask(content);
+        window._functions.applySlimSelect(content);
+      } catch { close(); }
     };
 
     // той самий AJAX-шлях, що [data-modal]-кліки, але викликаний програмно
@@ -988,6 +1039,16 @@
     if (requested) load(requested, pageParams);
   })();
 
+  /* ---- Сабміт будь-якої .form → модалка подяки замість реального POST
+     (беку під форми поки немає). Делеговано на document: форми живуть у
+     модалках і в DOM на момент підписки ще не існують. */
+  document.addEventListener('submit', (e) => {
+    const form = e.target.closest('.form');
+    if (!form || e.defaultPrevented) return;
+    e.preventDefault();
+    form.reset();
+    window._functions.loadModal('thanks');
+  });
 
 
   /* ---- Tabs: перемикання панелей послідовним crossfade — спочатку fade-out

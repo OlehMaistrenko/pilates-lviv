@@ -31,13 +31,13 @@ $directions = [
   <div class="form__row">
     <label class="form__label" for="booking-phone">Телефон</label>
     <input class="form__input" type="tel" id="booking-phone" name="phone" autocomplete="tel"
-           placeholder="+38 (063) 015-05-17" required>
+           placeholder="+380 63 015 05 17" required>
   </div>
 
   <div class="form__row">
     <label class="form__label" for="booking-direction">Напрямок</label>
-    <select class="form__input" id="booking-direction" name="direction">
-      <option value="">Ще не обрав</option>
+    <select class="form__input" id="booking-direction" name="direction" data-slimselect>
+      <option value="" data-placeholder="true">Ще не обрав</option>
       <?php foreach ($directions as $key => $label): ?>
         <option value="<?= $key ?>"<?= $key === $direction ? ' selected' : '' ?>><?= $label ?></option>
       <?php endforeach; ?>

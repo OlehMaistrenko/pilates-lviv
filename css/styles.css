@@ -10,8 +10,9 @@
    Один візуальний каркас (.modal-overlay__panel + .modal__*) для всіх —
    контент конкретної модалки вантажиться в #modal-overlay-content.
    ============================================================ */
-/* Протокол відкриття (js/main.js): hidden=false → rAF → клас .is-open;
-   на закритті клас знімається, а hidden повертається аж на transitionend.
+/* Протокол відкриття (js/main.js): hidden=false → rAF → клас .is-open на
+   оверлеї (спінер уже видно); коли контент прийшов — .is-ready на панелі.
+   На закритті класи знімаються, а hidden повертається аж на transitionend.
    Звідси два обов'язкові правила:
    1) [hidden] мусить перемагати display:flex — інакше атрибут ігнорується
       і оверлей видно завжди;
@@ -22,31 +23,61 @@
   inset: 0;
   z-index: 200;
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: center;
-  padding: var(--sp-4);
+  padding-inline: var(--sp-4);
+  overflow-y: auto;
   opacity: 0;
-  transition: opacity .3s var(--ease);
+  transition: opacity .25s var(--ease);
 }
 .modal-overlay[hidden] { display: none; }
 .modal-overlay.is-open { opacity: 1; }
 .modal-overlay__backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: color-mix(in srgb, var(--clr-ink) 55%, transparent);
 }
 .modal-overlay__panel {
   position: relative;
   width: min(35rem, 100%);
-  max-height: min(80vh, 45rem);
-  overflow-y: auto;
+  /* вертикальний відступ — margin, не padding контейнера-скролу: коли
+     .modal-overlay скролиться, кінцевий padding самого контейнера
+     браузер у зону скролу не рахує й нижній відступ зникає */
+  margin-block: var(--sp-4);
   border-radius: var(--r-card);
   background: var(--clr-page);
   padding: var(--sp-7);
-  transform: translateY(0.75rem);
-  transition: transform .3s var(--ease);
+  transform: translateY(3rem);
+  opacity: 0;
+  visibility: hidden;
+  transition: .3s var(--ease);
 }
-.modal-overlay.is-open .modal-overlay__panel { transform: none; }
+.modal-overlay__panel.is-ready {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay__panel { transition: none; transform: none; opacity: 1; visibility: visible; }
+}
+/* Живе поза .modal-overlay__panel, прямо на затемненні (флекс сам
+   центрує) — заміна спінера на контент не змінює розмір панелі й не
+   стрибає. Кольори світлі, бо підкладка тут завжди темна. */
+.modal-loader {
+  position: relative; /* інакше позиційований __backdrop малюється поверх */
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid color-mix(in srgb, var(--clr-page) 25%, transparent);
+  border-top-color: var(--clr-page);
+  border-radius: 50%;
+  animation: modal-loader-spin .7s linear infinite;
+}
+@keyframes modal-loader-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-loader { animation: none; }
+}
 .modal-overlay__close {
   position: absolute;
   top: var(--sp-3);
@@ -221,6 +252,66 @@
    через --swiper-pagination-bullet-inactive-opacity; колір несе --clr-line */
 .swiper-pagination-bullet { background: var(--clr-line); opacity: 1; }
 .swiper-pagination-bullet-active { background: var(--clr-accent); }
+
+/* ============================================================
+   Vendor: SlimSelect — кастомний <select> у формах модалок
+   (без гейта, partials/footer.php). Вендор параметризований своїми
+   --ss-* у :root, тож перефарбовуємо змінні, а не воюємо зі
+   специфічністю .ss-*. Саме :root: випадний список вендор монтує в
+   <body>, поза формою, і скоупні змінні до нього не дійшли б.
+   Клас .form__input із <select> вендор копіює на .ss-main, тож паддінг,
+   рамка, фон і фокус приходять звідти; --ss-spacing-s: 0 прибирає
+   вендорний внутрішній відступ, який додавався б до нашого.
+   ============================================================ */
+:root {
+  --ss-bg-color: var(--clr-page);
+  --ss-font-color: var(--clr-ink);
+  --ss-font-placeholder-color: var(--clr-ink-mute);
+  --ss-border-color: var(--clr-line);
+  --ss-primary-color: var(--clr-accent);
+  --ss-focus-color: var(--clr-accent);
+  --ss-disabled-color: transparent;
+  --ss-border-radius: var(--r-chip);
+  --ss-main-height: auto;
+  --ss-spacing-l: var(--sp-4);
+  --ss-spacing-m: var(--sp-2);
+  --ss-spacing-s: 0px;
+}
+.ss-main:focus,
+.ss-main.ss-open-below,
+.ss-main.ss-open-above { box-shadow: none; border-color: var(--clr-accent); }
+.ss-main .ss-values .ss-placeholder { padding: 0; line-height: inherit; }
+.ss-main .ss-arrow path { stroke: var(--clr-ink); }
+/* .ss-open-* скидає радіус на стику з випадайкою — при --r-chip 2px
+   різниці не видно, а стрибок форми на відкритті прибираємо */
+.ss-main.ss-open-below,
+.ss-main.ss-open-above { border-radius: var(--r-chip); }
+/* .ss-content успадковує --ss-bg-color з :root — той самий беж, що й фон
+   сторінки під ним, тож без власного фону/рамки картка зникає. Вендор
+   монтує його в <body> як position: fixed, тож border/shadow тут не
+   заважають лейауту форми. Тінь замінена рамкою: бренд без тіней/скла. */
+/* Вендор копіює клас <select> (тут .form__input) і на .ss-content, тому
+   наш паддінг поля потрапляв і на контейнер списку — прибираємо його тут. */
+.ss-content {
+  margin-top: var(--sp-2);
+  padding: 0;
+  border-color: var(--clr-accent);
+  background: var(--clr-page);
+}
+.ss-content .ss-list .ss-option { color: var(--clr-ink); }
+/* hover/keyboard-highlight — тиха підсвітка фоном, без заливки.
+   Вибраний пункт (.ss-selected) — виняток із правила «золото лише на
+   .btn--filled»: це стан select-компонента (як :checked у нативному UI),
+   не декоративна пляма, тож суцільна заливка тут виправдана. */
+.ss-content .ss-list .ss-option:hover,
+.ss-content .ss-list .ss-option.ss-highlighted {
+  color: var(--clr-accent);
+  background: color-mix(in srgb, var(--clr-accent) 10%, transparent);
+}
+.ss-content .ss-list .ss-option:not(.ss-disabled).ss-selected {
+  color: var(--clr-page);
+  background: var(--clr-accent);
+}
 
 /* ============================================================
    Component: .post-header — заголовок детальної сторінки статті.

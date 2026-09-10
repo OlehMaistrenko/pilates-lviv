@@ -126,7 +126,8 @@
   <!-- Спільний overlay для AJAX-модалок (info/help) — контент вантажиться в __content -->
   <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-overlay-title" data-lenis-prevent hidden>
     <div class="modal-overlay__backdrop" data-modal-close></div>
-    <div class="modal-overlay__panel">
+    <div class="modal-loader" id="modal-loader" aria-hidden="true" hidden></div>
+    <div class="modal-overlay__panel" id="modal-overlay-panel">
       <button type="button" class="btn btn--icon btn--sm btn--outlined modal-overlay__close" data-modal-close aria-label="Закрити">
         <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
       </button>
@@ -144,7 +145,12 @@
   <?php if (!empty($vendor_map)): ?>
     <link rel="stylesheet" href="css/vendor/mapbox/mapbox-gl.css">
   <?php endif; ?>
+  <!-- SlimSelect + IMask без гейта: поля форм живуть у модалках
+       (partials/modals/*), які відкриваються з будь-якої сторінки -->
+  <link rel="stylesheet" href="css/vendor/slimselect/slimselect.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/vendor/slimselect/slimselect.min.js"></script>
+  <script defer src="js/vendor/imask/imask.min.js"></script>
   <?php if (!empty($vendor_swiper)): ?>
     <script defer src="js/vendor/swiper/swiper-bundle.min.js"></script>
   <?php endif; ?>
