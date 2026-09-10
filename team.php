@@ -90,9 +90,10 @@ include 'partials/header.php';
       <?php foreach ($visible as $i => [$name, $slug, $role, $key, $quote, $exp]): ?>
         <li class="trainer" data-reveal style="--reveal-i: <?= $i % 4 ?>">
           <a class="trainer__link" href="trainer-single.php?trainer=<?= $slug ?>">
-            <span class="trainer__media">
-              <img src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>"
+            <span class="trainer__media media-swap">
+              <img class="media-swap__img" src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>"
                    width="900" height="1200" loading="<?= $i < 4 ? 'eager' : 'lazy' ?>">
+              <img class="media-swap__img media-swap__hover" src="assets/img/team/<?= $slug ?>-hover.jpg" alt="" loading="lazy">
             </span>
             <span class="trainer__name"><?= $name ?></span>
             <span class="text--sm text--muted"><?= $role ?></span>

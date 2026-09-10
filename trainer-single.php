@@ -4,6 +4,7 @@ $page_title = 'Галина — пілатес Springtone | Студія «Пі�
 $page_description = 'Галина, тренерка пілатесу Springtone. 12 років досвіду, робота зі спиною і поставою на Cadillac і Reformer. Розклад занять і сертифікати.';
 $vendor_swiper = true;   // галерея занять
 $vendor_lightbox = true; // клік по кадру галереї
+$header_over_hero = true; // моховий банер темний — хедер лягає поверх нього прозорим
 
 // Приклад-демо детальної сторінки тренера: слуг із ?trainer= на статиці
 // не читаємо (як і ?post= у blog-single.php) — контент тут один, решту
@@ -47,7 +48,7 @@ include 'partials/header.php';
 <!-- ============================================================
      01 · Шапка-профіль: портрет-арка, імʼя, цитата, факти, запис
      ============================================================ -->
-<section class="section profile-section">
+<section class="section profile-section patterned on-dark">
   <div class="container">
     <nav class="breadcrumbs text--sm" aria-label="Хлібні крихти">
       <a href="index.php">Головна</a>
