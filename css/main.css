@@ -236,6 +236,7 @@ main { overflow: clip; }
 .text--body { font-size: var(--fs-body); }
 .text--lead { font-size: var(--fs-lead); line-height: var(--lh-lead); }
 .text--muted { color: var(--clr-ink-mute); }
+.text--accent { color: var(--clr-accent); }
 
 /* ============================================================
    Utility: .on-dark — перевизначає колірні токени на темному полі

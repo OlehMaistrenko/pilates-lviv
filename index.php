@@ -132,7 +132,7 @@ include 'partials/header.php';
   <div class="container">
     <div class="section-head">
       <h2 class="path__title" data-reveal="lines">Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</h2>
-      <p class="text--sm text--muted" data-reveal>Джозеф Пілатес</p>
+      <p class="text--sm text--accent" data-reveal>Джозеф Пілатес</p>
     </div>
 
     <div class="path__grid">
