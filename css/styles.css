@@ -371,14 +371,19 @@
   max-height: 24rem;
 }
 
-.simple-text__table-wrap { overflow-x: auto; }
-.simple-text table { width: 100%; border-collapse: collapse; }
-.simple-text th, .simple-text td {
-  padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--clr-line);
-  text-align: left;
+/* таблиця — єдиний блок із заливкою в .simple-text, свідомий виняток із
+   «без зайвих бордерів»: рядки даних без рамки/фону губляться в суцільному
+   потоці абзаців навколо */
+.simple-text__table-wrap { overflow-x: auto; border-radius: var(--r-card); }
+.simple-text table { width: 100%; border-collapse: collapse; background: color-mix(in srgb, var(--clr-ink) 4%, var(--clr-page)); }
+.simple-text th, .simple-text td { padding: var(--sp-4); text-align: left; }
+.simple-text thead th {
+  background: var(--clr-accent);
+  color: var(--clr-on-accent);
+  font-weight: var(--fw-med);
 }
-.simple-text th { font-weight: var(--fw-sb); }
+.simple-text tbody th { font-weight: var(--fw-sb); white-space: nowrap; color: var(--clr-accent); }
+.simple-text tbody tr:not(:last-child) th, .simple-text tbody tr:not(:last-child) td { border-bottom: 1px solid var(--clr-line); }
 
 /* ============================================================
    Component: Accordion — звичайні div, стан і ексклюзивність рахує
@@ -466,6 +471,21 @@
    лишається сам відступ.
    ============================================================ */
 .card__note { display: block; margin-top: var(--sp-3); }
+
+/* ============================================================
+   Component: .benefit-card — статична картка в свайпері переваг.
+   Не клікабельна — hover навмисно немає.
+   ============================================================ */
+.benefit-card { display: flex; flex-direction: column; gap: var(--sp-2); height: 100%; }
+.benefit-card__media {
+  display: block;
+  aspect-ratio: 3 / 4;
+  margin-bottom: var(--sp-2);
+  border-radius: var(--r-arch);
+  overflow: hidden;
+}
+.benefit-card__media > img { width: 100%; height: 100%; object-fit: cover; }
+.benefit-card__title { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); letter-spacing: var(--tracking-tight); }
 
 /* ============================================================
    Component: .media-swap — кадр, що на hover лінка міняється на другий
@@ -687,6 +707,14 @@
 .rows__item--cert > .rows__title { grid-column: 1; }
 .rows__item--cert > .text--muted { grid-column: 1; }
 .rows__item--cert > .rows__num { grid-column: 2; grid-row: 1 / span 2; }
+
+/* Пара «назва → пояснення»: обладнання, формат заняття. Дві колонки в
+   один рядок, а не назва над описом, як у --cert: тут другий стовпчик
+   несе зміст, а не службовий рік, тож він мусить читатись поруч. */
+.rows__item--pair { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+@media (max-width: 768px) {
+  .rows__item--pair { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* Заняття: день · час · назва · локація в один рядок */
 .rows__item--slot { grid-template-columns: minmax(7rem, auto) minmax(4rem, auto) minmax(0, 1fr) auto; }

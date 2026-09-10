@@ -40,9 +40,9 @@ include 'partials/header.php';
 ?>
 
 <!-- ============================================================
-     01 · Банер — той самий .hero--inner, що на blog.php
+     01 · Банер — той самий .hero--page, що на blog.php
      ============================================================ -->
-<section class="hero hero--inner on-dark">
+<section class="hero hero--page on-dark">
   <img class="hero__video" src="assets/img/gallery/4.jpg" alt="" aria-hidden="true"
        width="2400" height="1100" loading="eager">
   <div class="hero__tint" aria-hidden="true"></div>
@@ -107,28 +107,11 @@ include 'partials/header.php';
 <!-- ============================================================
      03 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--umber split--cta on-dark">
-  <div class="split__grid patterned">
-    <figure class="split__media">
-      <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
-           width="2048" height="1365" loading="lazy"
-           data-anim="parallax" data-parallax="10">
-    </figure>
-
-    <div class="split__body" data-anim="parallax" data-parallax="4">
-      <h2 data-reveal="lines">Не знаєте, до кого записатись</h2>
-      <p class="text--lead text--muted" data-reveal>
-        Подзвоніть — спитаємо, що болить і чого хочете, і підберемо тренера
-        під це. Перше заняття все одно знайомство.
-      </p>
-
-      <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--filled btn--light" data-modal="booking">Записатись</button>
-        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$cta_title = 'Не знаєте, до кого записатись';
+$cta_text  = 'Подзвоніть — спитаємо, що болить і чого хочете, і підберемо тренера під це. Перше заняття все одно знайомство.';
+include 'partials/cta.php';
+?>
 
 <?php
 $seo_title = 'Тренери студії «Пілатес Львів»';

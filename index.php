@@ -223,41 +223,12 @@ include 'partials/header.php';
      вуличної вивіски, тому секція означає «двері».
      Два паралакс-шари з різними швидкостями (кадр повільніший за текст).
      ============================================================ -->
-<section class="split split--umber on-dark">
-  <div class="split__grid patterned">
-    <figure class="split__media">
-      <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
-           width="2048" height="1365" loading="lazy"
-           data-anim="parallax" data-parallax="10">
-    </figure>
-
-    <div class="split__body" data-anim="parallax" data-parallax="4">
-      <h2 data-reveal="lines">Перше заняття — знайомство</h2>
-      <p class="text--lead text--muted" data-reveal>
-        Приходьте подивитись зал, познайомитись із тренером і спробувати
-        тренажери. Далі вирішуєте самі.
-      </p>
-
-      <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--filled" data-modal="booking">Записатись</button>
-        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
-      </div>
-
-      <!-- Опис залу ($l[2]) сюди не тягнемо: поруч із кнопкою запису
-           потрібна адреса, куди прийти, а не характеристика обладнання. -->
-      <ul class="split__locations" data-reveal style="--reveal-i: 1">
-        <?php foreach ($locations as $l): ?>
-          <li>
-            <a href="locations.php">
-              <span class="split__loc-name"><?= $l[0] ?></span>
-              <span class="text--sm text--muted">Львів, <?= $l[1] ?></span>
-            </a>
-          </li>
-        <?php endforeach; ?>
-      </ul>
-    </div>
-  </div>
-</section>
+<?php
+$cta_title     = 'Перше заняття — знайомство';
+$cta_text      = 'Приходьте подивитись зал, познайомитись із тренером і спробувати тренажери. Далі вирішуєте самі.';
+$cta_locations = $locations;
+include 'partials/cta.php';
+?>
 
 <!-- ============================================================
      05 · Переваги — фулскрін-пін: заголовок, кадр, текст. Кадри
@@ -401,133 +372,27 @@ include 'partials/gallery.php';
 <!-- ============================================================
      09 · Тренери — портрет-арка, ім’я, напрямок і власна цитата
      ============================================================ -->
-<section class="section team">
-  <div class="container">
-    <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Тренери</h2>
-      <p class="text--lead text--muted" data-reveal>
-        Молодий колектив. Кожен веде свій напрямок і продовжує вчитись —
-        на семінарах, тренінгах, майстер-класах.
-      </p>
-    </div>
-
-    <div class="swiper-wrap" data-reveal>
-      <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":2.2},"1081":{"slidesPerView":4}}}'>
-        <ul class="swiper-wrapper">
-          <?php foreach ($team as $i => [$name, $role, $quote, $slug]): ?>
-            <li class="trainer swiper-slide">
-              <a class="trainer__link" href="trainer-single.php?trainer=<?= $slug ?>">
-                <span class="trainer__media media-swap">
-                  <img class="media-swap__img" src="assets/img/team/<?= $slug ?>.jpg" alt="<?= htmlspecialchars($name) ?>, <?= mb_strtolower($role) ?>" loading="lazy">
-                  <img class="media-swap__img media-swap__hover" src="assets/img/team/<?= $slug ?>-hover.jpg" alt="" loading="lazy">
-                </span>
-                <span class="trainer__name"><?= $name ?></span>
-                <span class="text--sm text--muted"><?= $role ?></span>
-                <q class="card__note text--muted"><?= $quote ?></q>
-              </a>
-            </li>
-          <?php endforeach; ?>
-          <li class="trainer trainer--all swiper-slide">
-            <a class="trainer__link" href="team.php">
-              <span class="trainer__media">
-                <svg class="trainer__all-mark" viewBox="235 127 135 139" aria-hidden="true"><path d="M341.2,147.2c-5.3-1.7-15.6-2.5-22.3,0v-11.9s6.1,4.8,6.1,4.8l4.9-4.8,4.9,4.8,6.4-4.8v11.9Z"/><path d="M261.6,220.1l-15.8-29.5s4.3-1,4.1-1.6c-.7-2.4-5.4-.8-5.4-.8l-1.7-3.2c1-.2,8.7-2.8,12.7,2.2,2.8,3.5,9.9,17.7,10.3,18.1,4.6,1.4,21.7,5.7,25.8,7.4s11.8,15.4,11.8,15.4c2.5-4.1,11.4-19.7,4.7-23.1-3.5-1.7-29.9-8.1-34.7-9.4l-3.7-7.5s4-1.1,3.8-1.6c-.7-2.4-5.1-.9-5.1-.9l-1.3-2.4c2.6-.8,9.1-1.4,11.4,1.5,1.1,1.4,2.1,3,2.1,3,0,0,29.9.3,33.5.2,3.6,0,6.8,0,9.9-1.4s8.4-10.2,4.5-18.9c5.6-3,0-10.2-5.4-4.1,0,0,3.2,4.8,3.7,9.7s.2,7-3.7,9.8c0,0-1.1-2.8-2-2.9-2.9-.3-10.5,10.5-11.5.3,0,0,4.3.9,5.2-.3,2.7-3.8-1.8-4.2-6.9-1.8l-4.3-6.1,7.6-6.6-.4-1.1c-.3-.7,0-1.5.6-1.8l5.9-4.2-3-5.6c10.9-5.8,30.3-4.3,39.3,3.9,15.1,13.6,8,35.8-4.4,41.4,0,0-21.6,40.7-27.8,52.4s4,1.7,4.7,1.7c8.1,0,9.7-9.2,11.5-20.2,2.2-13.8,8.1-18.7,13.4-19,3-.1,7.5,0,9.1,0s.5.5.4.8c-.7,1.3-3.8,7.2-5.2,9.9-1.1,2.1-2.7,2.3-5,2.3-5.7,0-7.3,2.1-8.7,10.4-1.6,11.6-4.8,21.6-18.7,21.6h-30.9s-13.7-25.5-17-31.4c-2.9-4.3-8.2-6.6-13.3-6.5ZM319.1,165.7s-3.2-.5-5,1.3-2.1,3.3-2,3.4c0,0,4-.4,4.4-.7,1.9-2,2.7-4,2.7-4Z"/></svg>
-                <span class="trainer__all">Уся команда</span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="slider-controls mt-5">
-        <button type="button" class="btn btn--icon btn--outlined swiper-prev" aria-label="Попередній тренер">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-        </button>
-        <div class="swiper-pagination"></div>
-        <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступний тренер">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$team_items = $team;
+$team_lead  = 'Молодий колектив. Кожен веде свій напрямок і продовжує вчитись — на семінарах, тренінгах, майстер-класах.';
+include 'partials/team-slider.php';
+?>
 
 <!-- ============================================================
      10 · Відгуки — третє й останнє мохове поле перед футером
      ============================================================ -->
-<section class="reviews patterned on-dark">
-  <div class="container">
-    <!-- .swiper-wrap огортає всю сітку: initSwiper шукає контроли в межах
-         найближчого .swiper-wrap, а вони стоять у колонці заголовка -->
-    <div class="swiper-wrap reviews__grid" data-reveal>
-      <div class="reviews__head">
-        <h2 data-reveal="lines">Що кажуть клієнти</h2>
-        <div class="slider-controls reviews__controls mt-5">
-          <button type="button" class="btn btn--icon btn--outlined btn--light swiper-prev" aria-label="Попередній відгук">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-          </button>
-          <div class="swiper-pagination"></div>
-          <button type="button" class="btn btn--icon btn--outlined btn--light swiper-next" aria-label="Наступний відгук">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
-        <div class="swiper-wrapper">
-          <?php foreach ($reviews as [$text, $name, $role, $shot]): ?>
-            <blockquote class="swiper-slide review">
-              <figure class="review__shot">
-                <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
-              </figure>
-              <div class="review__body">
-                <p class="quote review__text"><?= $text ?></p>
-                <footer class="review__meta">
-                  <span class="review__name"><?= $name ?></span>
-                  <span class="text--sm text--muted"><?= $role ?></span>
-                </footer>
-              </div>
-            </blockquote>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$reviews_items = $reviews;
+include 'partials/reviews.php';
+?>
 
 <!-- ============================================================
      11 · FAQ
      ============================================================ -->
-<section class="section faq">
-  <div class="container">
-    <div class="faq__grid">
-      <div class="faq__head">
-        <h2 data-reveal="lines">Питання перед першим заняттям</h2>
-        <p class="text--muted" data-reveal>Не знайшли своє — подзвоніть:</p>
-        <div data-reveal>
-          <a class="icon-link faq__phone" href="<?= $contact['phone_href'] ?>" >
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-            <?= $contact['phone'] ?>
-          </a>
-        </div>
-      </div>
-
-      <div class="faq__list" data-reveal style="--reveal-i: 1">
-        <?php foreach ($faq as $i => [$q, $a]): ?>
-          <div class="accordion" data-accordion-group="faq">
-            <div class="accordion__summary" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-<?= $i ?>">
-              <h3 class="accordion__title"><?= $q ?></h3>
-              <span class="accordion__icon" aria-hidden="true"></span>
-            </div>
-            <div class="accordion__body" id="faq-<?= $i ?>">
-              <div class="accordion__body-inner">
-                <p class="text--muted faq__answer"><?= $a ?></p>
-              </div>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$faq_items = $faq;
+include 'partials/faq.php';
+?>
 
 <?php
 // 12 · SEO-текст — рендериться першим блоком футера (partials/footer.php).

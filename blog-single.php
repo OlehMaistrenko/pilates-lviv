@@ -19,10 +19,10 @@ include 'partials/header.php';
 
 <?php if ($has_cover): ?>
   <!-- ============================================================
-       01 · Банер — той самий .hero--inner, що на blog.php, тільки без
+       01 · Банер — той самий .hero--page, що на blog.php, тільки без
        заголовка/ліда: тут вони йдуть окремим блоком нижче (02).
        ============================================================ -->
-  <section class="hero hero--inner on-dark">
+  <section class="hero hero--page on-dark">
     <img class="hero__video" src="assets/img/gallery/1.jpg" alt="" aria-hidden="true"
          width="2400" height="1100" loading="eager">
     <div class="hero__tint" aria-hidden="true"></div>

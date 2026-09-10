@@ -42,12 +42,12 @@ $contact = [
 // Каталог напрямків — реальний, із діючого pilateslviv.com.
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
-    'training-pilates'  => ['Пілатес Springtone', 'training-pilates.php'],
-    'training-yoga'     => ['Йога', 'training-yoga.php'],
-    'training-recovery' => ['Функціональне відновлення', 'training-recovery.php'],
-    'training-dance'    => ['Танці', 'training-dance.php'],
-    'training-physio'   => ['Консультація фізіолога', 'training-physio.php'],
-    'academy'           => ['Навчальний центр', 'academy.php'],
+    'training-pilates-mat' => ['Пілатес', 'training-pilates-mat.php'],
+    'training-reformer'    => ['Пілатес-Реформер', 'training-reformer.php'],
+    'training-back'        => ['Здорова спина', 'training-back.php'],
+    'training-personal'    => ['Персональне', 'training-personal.php'],
+    'training-split'       => ['Спліт', 'training-split.php'],
+    'academy'              => ['Навчальний центр', 'academy.php'],
   ]],
   'schedule'  => ['Розклад', 'schedule.php'],
   'prices'    => ['Ціни', 'prices.php'],

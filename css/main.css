@@ -665,6 +665,11 @@ html.lenis, html.lenis body { height: auto; }
   .section-head--split > a.btn { justify-self: start; }
 }
 
+.section-head--center { align-items: center; text-align: center; }
+@media (max-width: 768px) {
+  .section-head--center { align-items: flex-start; text-align: left; }
+}
+
 
 @media (max-width: 768px) {
   .section-head { margin-bottom: var(--sp-7); }
@@ -1103,28 +1108,31 @@ html.lenis, html.lenis body { height: auto; }
   flex-wrap: wrap;
   gap: var(--sp-3);
 }
-/* Банер внутрішньої сторінки — той самий герой, але не на весь екран:
+/* Банер контентної сторінки — той самий герой, але не на весь екран:
    під ним одразу список, тож 100svh зайві — під банером має бути видно
    початок контенту. Заголовок на крок дрібніший за --fs-mega головної:
    тут він заголовок сторінки, а не плакат.
    Висоту тримає min-height, а не вміст: самого заголовка з лінією замало,
-   щоб кадр читався кадром. 62svh лишає внизу смугу наступної секції,
+   щоб кадр читався кадром. 60svh лишає внизу смугу наступної секції,
    а стеля в rem не дає банеру рости на високих моніторах. */
-.hero--inner {
-  min-height: min(62svh, 37.5rem);
+.hero--page {
+  min-height: min(60svh, 36.25rem);
   padding-top: calc(var(--header-h-max) + var(--sp-7));
   padding-bottom: var(--sp-7);
 }
-/* Заголовок притиснутий до низу, крихти — до верху: вільну висоту, яку
-   дає min-height, забирає цей проміжок, а не рівні відступи довкола. */
-.hero--inner .hero__inner { gap: var(--sp-7); justify-content: space-between; }
+/* Крихти вгорі, заголовок із лідом — унизу. Проміжок між ними забирає
+   вільну висоту, тому це саме space-between, а не рівні відступи. У
+   .hero__inner мусить бути рівно два children (крихти + .hero__bottom):
+   третій порожній <div> (як у героя головної, де він відтискає лінію)
+   розкидав би їх на три позиції й лишав діру посередині банера. */
+.hero--page .hero__inner { gap: var(--sp-6); justify-content: space-between; }
 /* Банер без заголовка (напр. blog-single.php з $has_cover) — самі крихти
    без .hero__bottom, justify-content: space-between тут нічого не робить
    (один child), тож притискаємо крихти до низу банера вручну. Додатковий
    градієнт знизу (поверх рівного .hero__tint) — крихти лежать прямо на
    фото понизу кадру, самого тінту там не завжди досить для контрасту. */
-.hero--inner .hero__inner--end { justify-content: end; }
-.hero--inner:has(.hero__inner--end)::after {
+.hero--page .hero__inner--end { justify-content: end; }
+.hero--page:has(.hero__inner--end)::after {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -1134,13 +1142,19 @@ html.lenis, html.lenis body { height: auto; }
 }
 /* margin-bottom: -0.15em на .hero__title опускає заголовок до рівня кнопок
    на головній; тут кнопок під ним немає, тож від'ємний відступ лише з'їдав
-   би padding-bottom банера. */
-.hero--inner .hero__title {
+   би padding-bottom банера.
+   max-width обов'язковий: --fs-hero у версалах дає ~6.4rem, і довга назва
+   на кшталт «ПІЛАТЕС-РЕФОРМЕР» без стелі виходить за правий край
+   контейнера. Ліміт у rem, не ch — узгоджується з rem-шкалою відступів. */
+.hero--page .hero__title {
+  max-width: 55rem;
   font-size: var(--fs-hero);
   margin-bottom: 0;
 }
-/* лід замість кнопок: у банері списку вести нікуди, СТА стоїть унизу сторінки */
-.hero__lead { flex: 0 1 46ch; margin-bottom: 0.2em; }
+/* лід замість кнопок: у банері списку вести нікуди, СТА стоїть унизу сторінки.
+   max-width, а не flex-basis: .hero__bottom — колонка, тож flex-basis міряв би
+   ВИСОТУ, і рядок тягнувся б на всю ширину контейнера (на 1920 це ~1900px). */
+.hero__lead { max-width: 44rem; margin-bottom: 0.2em; }
 
 /* 1081–87.5rem: поруч зі стовпчиком кнопок заголовку лишається ~60.375rem, а
    --fs-mega у версалах вимагає більше й ламає його на два рядки. Власний
@@ -1148,12 +1162,13 @@ html.lenis, html.lenis body { height: auto; }
 @media (min-width: 1081px) and (max-width: 1400px) {
   .hero__title { font-size: clamp(5rem, 0.2557rem + 7.0219vw, 6.4rem); }
   /* власний clamp вище — для --fs-mega; банер уже на крок нижчий і влазить */
-  .hero--inner .hero__title { font-size: var(--fs-hero); }
+  .hero--page .hero__title { font-size: var(--fs-hero); }
 }
 @media (max-width: 1080px) {
   .hero { min-height: min(92svh, 51.25rem); }
-  .hero--inner { min-height: min(56svh, 31.25rem); }
-  .hero__lead { flex: none; margin-bottom: 0; }
+  .hero--page { min-height: min(55svh, 31.25rem); }
+  .hero--page .hero__title { max-width: none; }
+  .hero__lead { max-width: none; margin-bottom: 0; }
 }
 @media (max-width: 768px) {
   .hero { padding-top: calc(var(--header-h-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
@@ -1161,12 +1176,12 @@ html.lenis, html.lenis body { height: auto; }
      екрані --sp-7 з усіх боків з'їдає надто багато висоти банера.
      Мінімум теж нижчий — лід тут стоїть під заголовком, тож вміст
      і сам дає потрібну висоту, а більший min-height лишав би порожнечу. */
-  .hero--inner {
+  .hero--page {
     min-height: min(46svh, 25rem);
     padding-top: calc(var(--header-h-max) + var(--sp-6));
     padding-bottom: var(--sp-6);
   }
-  .hero--inner .hero__inner { gap: var(--sp-6); }
+  .hero--page .hero__inner { gap: var(--sp-5); }
   .hero__rule { gap: var(--sp-3); }
 }
 /* Усі три слова лишаються й на найвужчому екрані: тримає їх зняте

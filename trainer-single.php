@@ -203,28 +203,12 @@ include 'partials/gallery.php';
 <!-- ============================================================
      06 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--umber split--cta on-dark">
-  <div class="split__grid patterned">
-    <figure class="split__media">
-      <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
-           width="2048" height="1365" loading="lazy"
-           data-anim="parallax" data-parallax="10">
-    </figure>
-
-    <div class="split__body" data-anim="parallax" data-parallax="4">
-      <h2 data-reveal="lines">Записатись на заняття</h2>
-      <p class="text--lead text--muted" data-reveal>
-        Передзвонимо, підберемо час у розкладі Галини і відповімо на
-        питання. Перше заняття — знайомство.
-      </p>
-
-      <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--filled btn--light" data-modal="booking?direction=pilates">Записатись</button>
-        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$cta_title = 'Записатись на заняття';
+$cta_text  = 'Передзвонимо, підберемо час у розкладі Галини і відповімо на питання. Перше заняття — знайомство.';
+$cta_modal = 'booking?direction=pilates';
+include 'partials/cta.php';
+?>
 
 <!-- ============================================================
      07 · Інші тренери — генерична сітка карток

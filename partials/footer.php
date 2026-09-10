@@ -16,11 +16,11 @@
   // включно з тими, яких у хедері немає (кабінет, політика, галерея).
   $sitemap = [
     'Тренування' => [
-      ['Пілатес Springtone', 'training-pilates.php'],
-      ['Йога', 'training-yoga.php'],
-      ['Функціональне відновлення', 'training-recovery.php'],
-      ['Танці', 'training-dance.php'],
-      ['Консультація фізіолога', 'training-physio.php'],
+      ['Пілатес', 'training-pilates-mat.php'],
+      ['Пілатес-Реформер', 'training-reformer.php'],
+      ['Здорова спина', 'training-back.php'],
+      ['Персональне', 'training-personal.php'],
+      ['Спліт', 'training-split.php'],
       ['Навчальний центр', 'academy.php'],
     ],
     'Студія' => [
