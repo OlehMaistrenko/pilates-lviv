@@ -579,25 +579,35 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
   transform: none;
 }
 
-/* Варіант "lines" — заголовок набігає по словах зліва направо: фейд плюс
-   невеликий горизонтальний зсув, стагер по --word-i (інлайн, розставляє JS).
-   Чистий CSS: спостерігач лише додає .is-visible, окремої JS-логіки немає.
-   Слова — авто-врап у main.js (Reveal "lines"), ручна розмітка теж
-   підтримується.
+/* Варіант "lines" — горизонтальні жалюзі по літерах: кожна літера відкрита
+   маскою зі смуг, анімується одна зареєстрована змінна (висота відкритої
+   частини смуги), стагер по --char-i (інлайн, розставляє JS у Reveal
+   "lines"). Спостерігач лише додає .is-visible, окремої JS-логіки немає.
+   Крок смуги .3em — по висоті гліфа (~.7em капітель) це 2–3 ламелі.
+   Opacity йде разом із маскою, щоб край ламелі не «різав» на старті.
 
-   Ні маски, ні кліпу тут навмисно немає: при --lh-display (0.95) line-box
-   нижчий за гліфи, тож будь-яке обрізання по боксу слова зрізало б виносні
-   елементи (у, р, Ї, Й). Рухаємо лише opacity і transform — обрізати нічого. */
-[data-reveal="lines"] { opacity: 1; transform: none; }
-[data-reveal="lines"] .word-mask {
-  display: inline-block;
-  opacity: 0;
-  transform: translateX(-0.25em);
-  transition: opacity .7s var(--ease), transform .7s var(--ease);
-  transition-delay: calc(var(--word-i, 0) * 55ms);
-  will-change: opacity, transform;
+   Літера лишається inline (не inline-block), щоб браузер шейпив кернінг
+   крізь спани. Вертикальний паддінг на inline не впливає на лейаут, але
+   розширює border-box, від якого рахується маска — тому виносні елементи
+   (у, р, Ї, Й) при --lh-display (0.95) не зрізаються.
+
+   Без @property (Safari < 16.4) змінна не анімується — літери просто
+   зʼявляються стрибком, без стагеру. */
+@property --slat {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
 }
-[data-reveal="lines"].is-visible .word-mask { opacity: 1; transform: none; }
+[data-reveal="lines"] { opacity: 1; transform: none; }
+[data-reveal="lines"] .char {
+  --slat: 0px;
+  padding-block: .25em;
+  opacity: 0;
+  mask-image: repeating-linear-gradient(to bottom, #000 0 var(--slat), transparent 0 .3em);
+  transition: --slat .9s var(--ease), opacity .9s var(--ease);
+  transition-delay: calc(var(--char-i, 0) * 20ms);
+}
+[data-reveal="lines"].is-visible .char { --slat: .3em; opacity: 1; }
 
 /* ============================================================
    Motion — Lenis + GSAP scrub/pin

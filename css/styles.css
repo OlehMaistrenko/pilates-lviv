@@ -1008,7 +1008,7 @@
    --header-h картка стрибала б на порозі .is-scrolled. */
 .pinstack__stage {
   position: relative;
-  height: 100svh;
+  height: 100lvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;

@@ -13,30 +13,28 @@
   // файл колись розіб'ють на кілька <script>.
   window._functions = window._functions || {};
 
-  /* ---- Reveal "lines" — авто-врап тексту в .word-mask по словах ------ */
+  /* ---- Reveal "lines" — авто-врап тексту в .char по літерах ----------- */
   (() => {
-    /* <br> лишається в розмітці як реальний розрив. Кожне слово — окрема
-       .word-mask (не .line: стагер по слову, не по рядку); показує його
-       фейд+зсув у main.css, тому обгортка одна, без вкладеного спана.
-       Ручна розмітка (як у hero__title, де розрив не по словах) лишається
-       валідною — авто-врап її не чіпає. */
+    /* <br> лишається в розмітці як реальний розрив. Кожна літера — інлайновий
+       .char (не inline-block: так браузер шейпить текст крізь спани і кернінг
+       пар «Ту»/«Гл» не ламається). Пробіли лишаються голими текстовими
+       вузлами, тому перенос рядків і word-spacing працюють як у звичайному
+       тексті. Ефект жалюзі — маска в main.css, стагер по --char-i. */
     document.querySelectorAll('[data-reveal="lines"]').forEach((el) => {
-      if (el.querySelector('.word-mask')) return;
+      if (el.querySelector('.char')) return;
       const html = [];
       let i = 0;
+      const chars = (text) => [...text].map((c) => `<span class="char" style="--char-i: ${i++}">${c}</span>`).join('');
       el.childNodes.forEach((node) => {
         if (node.nodeName === 'BR') { html.push('<br>'); return; }
-        /* Інлайн-теги всередині заголовка (<em> для акцентного слова) треба
-           перенести на кожне слово: innerHTML нижче переписує вміст цілком,
-           і без цього тег просто зникав би разом із акцентом.
-           Вкладеність глибше одного рівня схлопується — заголовку вистачає. */
+        /* Інлайн-теги (<em> для акцентного слова) відтворюються навколо своїх
+           літер: innerHTML нижче переписує вміст цілком, і без цього тег
+           зникав би разом із акцентом. Вкладеність глибше одного рівня
+           схлопується — заголовку вистачає. */
         const tag = node.nodeType === 1 ? node.tagName.toLowerCase() : '';
         const attrs = tag ? [...node.attributes].map((a) => ` ${a.name}="${a.value}"`).join('') : '';
-        const open = tag ? `<${tag}${attrs}>` : '';
-        const close = tag ? `</${tag}>` : '';
-        (node.textContent || '').split(/\s+/).filter(Boolean).forEach((word) => {
-          html.push(`<span class="word-mask" style="--word-i: ${i++}">${open}${word}${close}</span>`);
-        });
+        const words = (node.textContent || '').split(/\s+/).filter(Boolean).map(chars).join(' ');
+        html.push(tag ? `<${tag}${attrs}>${words}</${tag}>` : words);
       });
       el.innerHTML = html.join(' ');
     });
