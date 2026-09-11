@@ -23,11 +23,6 @@
   const container = root.querySelector('.container');
   if (!container) return;
 
-  const forms = root.querySelectorAll('[data-schedule-filters]');
-  forms.forEach((form) => {
-    form.querySelector('.schedule-filters__apply')?.setAttribute('hidden', '');
-  });
-
   // reveal-спостерігач (js/main.js) сканує DOM один раз при завантаженні
   // й нових елементів після підміни innerHTML не побачить — [data-reveal]
   // лишився б назавжди opacity:0 (дефолт у css/main.css). Секція вже на
@@ -77,18 +72,31 @@
     const date = new Date(`${dateStr}T00:00:00`);
     const year = date.getFullYear();
 
+    // Межі видимого проміжку — ті самі, що server-side ($sch_from/$sch_to):
+    // потрібні і для підпису тижня, і щоб знати, чи видно сьогодні.
+    // monday/sunday — з понеділка, як 'monday this week' у PHP.
+    const monday = (d) => {
+      const r = new Date(d);
+      r.setDate(r.getDate() - ((r.getDay() + 6) % 7));
+      return r;
+    };
+    let from = date, to = date;
+    if (view === 'week') {
+      from = monday(date);
+      to = new Date(from);
+      to.setDate(to.getDate() + 6);
+    } else if (view === 'month') {
+      // сітка місяця добивається до повних тижнів, як і на сервері
+      from = monday(new Date(year, date.getMonth(), 1));
+      to = monday(new Date(year, date.getMonth() + 1, 0));
+      to.setDate(to.getDate() + 6);
+    }
+
     const caption = root.querySelector('.schedule__caption');
     if (caption) {
       if (view === 'day') caption.textContent = `${captionFmt.dayMonth.format(date)} ${year}`;
       else if (view === 'month') caption.textContent = `${captionFmt.month.format(date)} ${year}`;
-      else {
-        // тиждень з понеділка — та сама межа, що server-side 'monday this week'
-        const monday = new Date(date);
-        monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-        const sunday = new Date(monday);
-        sunday.setDate(sunday.getDate() + 6);
-        caption.textContent = `${captionFmt.dayMonthShort.format(monday)} — ${captionFmt.dayMonthShort.format(sunday)} ${sunday.getFullYear()}`;
-      }
+      else caption.textContent = `${captionFmt.dayMonthShort.format(from)} — ${captionFmt.dayMonthShort.format(to)} ${to.getFullYear()}`;
     }
 
     const prev = root.querySelector('.schedule__arrow--prev');
@@ -106,8 +114,13 @@
 
     // «Сьогодні» лежить поза .schedule__nav, тож її поява/зникнення
     // не зсуває стрілки — але ховати її треба тут-таки, разом із баром.
+    // Умова та сама, що в partials/schedule.php: ховаємо, коли сьогодні
+    // вже входить у видимий проміжок — там кнопці нема куди вести.
     const today = root.querySelector('.schedule__today');
-    if (today) today.hidden = dateStr === toDateParam(new Date());
+    if (today) {
+      const now = toDateParam(new Date());
+      today.hidden = now >= toDateParam(from) && now <= toDateParam(to);
+    }
   };
 
   const applyFragment = (html) => {

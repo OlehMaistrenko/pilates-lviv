@@ -100,6 +100,110 @@
 }
 
 /* ============================================================
+   Деталі заняття (partials/modals/slot-details.php) — двоколонкова
+   модалка: фото ліворуч, інформація праворуч.
+   ============================================================ */
+/* Панель одна на всі модалки й класу за назвою фрагмента не отримує
+   (js/main.js її не чіпає) — тому ширину під цю модалку перемикає
+   :has(), а не модифікатор. Padding знімаємо: фото має йти в край,
+   свій відступ тримає .slot-detail__body. */
+.modal-overlay__panel:has(.slot-detail) {
+  width: min(60rem, 100%);
+  padding: 0;
+  overflow: hidden;
+}
+.slot-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+}
+.slot-detail__media { position: relative; background: var(--clr-surface); }
+.slot-detail__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slot-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-7);
+  /* праворуч місце під кнопку закриття, вона absolute поверх панелі */
+  padding-right: var(--sp-8);
+}
+.slot-detail__head { display: flex; flex-direction: column; gap: var(--sp-2); }
+.slot-detail__kicker { color: var(--clr-accent); }
+.slot-detail__body .modal__title { font-size: var(--fs-h3); }
+.slot-detail__when { color: var(--clr-ink-mute); }
+.slot-detail__when::first-letter { text-transform: uppercase; }
+
+/* Факти рядком з іконками — замість таблиці «лейбл: значення» */
+.slot-detail__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+  list-style: none;
+  padding: 0;
+}
+.slot-detail__fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+}
+.slot-detail__fact .icon { color: var(--clr-accent); flex: none; }
+.slot-detail__fact.is-muted { color: var(--clr-ink-mute); }
+.slot-detail__fact.is-muted .icon { color: currentColor; }
+
+/* Тренер — картка з великим портретом-плейсхолдером, не рядок таблиці */
+.slot-detail__trainer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  transition: color .2s var(--ease);
+}
+.slot-detail__ava {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  flex: none;
+  border: 1px solid var(--clr-accent);
+  /* арка — та сама форма кадру, що в портретах тренерів на team.php */
+  border-radius: var(--r-arch);
+  color: var(--clr-accent);
+}
+.slot-detail__ava .icon { width: 2rem; height: 2rem; }
+.slot-detail__trainer-text { display: flex; flex-direction: column; gap: var(--sp-1); }
+.slot-detail__trainer-name { font-size: var(--fs-h5); }
+@media (min-width: 1081px) {
+  .slot-detail__trainer:hover { color: var(--clr-accent); }
+}
+
+.slot-detail__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+.slot-detail__price {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-lt);
+}
+
+@media (max-width: 768px) {
+  /* Фото над контентом: 22rem-колонка на вузькому екрані лишила б
+     тексту кілька символів. aspect-ratio, а не фіксована висота — кадр
+     тримає пропорцію на будь-якій ширині екрана, замість того щоб
+     ставати то майже квадратним, то вузькою смугою. */
+  .slot-detail { grid-template-columns: minmax(0, 1fr); }
+  .slot-detail__media { aspect-ratio: 3 / 2; }
+  .slot-detail__body { padding: var(--sp-5); gap: var(--sp-5); }
+}
+
+/* ============================================================
    Form — .form/.form__row поля
    ============================================================ */
 .form { display: flex; flex-direction: column; gap: var(--sp-4); }
@@ -2064,8 +2168,12 @@
   position: sticky;
   top: var(--header-h-min);
   z-index: 1;
-  margin-top: var(--sp-7);
-  padding-block: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-6);
+  /* верхній падінг — не відступ, а смуга фону: у прилиплому стані саме
+     вона ховає рядок, що проїжджає під заголовком, тож він однаковий у
+     всіх заголовків. Відстань між днями добирає margin-top, який у
+     першого заголовка знімаємо. */
+  padding-block: var(--sp-4);
   background: var(--clr-page);
   font-size: var(--fs-h4);
   font-weight: var(--fw-reg);
@@ -2073,7 +2181,10 @@
      тижня з малої («понеділок»), а capitalize зачепив би й друге слово */
 }
 .schedule__day-head::first-letter { text-transform: uppercase; }
-.schedule__list > .schedule__day-head:first-child { margin-top: 0; padding-top: 0; }
+/* Негативний margin, а не padding-top: 0 — падінг мусить лишитись (у
+   прилиплому стані саме він ховає рядок під заголовком), але візуально
+   перший заголовок має починатись від верху списку, без зайвого повітря. */
+.schedule__list > .schedule__day-head:first-child { margin-top: calc(-1 * var(--sp-4)); }
 /* сьогодні — золота цифра, як .rows__num: колір, не заливка */
 .schedule__day-head.is-today { color: var(--clr-accent); }
 
@@ -2082,9 +2193,10 @@
    із тривалістю (.schedule__slot-time), .rows__num йому онук, не дитина. */
 .schedule__slot-time > .rows__num { font-size: var(--fs-h5); }
 .schedule__meta { display: block; margin-top: var(--sp-1); }
-/* Заповнене заняття (seats === 0): приглушуємо рядок цілком, а не лише
-   кнопку — інакше час/назва виглядають так само привабливо, як у вільного */
-.schedule__slot--full { opacity: .55; }
+/* Недоступне для запису заняття (немає місць АБО минув enroll_deadline):
+   приглушуємо рядок цілком, а не лише кнопку — інакше час/назва
+   виглядають так само привабливо, як у доступного для запису */
+.schedule__slot--blocked { opacity: .55; }
 
 /* Порожня колонка (заняття без тренера) не повинна схлопувати грід —
    minmax(0, auto) у .rows__item--slot тримає її нульовою, а не рваною.
@@ -2117,17 +2229,21 @@
   .schedule__trainer { margin-top: var(--sp-2); }
 }
 
-/* display: contents — на десктопі обгортка сама зникає з грід-дерева, і
-   кнопка стає прямою дитиною .rows__item--slot, займаючи свою останню
-   subgrid-колонку. На мобільному (нижче) contents скасовується назад на
-   block — кнопка йде своїм окремим рядком на всю ширину. */
-.schedule__slot-actions { display: contents; }
-/* align-self: center — та сама вертикаль, що в .rows__place поруч.
-   width:100% + min-content-колонка (.schedule__list): кнопка стискається
-   до ширини найдовшого варіанту тексту («Немає місць»/«Записатись») і не
-   менше; nowrap забороняє перенос, який зробив би min-content рахунком
-   по букві, а не по слову. */
-.schedule__slot-btn { align-self: center; width: 100%; white-space: nowrap; }
+/* Дві кнопки (Деталі + Записатись/Недоступно) в одній subgrid-колонці —
+   рядком на десктопі (мобільний нижче ставить стовпчик). display:contents
+   тут не підходить (той трюк мав сенс рівно для одного grid-item, кнопок
+   тепер дві) — обгортка сама стає flex-рядком, який і є тим grid-item.
+   align-self:center — та сама вертикаль, що в .rows__place поруч. */
+.schedule__slot-actions {
+  display: flex;
+  gap: var(--sp-2);
+  align-self: center;
+}
+
+/* nowrap — min-content-колонка (.schedule__list) тоді рахує суму ширин
+   обох кнопок у рядку, а не одну найдовшу: без nowrap текст переносився
+   б, і min-content вважав би по букві, а не по слову. */
+.schedule__slot-btn { white-space: nowrap; flex-grow: 1; }
 
 .schedule__empty { margin-block: var(--sp-8); }
 /* Інлайн усередині речення, тож не .btn: успадковує розмір і колір
@@ -2148,15 +2264,16 @@
   .schedule__nav { width: 100%; justify-content: space-between; }
   /* min-width лишився б ширшим за вільне місце між стрілками у row width:100% */
   .schedule__caption { min-width: 0; font-size: var(--fs-body); }
-  /* кнопка запису — окремий останній рядок на всю ширину: у дві колонки
-     .rows__item--slot праворуч вона інакше тисне назву/тренера. block
-     повертає обгортку назад у грід-дерево — на десктопі вона
-     display:contents і сама не рендериться. */
+  /* Кнопки — окремий останній рядок на всю ширину, стовпчиком (десктопний
+     рядок на вузькому екрані стиснув би обидві кнопки до нечитабельного).
+     У дві колонки .rows__item--slot праворуч вони інакше тиснуть
+     назву/тренера. */
   .schedule__slot-actions {
-    display: block;
+    flex-direction: column;
     grid-column: 1 / -1;
     margin-top: var(--sp-2);
   }
+  .schedule__slot-btn { width: 100%; }
 }
 
 /* ---- Місяць: сітка 7 колонок. Під 768px нечитабельна (7 × ~4 символи),
@@ -2231,7 +2348,9 @@
   transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
 }
 .schedule-month__time { color: var(--clr-accent); font-weight: var(--fw-med); }
-.schedule-month__name { color: var(--clr-ink-mute); }
+/* Той самий стан і сенс, що .schedule__slot--blocked у списку днів —
+   заняття без вільних місць/за межею enroll_deadline */
+.schedule-month__slot--blocked { opacity: .55; }
 @media (min-width: 1081px) {
   .schedule-month__slot:hover {
     background: var(--clr-accent);
@@ -2282,15 +2401,9 @@
    всіх полів сайту, а не лише фільтрів. */
 
 
-.schedule-filters__apply,
 .schedule-filters__reset { flex: 0 0 auto; }
-/* [hidden] — лише UA-стиль, а .btn(display:inline-flex) переважує його
-   специфічністю: без цього js/schedule.js не приховує кнопку й вона
-   лишається видимою попри автосабміт по зміні селекта */
-.schedule-filters__apply[hidden] { display: none; }
 
 @media (max-width: 768px) {
   /* на мобільному селекти йдуть у стовпчик: два в ряд дають ~8 символів */
   .schedule-filters__row { flex: 1 1 100%; }
-  .schedule-filters__apply { width: 100%; }
 }

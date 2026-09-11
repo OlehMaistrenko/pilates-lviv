@@ -17,9 +17,14 @@
 $slot_min = (int)$slot_h * 60 + (int)$slot_m;
 // seats === 0 — заняття існує, місць нема. seats === null — API його не
 // прислало (нема в template), тоді лічильник просто не показуємо.
-$slot_full = $sch_slot['seats'] === 0;
+// blocked — ширше за no_seats: включає й enroll_deadline/минулий час
+// (api/schedule.php denormalize()), тому дізейблить «Записатись» навіть
+// коли місця формально ще є.
+$no_seats = $sch_slot['seats'] === 0;
+$blocked  = !$sch_slot['is_bookable'];
+$block_label = $no_seats ? 'Немає місць' : 'Недоступно';
 ?>
-<li class="rows__item rows__item--slot schedule__slot<?= $slot_full ? ' schedule__slot--full' : '' ?>">
+<li class="rows__item rows__item--slot schedule__slot<?= $blocked ? ' schedule__slot--blocked' : '' ?>">
   <span class="schedule__slot-time">
     <span class="label rows__num rows__day"><?= $sch_slot['time'] ?></span>
     <span class="text--sm text--muted"><?= $slot_min ? $slot_min . ' хв' : '' ?></span>
@@ -28,7 +33,7 @@ $slot_full = $sch_slot['seats'] === 0;
   <span class="rows__title">
     <?= htmlspecialchars($sch_slot['title']) ?>
     <span class="schedule__meta text--sm text--muted">
-      <?php if ($slot_full): ?>
+      <?php if ($no_seats): ?>
         Немає вільних місць
       <?php elseif ($sch_slot['seats']): ?>
         <?php /* API не має поля вільних місць окремо від загальних — лише
@@ -70,8 +75,10 @@ $slot_full = $sch_slot['seats'] === 0;
   </span>
 
   <span class="schedule__slot-actions">
-    <?php if ($slot_full): ?>
-      <button type="button" class="btn btn--sm btn--filled schedule__slot-btn" disabled>Немає місць</button>
+    <button type="button" class="btn btn--sm btn--outlined schedule__slot-btn"
+            data-modal="slot-details?event=<?= $sch_slot['id'] ?>">Деталі</button>
+    <?php if ($blocked): ?>
+      <button type="button" class="btn btn--sm btn--filled schedule__slot-btn" disabled><?= $block_label ?></button>
     <?php else: ?>
       <button type="button" class="btn btn--sm btn--filled schedule__slot-btn" data-modal="booking?event=<?= $sch_slot['id'] ?>">Записатись</button>
     <?php endif; ?>

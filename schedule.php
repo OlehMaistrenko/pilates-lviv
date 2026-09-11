@@ -53,6 +53,7 @@ include 'partials/header.php';
 <?php
 $schedule_filters = true;
 $schedule_title = '';   // заголовок дублював би H1 банера
+$schedule_class = 'section--tight-top';   // секція одразу під банером
 include 'partials/schedule.php';
 ?>
 

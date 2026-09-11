@@ -128,7 +128,7 @@
     <div class="modal-overlay__backdrop" data-modal-close></div>
     <div class="modal-loader" id="modal-loader" aria-hidden="true" hidden></div>
     <div class="modal-overlay__panel" id="modal-overlay-panel">
-      <button type="button" class="btn btn--icon btn--sm btn--outlined modal-overlay__close" data-modal-close aria-label="Закрити">
+      <button type="button" class="btn btn--icon btn--sm btn--filled modal-overlay__close" data-modal-close aria-label="Закрити">
         <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
       </button>
       <div class="modal-overlay__content" id="modal-overlay-content"></div>

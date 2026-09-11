@@ -17,7 +17,10 @@
  *
  * Підключається і як HTTP-ендпоінт (AJAX), і як бібліотека:
  * partials/schedule.php робить require і кличе schedule_query() напряму,
- * щоб не ходити по HTTP сам до себе на серверному рендері.
+ * щоб не ходити по HTTP сам до себе на серверному рендері. Так само
+ * partials/modals/slot-details.php кличе fetch_event_by_id() +
+ * denormalize() напряму — точковий запит за id одного заняття, не через
+ * schedule_query().
  */
 
 // Реальний ключ і clubslug — поза git (api/config.local.php у .gitignore).
@@ -76,6 +79,36 @@ function fetch_events(string $from, string $to, ?int $hall = null): array {
   return ['results' => $results, 'refs' => $mock['_refs']];
 }
 
+/**
+ * Одне заняття за id — /public/event/{id}/, детальний ендпоінт (не
+ * список): модалка деталей питає точково, а не шукає по вже
+ * завантаженому діапазону дат.
+ */
+function fetch_event_by_id(int $id): ?array {
+  global $INSTASPORT;
+
+  if ($INSTASPORT) {
+    $ch = curl_init(rtrim($INSTASPORT['base'], '/') . "/public/event/{$id}/");
+    curl_setopt_array($ch, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT        => 10,
+      CURLOPT_HTTPHEADER     => ['X-API-Key: ' . $INSTASPORT['key']],
+    ]);
+    $body = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($body === false || $code !== 200) return null;
+    return ['event' => json_decode($body, true), 'refs' => instasport_refs()];
+  }
+
+  $mock = json_decode(file_get_contents(__DIR__ . '/schedule-mock.json'), true);
+  $event = null;
+  foreach ($mock['results'] as $e) {
+    if ($e['id'] === $id) { $event = $e; break; }
+  }
+  return $event ? ['event' => $event, 'refs' => $mock['_refs']] : null;
+}
+
 /** Довідники живого API — окремі ендпоінти, кешовані на час запиту. */
 function instasport_refs(): array {
   global $INSTASPORT;
@@ -122,21 +155,35 @@ function denormalize(array $e, array $refs, DateTimeZone $tz): array {
   // setTimezone, а не $tz у конструкторі: коли рядок несе власний зсув
   // (+03:00), конструктор другий аргумент ігнорує, і переводить саме воно.
   $start = (new DateTimeImmutable($e['date']))->setTimezone($tz);
+  $seats = $e['seats'] ?? ($tpl['seats'] ?? null);
+
+  // enroll_deadline — межа, після якої запис закритий незалежно від
+  // місць (є і в списковому, і в детальному ендпоінті живого API). Мок
+  // цього поля не має — фолбек timestamp<now, той самий сенс (заняття
+  // вже почалось/минуло), на полі, яке є завжди.
+  $enroll_deadline = isset($e['enroll_deadline'])
+    ? (new DateTimeImmutable($e['enroll_deadline']))->getTimestamp()
+    : null;
+  $is_past = $enroll_deadline !== null
+    ? time() > $enroll_deadline
+    : $start->getTimestamp() < time();
 
   return [
-    'id'         => $e['id'],
-    'date'       => $start->format('Y-m-d'),
-    'time'       => $start->format('H:i'),
-    'timestamp'  => $start->getTimestamp(),
-    'title'      => $tpl['title'] ?? '',
-    'duration'   => $tpl['duration'] ?? '',
-    'seats'      => $e['seats'] ?? ($tpl['seats'] ?? null),
-    'variant'    => $tpl['variant'] ?? null,
-    'activity'   => $activity,
-    'direction'  => $activity !== null ? ($refs['activities'][$activity] ?? '') : '',
-    'hall'       => $hall,
-    'location'   => $hall !== null ? ($refs['halls'][$hall] ?? '') : '',
-    'trainers'   => array_map(
+    'id'          => $e['id'],
+    'date'        => $start->format('Y-m-d'),
+    'time'        => $start->format('H:i'),
+    'timestamp'   => $start->getTimestamp(),
+    'title'       => $tpl['title'] ?? '',
+    'duration'    => $tpl['duration'] ?? '',
+    'seats'       => $seats,
+    'price'       => $e['price'] ?? ($tpl['price'] ?? null),
+    'is_bookable' => $seats !== 0 && !$is_past,
+    'variant'     => $tpl['variant'] ?? null,
+    'activity'    => $activity,
+    'direction'   => $activity !== null ? ($refs['activities'][$activity] ?? '') : '',
+    'hall'        => $hall,
+    'location'    => $hall !== null ? ($refs['halls'][$hall] ?? '') : '',
+    'trainers'    => array_map(
       fn($i) => ['id' => $i['id'], 'name' => $i['name'] ?? ($refs['instructors'][$i['id']] ?? '')],
       $e['instructors'] ?? []
     ),
@@ -190,6 +237,27 @@ function schedule_query(array $params): array {
 function valid_date(string $s): ?string {
   $d = DateTimeImmutable::createFromFormat('!Y-m-d', $s);
   return ($d && $d->format('Y-m-d') === $s) ? $s : null;
+}
+
+/**
+ * Назва зони для IntlDateFormatter. Europe/Kyiv — сучасна назва, але в
+ * старіших збірках ICU (яку тягне intl) її ще немає, і форматер падає з
+ * U_ILLEGAL_ARGUMENT_ERROR, хоча сам PHP таку зону приймає (бази даних
+ * дві й вони розходяться: MAMP несе ICU 56, де є лише Europe/Kiev).
+ * Пробуємо тим самим викликом, що й бойовий — з патерном: коротшу форму
+ * конструктора старий ICU ковтає без помилки.
+ */
+function icu_tz_name(): string {
+  static $name = null;
+  if ($name !== null) return $name;
+
+  $name = 'Europe/Kyiv';
+  try {
+    new IntlDateFormatter('uk_UA', IntlDateFormatter::NONE, IntlDateFormatter::NONE, $name, null, 'd');
+  } catch (Throwable) {
+    $name = 'Europe/Kiev';
+  }
+  return $name;
 }
 
 // HTTP-режим: файл викликали напряму, а не через require з партіалу.

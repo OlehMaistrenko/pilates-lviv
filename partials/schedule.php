@@ -38,19 +38,10 @@ $schedule_link      = $schedule_link      ?? null;
 $schedule_class     = $schedule_class     ?? '';
 $schedule_id        = $schedule_id        ?? 'schedule';
 
-// Europe/Kyiv — сучасна назва, але в старіших збірках ICU (яку тягне intl)
-// її ще немає, і IntlDateFormatter падає з U_ILLEGAL_ARGUMENT_ERROR, хоча
-// сам PHP таку зону приймає (бази даних дві й вони розходяться: MAMP несе
-// ICU 56, де є лише Europe/Kiev). Пробуємо саме тим викликом, що й нижче —
-// з патерном: коротшу форму конструктора старий ICU ковтає без помилки.
-$sch_tz_name = 'Europe/Kyiv';
-try {
-  new IntlDateFormatter('uk_UA', IntlDateFormatter::NONE, IntlDateFormatter::NONE, $sch_tz_name, null, 'd');
-} catch (Throwable) {
-  $sch_tz_name = 'Europe/Kiev';
-}
-
-$sch_tz    = new DateTimeZone($sch_tz_name);
+// На старому ICU Europe/Kyiv немає — icu_tz_name() (api/schedule.php)
+// підставляє Europe/Kiev, щоб IntlDateFormatter не падав.
+$sch_tz_name = icu_tz_name();
+$sch_tz      = new DateTimeZone($sch_tz_name);
 $sch_today = new DateTimeImmutable('today', $sch_tz);
 
 // Вид і дата з URL; невідоме значення — фолбек, а не 500.
@@ -157,7 +148,9 @@ if (!$sch_ajax):
     <?php if ($schedule_filters): ?>
       <?php /* GET-форма, а не посилання: стан так само лишається в URL
                (?location=2&direction=1), тож відфільтрований розклад можна
-               відкрити напряму й зберегти, і без JS усе працює кнопкою.
+               відкрити напряму й зберегти. Кнопки сабміту немає — фільтр
+               застосовує js/schedule.js по зміні селекта; без JS форма не
+               відправляється (свідомо, за рішенням у розмові).
                Класу .form на формі бути НЕ МОЖЕ: js/main.js перехоплює
                submit будь-якої .form і відкриває «дякуємо» — GET би нікуди
                не пішов. Поля лишаються .form__input: SlimSelect копіює клас
@@ -199,11 +192,6 @@ if (!$sch_ajax):
           </select>
         </div>
 
-        <?php /* Без JS — єдиний спосіб застосувати фільтр, тож кнопка
-                 справжня. З JS зміна селекта сабмітить форму сама, а кнопку
-                 ховаємо (js/main.js) — вона стає зайвим кроком. */ ?>
-        <button type="submit" class="btn btn--filled schedule-filters__apply">Показати</button>
-
         <?php if ($schedule_location || $schedule_direction || $schedule_trainer): ?>
           <a class="btn btn--outlined schedule-filters__reset" href="<?= $sch_url(['location' => null, 'direction' => null, 'trainer' => null]) ?>">Скинути</a>
         <?php endif; ?>
@@ -219,10 +207,15 @@ if (!$sch_ajax):
       </nav>
 
       <?php /* Поза .schedule__nav: кнопка умовна, і всередині nav її поява
-               при зміні дати зсувала б стрілки й підпис. */ ?>
+               при зміні дати зсувала б стрілки й підпис.
+               Ховається, коли сьогодні вже входить у видимий проміжок
+               ($sch_from…$sch_to — для дня це один день, для тижня/місяця
+               весь діапазон): там її нема куди вести. Клік перемикає ще й
+               вид на «день» — «Сьогодні» означає саме сьогоднішній день. */ ?>
+      <?php $sch_today_visible = $sch_today >= $sch_from && $sch_today <= $sch_to; ?>
       <a class="btn btn--sm btn--outlined schedule__today"
-         href="<?= $sch_url(['date' => $sch_today->format('Y-m-d')]) ?>"
-         <?= $sch_date->format('Y-m-d') === $sch_today->format('Y-m-d') ? 'hidden' : '' ?>>Сьогодні</a>
+         href="<?= $sch_url(['view' => 'day', 'date' => $sch_today->format('Y-m-d')]) ?>"
+         <?= $sch_today_visible ? 'hidden' : '' ?>>Сьогодні</a>
 
       <div class="schedule__nav">
         <a class="btn btn--icon btn--sm btn--outlined schedule__arrow schedule__arrow--prev"
@@ -268,7 +261,8 @@ if (!$sch_ajax):
               <ul class="schedule-month__slots">
                 <?php foreach ($sch_slots as $sch_slot): ?>
                   <li>
-                    <button type="button" class="schedule-month__slot" data-modal="booking?event=<?= $sch_slot['id'] ?>">
+                    <button type="button" class="schedule-month__slot<?= $sch_slot['is_bookable'] ? '' : ' schedule-month__slot--blocked' ?>"
+                            data-modal="slot-details?event=<?= $sch_slot['id'] ?>">
                       <span class="schedule-month__time"><?= $sch_slot['time'] ?></span>
                       <span class="schedule-month__name"><?= htmlspecialchars($sch_slot['title']) ?></span>
                     </button>
@@ -331,4 +325,4 @@ unset($schedule_trainer, $schedule_direction, $schedule_location, $schedule_filt
       $sch_by_day, $sch_refs, $sch_fmt, $sch_url, $sch_step, $sch_prev, $sch_next,
       $sch_caption, $sch_views, $sch_cursor, $sch_key, $sch_slots, $sch_slot,
       $sch_day, $sch_d, $sch_out, $sch_wd, $sch_hid, $sch_hname, $sch_aid,
-      $sch_aname, $sch_iid, $sch_iname, $sch_k, $sch_label);
+      $sch_aname, $sch_iid, $sch_iname, $sch_k, $sch_label, $sch_today_visible);

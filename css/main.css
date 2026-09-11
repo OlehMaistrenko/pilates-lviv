@@ -524,6 +524,12 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 .section--pad-sm { padding-block: var(--sp-7); }
 .section--pad-lg { padding-block: var(--sp-10); }
 
+/* Секція одразу під банером сторінки: --section-py (до 8rem) відриває її
+   від банера. --sp-7 — той самий padding-bottom, що в .hero--page, тож
+   відстань від низу банера до контенту читається як один рівний відступ,
+   а не як розрив. Нижній падінг лишається звичайним. */
+.section--tight-top { padding-top: var(--sp-7); }
+
 /* modifier: секція як плаваюча картка — inset --sp-3 з усіх боків +
    заокруглення --r-block + кліп. Фон стає окремою карткою, а не
    full-bleed смугою. margin, а не padding: інакше background заллє
