@@ -17,9 +17,17 @@
  * посилання можна зберегти. Дані бере api/schedule.php напряму (require),
  * а не HTTP-запитом сам до себе.
  *
+ * AJAX: запит із заголовком X-Requested-With: XMLHttpRequest (js/main.js,
+ * блок «Схема: клік у #schedule») отримує лише вміст .container — без
+ * обгортки <section>, вона вже стоїть у DOM сторінки. Той самий include,
+ * той самий PHP-рендер, що й при звичайному GET — другого джерела
+ * розмітки для фрагмента нема.
+ *
  * Змінні скидаються в кінці.
  */
 require_once __DIR__ . '/../api/schedule.php';
+
+$sch_ajax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
 $schedule_trainer   = $schedule_trainer   ?? null;
 $schedule_direction = $schedule_direction ?? null;
@@ -122,9 +130,21 @@ $sch_caption = match ($sch_view) {
 };
 
 $sch_views = ['day' => 'День', 'week' => 'Тиждень', 'month' => 'Місяць'];
+
+// AJAX-фрагмент друкує лише вміст .container: <section id="schedule"><div
+// class="container"> уже стоїть у DOM (js/main.js підміняє innerHTML
+// контейнера, не секції), і другий раз відкривати .container означало б
+// вкласти контейнер у самого себе на кожній підміні.
+if (!$sch_ajax):
+  // Гейт для footer.php: js/schedule.js підключається лише на сторінках,
+  // де секція реально є в розмітці — той самий патерн, що vendor_swiper/
+  // vendor_map. Ставимо тут, а не в кожній сторінці-споживачі: партіал
+  // сам знає, коли він себе вивів.
+  $vendor_schedule = true;
 ?>
 <section class="section schedule<?= $schedule_class ? ' ' . $schedule_class : '' ?>" id="<?= $schedule_id ?>">
   <div class="container">
+<?php endif; ?>
     <?php if ($schedule_title): ?>
       <div class="section-head section-head--split">
         <h2 data-reveal="lines"><?= $schedule_title ?></h2>
@@ -185,7 +205,7 @@ $sch_views = ['day' => 'День', 'week' => 'Тиждень', 'month' => 'Мі�
         <button type="submit" class="btn btn--filled schedule-filters__apply">Показати</button>
 
         <?php if ($schedule_location || $schedule_direction || $schedule_trainer): ?>
-          <a class="link-arrow schedule-filters__reset" href="<?= $sch_url(['location' => null, 'direction' => null, 'trainer' => null]) ?>">Скинути</a>
+          <a class="btn btn--outlined schedule-filters__reset" href="<?= $sch_url(['location' => null, 'direction' => null, 'trainer' => null]) ?>">Скинути</a>
         <?php endif; ?>
       </form>
     <?php endif; ?>
@@ -198,6 +218,12 @@ $sch_views = ['day' => 'День', 'week' => 'Тиждень', 'month' => 'Мі�
         <?php endforeach; ?>
       </nav>
 
+      <?php /* Поза .schedule__nav: кнопка умовна, і всередині nav її поява
+               при зміні дати зсувала б стрілки й підпис. */ ?>
+      <a class="btn btn--sm btn--outlined schedule__today"
+         href="<?= $sch_url(['date' => $sch_today->format('Y-m-d')]) ?>"
+         <?= $sch_date->format('Y-m-d') === $sch_today->format('Y-m-d') ? 'hidden' : '' ?>>Сьогодні</a>
+
       <div class="schedule__nav">
         <a class="btn btn--icon btn--sm btn--outlined schedule__arrow schedule__arrow--prev"
            href="<?= $sch_url(['date' => $sch_prev->format('Y-m-d')]) ?>" aria-label="Попередній період" rel="prev">
@@ -208,16 +234,13 @@ $sch_views = ['day' => 'День', 'week' => 'Тиждень', 'month' => 'Мі�
            href="<?= $sch_url(['date' => $sch_next->format('Y-m-d')]) ?>" aria-label="Наступний період" rel="next">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </a>
-        <?php if ($sch_date->format('Y-m-d') !== $sch_today->format('Y-m-d')): ?>
-          <a class="btn btn--sm btn--outlined schedule__today" href="<?= $sch_url(['date' => $sch_today->format('Y-m-d')]) ?>">Сьогодні</a>
-        <?php endif; ?>
       </div>
     </div>
 
     <?php if (!$sch_data['count']): ?>
       <p class="text--lead text--muted schedule__empty">
         На цей період занять немає. Спробуйте інший тиждень або
-        <button type="button" class="link-arrow" data-modal="booking">запишіться — підберемо час</button>.
+        <button type="button" class="schedule__empty-link" data-modal="booking">запишіться — підберемо час</button>.
       </p>
 
     <?php elseif ($sch_view === 'month'): ?>
@@ -293,9 +316,15 @@ $sch_views = ['day' => 'День', 'week' => 'Тиждень', 'month' => 'Мі�
         <?php $sch_cursor = $sch_cursor->modify('+1 day'); endwhile; ?>
       </div>
     <?php endif; ?>
+<?php if (!$sch_ajax): ?>
   </div>
 </section>
-<?php
+<?php endif;
+
+// AJAX-запит отримав свій фрагмент — header.php/footer.php сюди не
+// доїдуть, і не повинні: клієнт чекає лише вміст .container, не сторінку.
+if ($sch_ajax) exit;
+
 unset($schedule_trainer, $schedule_direction, $schedule_location, $schedule_filters,
       $schedule_title, $schedule_link, $schedule_class, $schedule_id,
       $sch_tz, $sch_tz_name, $sch_today, $sch_view, $sch_date, $sch_from, $sch_to, $sch_data,

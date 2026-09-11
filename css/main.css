@@ -288,6 +288,10 @@ main { overflow: clip; }
   text-align: center;
   transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
 }
+/* Disabled — opacity, а не власні background/border: filled лишається
+   filled (просто тьмяним), outlined лишається outlined, замість того щоб
+   обидва звелись до одного нейтрального вигляду. */
+.btn[disabled] { opacity: .7; cursor: not-allowed; }
 .btn--filled { background: var(--clr-accent); color: var(--clr-on-accent); }
 .btn--filled.btn--light { background: var(--clr-page); color: var(--clr-ink); }
 .btn--outlined {
@@ -318,15 +322,18 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 .btn--block { display: flex; width: 100%; }
 
 /* Hover міняє форму, не тільки відтінок: filled ⇄ outlined тим самим
-   кольором — рамка з'являється/зникає разом із заливкою. */
+   кольором — рамка з'являється/зникає разом із заливкою.
+   :not([disabled]) — на <button disabled> hover і так не спрацював би, але
+   .btn буває й на <a>/[role=button] (data-modal), де браузер це не блокує
+   сам, і [disabled] там був би просто атрибутом без вбудованого ефекту. */
 @media (min-width: 1081px) {
-  .btn--filled:hover { background: transparent; border-color: var(--clr-accent); color: var(--clr-accent); }
-  .btn--filled.btn--light:hover { background: transparent; border-color: var(--clr-page); color: var(--clr-page); }
-  .btn--outlined:hover { background: var(--clr-accent); border-color: var(--clr-accent); color: var(--clr-on-accent); }
-  .btn--outlined.btn--light:hover { background: var(--clr-page); border-color: var(--clr-page); color: var(--clr-ink); }
-  body:not(.is-scrolled) .header-fixed--over .btn--outlined.btn--header:hover,
-  body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header:hover,
-  .menu-open .header-fixed .btn--outlined.btn--header:hover {
+  .btn--filled:hover:not([disabled]) { background: transparent; border-color: var(--clr-accent); color: var(--clr-accent); }
+  .btn--filled.btn--light:hover:not([disabled]) { background: transparent; border-color: var(--clr-page); color: var(--clr-page); }
+  .btn--outlined:hover:not([disabled]) { background: var(--clr-accent); border-color: var(--clr-accent); color: var(--clr-on-accent); }
+  .btn--outlined.btn--light:hover:not([disabled]) { background: var(--clr-page); border-color: var(--clr-page); color: var(--clr-ink); }
+  body:not(.is-scrolled) .header-fixed--over .btn--outlined.btn--header:hover:not([disabled]),
+  body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header:hover:not([disabled]),
+  .menu-open .header-fixed .btn--outlined.btn--header:hover:not([disabled]) {
     background: var(--clr-page);
     border-color: var(--clr-page);
     color: var(--clr-ink);

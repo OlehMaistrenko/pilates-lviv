@@ -463,29 +463,8 @@
 
 
 /* ============================================================
-   Component: .link-arrow — текстове посилання зі стрілкою і волосиною.
-   Колір hover — --clr-accent; темні секції перевизначають цей токен
-   локально на світле золото, тож компонент один на обидва поля.
-   ============================================================ */
-.link-arrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding-bottom: 2px;
-  border-bottom: 1px solid color-mix(in srgb, currentColor 35%, transparent);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-med);
-  transition: color .2s var(--ease), border-color .2s var(--ease);
-}
-.link-arrow .icon { transition: transform .25s var(--ease); }
-@media (min-width: 1081px) {
-  .link-arrow:hover { color: var(--clr-accent); border-bottom-color: currentColor; }
-  .link-arrow:hover .icon { transform: translateX(0.1875rem); }
-}
-
-/* ============================================================
    Component: .icon-link — текстове посилання з іконкою зліва
-   (телефон, адреса тощо), без волосини й стрілки .link-arrow
+   (телефон, адреса тощо)
    ============================================================ */
 .icon-link { display: inline-flex; align-items: flex-start; gap: var(--sp-2); transition: color .2s var(--ease); }
 .icon-link .icon { margin-top: 1px; color: var(--clr-accent); flex: none; }
@@ -746,18 +725,49 @@
   .rows__item--pair { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Заняття: день · час · назва · локація в один рядок */
-.rows__item--slot { grid-template-columns: minmax(7rem, auto) minmax(4rem, auto) minmax(0, 1fr) auto; }
+/* Заняття: час(+тривалість) · назва · тренер · локація · кнопка в один рядок.
+   Треки задає .schedule__list (не кожен .rows окремо!) — днів у списку
+   кілька, кожен свій <ul class="rows">, і якби трек рахувався по кожному
+   .rows своїм вмістом, колонки одного дня не збігались би по X із сусіднім
+   днем. .rows і кожен .rows__item--slot у ньому беруть ті самі треки через
+   subgrid ланцюжком (.schedule__list → .rows → .rows__item--slot).
+   Локація і кнопка — окремі колонки (а не разом в .schedule__slot-actions):
+   інакше ширина кнопки гуляла б залежно від того, чи в рядку є локація. */
+.schedule__list {
+  display: grid;
+  grid-template-columns: minmax(7rem, auto) minmax(0, max-content) minmax(0, 12rem) minmax(max-content, 1fr) min-content;
+}
+.schedule__list > .schedule__day-head { grid-column: 1 / -1; }
+.schedule__list > .rows { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; }
+.rows__item--slot { grid-column: 1 / -1; grid-template-columns: subgrid; }
+/* Тривалість під годинами, в тій самій колонці — одна grid-item замість двох */
+.schedule__slot-time { display: flex; flex-direction: column; gap: var(--sp-1); }
 .rows__day { font-weight: var(--fw-med); }
-.rows__place { display: inline-flex; align-items: center; gap: var(--sp-2); white-space: nowrap; }
+/* Обгортка тренер+локація: display:contents — на десктопі сама зникає з
+   грід-дерева (той самий трюк, що .schedule__slot-actions), .schedule__trainer
+   і .rows__place стають прямими дітьми .rows__item--slot і займають свої
+   subgrid-колонки нарівні з назвою/кнопкою. На мобільному (нижче)
+   contents скасовується назад на flex — там вони пара в одному рядку. */
+.schedule__trainer-wrap { display: contents; }
+.rows__place { display: inline-flex; align-items: center; gap: var(--sp-2); white-space: nowrap; align-self: center; justify-self: end; }
 
 @media (max-width: 768px) {
-  /* день+час лишаються парою в шапці рядка, назва й локація — під ними:
-     чотири колонки на 768px дали б по 4 символи на кожну */
-  .rows__item--slot { grid-template-columns: auto minmax(0, 1fr); }
-  .rows__item--slot > .rows__title,
-  .rows__item--slot > .rows__place { grid-column: 1 / -1; }
-  .rows__item--slot > .rows__place { justify-content: flex-start; }
+  /* час+тривалість лишаються в шапці рядка (перша колонка, .schedule__slot-time
+     без явного grid-column туди й падає за потоком), назва — під ними на
+     всю ширину, тренер+локація — власний рядок парою (.schedule__trainer-wrap
+     повертається у flex, кожен елемент лишається де він є в потоці), кнопка —
+     останнім рядком на всю ширину: п'ять колонок на 768px дали б по кілька
+     символів на кожну. */
+  .schedule__list { grid-template-columns: auto minmax(0, 1fr); }
+
+  .rows__item--slot > .schedule__trainer-wrap { grid-column: 1 / -1; }
+  .schedule__trainer-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+  }
+  .rows__item--slot > .rows__place { justify-content: flex-start; align-self: center; }
 }
 
 /* ============================================================
@@ -1862,8 +1872,8 @@
 .footer-seo__text.is-expanded { display: flex; -webkit-line-clamp: unset; line-clamp: unset; }
 .footer-seo__text.is-expanded.is-settled { overflow: visible; }
 .footer-seo__toggle { margin-top: var(--sp-5); }
-/* [hidden] — лише UA-стиль, а .link-arrow(display:inline-flex) переважує
-   його специфічністю: без цього JS-приховування кнопки не спрацьовує */
+/* [hidden] — лише UA-стиль, а display з компонента переважує його
+   специфічністю: без цього JS-приховування кнопки не спрацьовує */
 .footer-seo__toggle[hidden] { display: none; }
 .site-footer__top {
   display: grid;
@@ -1984,6 +1994,20 @@
    локація. Стан (вид, дата, фільтри) живе в URL, тож перемикачі —
    звичайні посилання .filters, а не таби: працює без JS.
    ============================================================ */
+/* Клас на час AJAX-фетчу фрагмента (js/schedule.js) — приглушення й блок
+   кліків, але лише на самих даних (сітка місяця / список днів): стрілки
+   навігації, перемикач виду й фільтри в .schedule__bar лишаються
+   клікабельними, щоб можна було швидко клацнути кілька днів поспіль —
+   js/schedule.js скасовує попередній fetch через AbortController, не
+   чекає, поки він долетить. */
+.schedule--loading .schedule-month,
+.schedule--loading .schedule__list,
+.schedule--loading .schedule__empty {
+  opacity: .5;
+  pointer-events: none;
+  transition: opacity .2s var(--ease);
+}
+
 .schedule__bar {
   display: flex;
   flex-wrap: wrap;
@@ -1994,6 +2018,25 @@
 }
 /* власний margin .filters тут зайвий — відступ тримає .schedule__bar */
 .schedule__views { margin-bottom: 0; }
+
+/* «Сьогодні» тулиться до перемикача виду, а .schedule__nav лишається
+   притиснутим праворуч попри те, що елементів у barʼі три */
+.schedule__today { margin-right: auto; }
+/* .btn — inline-flex, він переважив би UA-стиль [hidden] */
+.schedule__today[hidden] { display: none; }
+/* Активний вид — акцентом, а не мохом (глобальний .filters лишається
+   моховим: ним користуються blog.php і team.php).
+   Свідомий виняток із «золото заливкою лише на .btn--filled»: це стан
+   перемикача, як :checked у нативному контролі, а не декоративна пляма —
+   той самий виняток уже зроблено для .ss-selected у SlimSelect. */
+.schedule__views .filters__item.is-current {
+  background: var(--clr-accent);
+  border-color: var(--clr-accent);
+  color: var(--clr-on-accent);
+}
+@media (min-width: 1081px) {
+  .schedule__views .filters__item:not(.is-current):hover { border-color: var(--clr-accent); color: var(--clr-accent); }
+}
 
 .schedule__nav {
   display: flex;
@@ -2010,44 +2053,108 @@
   font-weight: var(--fw-lt);
 }
 
+/* Sticky в межах .schedule__list: заголовки — плоскі сиблінги списків,
+   тож контейнер прилипання один на весь блок і день змінюється рівно
+   тоді, коли наступний заголовок підпирає попередній. --header-h-min,
+   а не реактивна --header-h: розклад глибоко на сторінці, хедер там уже
+   стиснутий, а від --header-h заголовок стрибав би на порозі
+   .is-scrolled. Нижній відступ — padding, не margin: під margin рядки
+   просвічували б у щілину між прилиплим заголовком і фоном. */
 .schedule__day-head {
+  position: sticky;
+  top: var(--header-h-min);
+  z-index: 1;
   margin-top: var(--sp-7);
-  margin-bottom: var(--sp-4);
+  padding-block: var(--sp-2) var(--sp-4);
+  background: var(--clr-page);
   font-size: var(--fs-h4);
   font-weight: var(--fw-reg);
   /* ::first-letter, а не text-transform: capitalize — intl віддає день
      тижня з малої («понеділок»), а capitalize зачепив би й друге слово */
 }
 .schedule__day-head::first-letter { text-transform: uppercase; }
-.schedule__list > .schedule__day-head:first-child { margin-top: 0; }
+.schedule__list > .schedule__day-head:first-child { margin-top: 0; padding-top: 0; }
 /* сьогодні — золота цифра, як .rows__num: колір, не заливка */
 .schedule__day-head.is-today { color: var(--clr-accent); }
 
-/* Час замість дня тижня в першій колонці — той самий грід .rows__item--slot */
-.schedule__slot > .rows__num { font-size: var(--fs-h5); }
-.schedule__variant { margin-left: var(--sp-2); }
+/* Час замість дня тижня в першій колонці — той самий грід .rows__item--slot.
+   .schedule__slot-time > — не .schedule__slot >: час тепер обгорнутий разом
+   із тривалістю (.schedule__slot-time), .rows__num йому онук, не дитина. */
+.schedule__slot-time > .rows__num { font-size: var(--fs-h5); }
 .schedule__meta { display: block; margin-top: var(--sp-1); }
+/* Заповнене заняття (seats === 0): приглушуємо рядок цілком, а не лише
+   кнопку — інакше час/назва виглядають так само привабливо, як у вільного */
+.schedule__slot--full { opacity: .55; }
 
-.schedule__slot-actions {
+/* Порожня колонка (заняття без тренера) не повинна схлопувати грід —
+   minmax(0, auto) у .rows__item--slot тримає її нульовою, а не рваною.
+   justify-self: start — явно ліворуч, одразу після колонки назви, а не
+   покладатись на дефолтний stretch грід-комірки */
+.schedule__trainer { align-self: center; justify-self: start; }
+.schedule__trainer-link {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-4);
-  justify-self: end;
+  gap: var(--sp-3);
+  white-space: nowrap;
+  transition: color .2s var(--ease);
+}
+.schedule__trainer-ava {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--clr-accent);
+  border-radius: 50%;
+  color: var(--clr-accent);
+  flex: none;
+}
+@media (min-width: 1081px) {
+  .schedule__trainer-link:hover { color: var(--clr-accent); }
+}
+@media (max-width: 768px) {
+  .schedule__trainer:empty { display: none; }
+  .schedule__trainer { margin-top: var(--sp-2); }
 }
 
+/* display: contents — на десктопі обгортка сама зникає з грід-дерева, і
+   кнопка стає прямою дитиною .rows__item--slot, займаючи свою останню
+   subgrid-колонку. На мобільному (нижче) contents скасовується назад на
+   block — кнопка йде своїм окремим рядком на всю ширину. */
+.schedule__slot-actions { display: contents; }
+/* align-self: center — та сама вертикаль, що в .rows__place поруч.
+   width:100% + min-content-колонка (.schedule__list): кнопка стискається
+   до ширини найдовшого варіанту тексту («Немає місць»/«Записатись») і не
+   менше; nowrap забороняє перенос, який зробив би min-content рахунком
+   по букві, а не по слову. */
+.schedule__slot-btn { align-self: center; width: 100%; white-space: nowrap; }
+
 .schedule__empty { margin-block: var(--sp-8); }
+/* Інлайн усередині речення, тож не .btn: успадковує розмір і колір
+   абзацу, підкреслення відрізняє її від тексту навколо */
+.schedule__empty-link {
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .schedule__empty-link:hover { color: var(--clr-accent); }
+}
 
 @media (max-width: 768px) {
   .schedule__bar { gap: var(--sp-4); }
   .schedule__nav { width: 100%; justify-content: space-between; }
-  .schedule__caption { min-width: 0; }
-  /* кнопка запису під рядком, а не праворуч: у дві колонки .rows__item--slot
-     на мобільному вона інакше тисне назву заняття */
+  /* min-width лишився б ширшим за вільне місце між стрілками у row width:100% */
+  .schedule__caption { min-width: 0; font-size: var(--fs-body); }
+  /* кнопка запису — окремий останній рядок на всю ширину: у дві колонки
+     .rows__item--slot праворуч вона інакше тисне назву/тренера. block
+     повертає обгортку назад у грід-дерево — на десктопі вона
+     display:contents і сама не рендериться. */
   .schedule__slot-actions {
+    display: block;
     grid-column: 1 / -1;
-    justify-self: start;
-    justify-content: space-between;
-    width: 100%;
     margin-top: var(--sp-2);
   }
 }
@@ -2069,6 +2176,7 @@
   text-align: center;
 }
 .schedule-month__day {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -2079,11 +2187,29 @@
 /* хвіст сусіднього місяця приглушений, але не прихований — сітка мусить
    лишатись цілим прямокутником */
 .schedule-month__day.is-outside { opacity: .45; }
+.schedule-month__day.is-today {
+  background: color-mix(in srgb, var(--clr-accent) 20%, transparent);
+}
 .schedule-month__day.is-today .schedule-month__date {
   color: var(--clr-accent);
   font-weight: var(--fw-med);
 }
 .schedule-month__date { font-size: var(--fs-sm); }
+/* stretched-link: клікабельна вся клітинка, не лише число — посилання
+   розтягуємо поверх .schedule-month__day абсолютним ::after. Слоти
+   лишаються клікабельними своєю кнопкою: position:relative піднімає їх
+   у власний stacking context над ::after (без явного z-index — у слота
+   й так немає одного, тож порядок у DOM/stacking вирішує). Той самий
+   ::after несе й ховер-рамку клітинки: inset на 1px, щоб не наїжджати
+   на сітку .schedule-month (1px gap-лінії). */
+.schedule-month__date::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border: 1px solid transparent;
+  border-radius: var(--r-chip);
+  transition: border-color .2s var(--ease);
+}
 
 .schedule-month__slots {
   display: flex;
@@ -2091,11 +2217,13 @@
   gap: var(--sp-1);
 }
 .schedule-month__slot {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2px;
   width: 100%;
   padding: var(--sp-2);
+  background: var(--clr-page);
   border: 1px solid var(--clr-line);
   border-radius: var(--r-chip);
   font-size: var(--fs-xs);
@@ -2106,12 +2234,15 @@
 .schedule-month__name { color: var(--clr-ink-mute); }
 @media (min-width: 1081px) {
   .schedule-month__slot:hover {
-    background: var(--clr-surface);
-    border-color: var(--clr-surface);
-    color: var(--clr-page);
+    background: var(--clr-accent);
+    border-color: var(--clr-accent);
+    color: var(--clr-on-accent);
   }
   .schedule-month__slot:hover .schedule-month__time,
   .schedule-month__slot:hover .schedule-month__name { color: inherit; }
+  /* Рамка на ::after, не фон клітинки — фон уже зайнятий тінтом .is-today,
+     і другий шар заливки на ховер зливався б із ним. */
+  a.schedule-month__date:hover::after { border-color: var(--clr-accent); }
   a.schedule-month__date:hover { color: var(--clr-accent); }
 }
 
@@ -2150,10 +2281,13 @@
    вагу вони беруть із .form__input (блок Form вище) — тепер це поведінка
    всіх полів сайту, а не лише фільтрів. */
 
-/* кнопка стоїть у ряд із селектами, тож не тягнеться на всю ширину */
-.schedule-filters__apply { flex: 0 0 auto; }
-/* «Скинути» — текстове посилання, вирівняне по нижній лінії полів */
-.schedule-filters__reset { flex: 0 0 auto; margin-bottom: var(--sp-3); }
+
+.schedule-filters__apply,
+.schedule-filters__reset { flex: 0 0 auto; }
+/* [hidden] — лише UA-стиль, а .btn(display:inline-flex) переважує його
+   специфічністю: без цього js/schedule.js не приховує кнопку й вона
+   лишається видимою попри автосабміт по зміні селекта */
+.schedule-filters__apply[hidden] { display: none; }
 
 @media (max-width: 768px) {
   /* на мобільному селекти йдуть у стовпчик: два в ряд дають ~8 символів */

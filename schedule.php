@@ -1,4 +1,16 @@
 <?php
+// AJAX-фільтрація (js/main.js): перехоплений клік у #schedule шле той
+// самий GET, тільки з цим заголовком. header.php/hero/cta нижче нікому
+// не потрібні — клієнт чекає лише фрагмент .container, тож обриваємо
+// ДО header.php, а не після: partials/schedule.php сам зробить exit
+// одразу після друку свого вмісту.
+if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest') {
+  $schedule_filters = true;
+  $schedule_title = '';
+  include 'partials/schedule.php';
+  exit; // фолбек: якщо партіал колись перестане сам виходити
+}
+
 $nav = 'schedule';
 $page_title = 'Розклад занять — студія «Пілатес Львів»';
 $page_description = 'Розклад занять студії «Пілатес Львів»: пілатес на Cadillac і Reformer, здорова спина, персональні та спліт-заняття. Три локації — Чупринки, Брюховичі, Сихів.';

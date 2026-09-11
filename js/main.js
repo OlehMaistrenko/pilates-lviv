@@ -457,6 +457,17 @@
        перераховуємо їх, коли сторінка вже має фінальну висоту. */
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     window.addEventListener('load', () => ScrollTrigger.refresh());
+
+    /* Будь-яка зміна висоти документа (акордеон, таби, AJAX-контент
+       розкладу тощо) зсуває пін-треки нижче на сторінці — один спільний
+       ResizeObserver замість ручного ScrollTrigger.refresh() у кожному
+       місці, де міняється висота. Debounce той самий, що й раніше в
+       Accordion/Tabs. */
+    let rt;
+    new ResizeObserver(() => {
+      clearTimeout(rt);
+      rt = setTimeout(() => ScrollTrigger.refresh(), 200);
+    }).observe(document.body);
   })();
 
   /* ---- Accordion: div-и, стан у класі .accordion--open, клік по всій
@@ -1270,28 +1281,6 @@
     // висота сусідів змінюється (розгорнутий SEO-текст, підвантажені кадри) —
     // тоді зсув треба перерахувати, інакше плитка знову розходиться
     new ResizeObserver(sync).observe(document.body);
-  })();
-
-  /* ---- Фільтри розкладу: вибір у селекті одразу застосовує фільтр ------
-     Форма (partials/schedule.php) — звичайна GET-форма й без JS працює
-     кнопкою «Показати». Тут вибір сабмітить її сам, а кнопка ховається:
-     з JS вона стає зайвим другим кроком.
-     Делегування на document, а не listener на кожному <select>: SlimSelect
-     підміняє вигляд поля, але подію change кидає на нативному елементі,
-     який лишається в DOM. */
-  (() => {
-    const forms = document.querySelectorAll('[data-schedule-filters]');
-    if (!forms.length) return;
-
-    forms.forEach((form) => {
-      form.querySelector('.schedule-filters__apply')?.setAttribute('hidden', '');
-    });
-
-    document.addEventListener('change', (e) => {
-      const select = e.target.closest('[data-schedule-filters] select');
-      if (!select) return;
-      select.form?.submit();
-    });
   })();
 
 })();

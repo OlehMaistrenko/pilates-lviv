@@ -183,6 +183,9 @@
   <script defer src="js/vendor/gsap/ScrollTrigger.min.js"></script>
 
   <script defer src="js/main.js"></script>
+  <?php if (!empty($vendor_schedule)): ?>
+    <script defer src="js/schedule.js"></script>
+  <?php endif; ?>
 </body>
 
 </html>
