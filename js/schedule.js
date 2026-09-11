@@ -177,10 +177,12 @@
   // Усі посилання всередині #schedule ведуть у той самий календар з
   // іншими параметрами (вид/дата/скинути) — перехоплюємо їх усі одним
   // делегованим listener, а не список класів, який довелось би
-  // синхронізувати з розміткою partials/schedule.php.
+  // синхронізувати з розміткою partials/schedule.php. Виняток —
+  // .schedule__trainer-link (schedule-slot.php): веде на trainer-single.php,
+  // а не на календар, тож має бути звичайним переходом.
   root.addEventListener('click', (e) => {
     const a = e.target.closest('a[href]');
-    if (!a || !root.contains(a)) return;
+    if (!a || !root.contains(a) || a.closest('.schedule__trainer-link')) return;
     e.preventDefault();
     fetchFragment(a.href);
   });
