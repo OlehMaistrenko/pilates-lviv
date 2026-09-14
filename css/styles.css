@@ -970,8 +970,21 @@
    (data-anim="focus": активний у повний колір, решта приглушені).
    Кожен крок займає половину екрана, щоб одометру було де крутитись.
    ============================================================ */
-.path__title { max-width: 26ch; }
+/* .quote--rule дає flex+іконку, розмір лишається h2-івським — тег змінився
+   на blockquote (цитата Джозефа Пілатеса), тож потрібні явні font та
+   line-height, які раніше давав селектор h1, h2. */
+.path__title {
+  max-width: 26ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+.path__title p { margin: 0; }
 .path__title em { font-style: normal; color: var(--clr-accent); }
+.path__title cite { display: block; margin-top: var(--sp-3); font-style: normal; }
 /* Цифра непрозора, тож вона не може лежати під текстом — у неї власна
    ліва колонка, кроки в правій. */
 /* Колонки по вмісту, а не 1fr/1.2fr: текст кроку обмежений 34ch, тож

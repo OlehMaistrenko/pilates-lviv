@@ -138,8 +138,15 @@ include 'partials/header.php';
 <section class="section path">
   <div class="container container--wide">
     <div class="section-head">
-      <h2 class="path__title" data-reveal="lines">Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</h2>
-      <p class="text--sm text--accent" data-reveal>Джозеф Пілатес</p>
+      <blockquote class="path__title quote--rule" >
+        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-quote"></use></svg>
+        <div >
+          <div data-reveal="lines">
+          <p>Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</p>
+          </div>
+          <cite class="text--sm text--accent" data-reveal>Джозеф Пілатес</cite>
+        </div>
+      </blockquote>
     </div>
 
     <div class="path__grid">
