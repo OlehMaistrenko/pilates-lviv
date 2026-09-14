@@ -2007,16 +2007,19 @@
 .review__name { font-weight: var(--fw-med); }
 /* контроли живуть у колонці заголовка — тож не центруються, а йдуть від лівого краю */
 .reviews__controls { justify-content: start; }
+.reviews__swiper { overflow: hidden; }
 @media (max-width: 900px) {
   .reviews__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
   /* на вужчих екранах колонки стають рядками: контроли переносимо під відгуки */
   .reviews__head { display: contents; }
   .reviews__controls { order: 1; margin-top: 0;
   justify-content: center; }
+  .reviews__swiper { overflow: visible; }
 }
 @media (max-width: 768px) {
   .review { gap: var(--sp-5); }
   .review__shot { width: clamp(5.5rem, 26vw, 7.5rem); }
+  
 }
 
 /* ============================================================

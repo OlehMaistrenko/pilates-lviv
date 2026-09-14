@@ -32,7 +32,7 @@ if ($reviews_items):
         </div>
       </div>
 
-      <div class="swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
+      <div class="swiper reviews__swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
         <div class="swiper-wrapper">
           <?php foreach ($reviews_items as [$text, $name, $role, $shot]): ?>
             <blockquote class="swiper-slide review">
