@@ -1213,7 +1213,11 @@
 }
 @media (max-width: 768px) {
   .directions__list { gap: var(--sp-7) var(--sp-4); }
-  .direction { flex: 1 1 100%; }
+  .direction { flex: 0 1 calc(50% - var(--sp-4) / 2); }
+  /* .card__note генерично тримає --fs-body для всіх карток (напрямок/
+     тренер/стаття) — тут дрібніше, бо картка в 2 колонки вужча */
+  .direction .card__note { font-size: var(--fs-sm); }
+  .direction__title { font-size: var(--fs-h4); }
 }
 
 /* ============================================================

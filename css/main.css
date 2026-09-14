@@ -1088,6 +1088,19 @@ html.lenis, html.lenis body { height: auto; }
   inset: 0;
   background: color-mix(in srgb, black 60%, transparent);
 }
+/* Додатковий градієнт зверху, поверх рівного .hero__tint — підсилює контраст
+   під прозорим хедером незалежно від того, що саме там на фото/відео.
+   z-index потрібен: без нього ::before як перша згенерована «дитина»
+   малювався б до .hero__tint і опинявся під ним. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 1;
+  height: calc(var(--header-h-max)*1.5);
+  background: linear-gradient(to bottom, color-mix(in srgb, black 45%, transparent), transparent);
+  pointer-events: none;
+}
 .hero .container { position: relative; display: flex; }
 /* Лінію на місце (близько до половини екрана) виштовхує верхній паддінг
    .hero, а не space-between: тоді відстань до заголовка лишається сталою
@@ -1192,7 +1205,6 @@ html.lenis, html.lenis body { height: auto; }
   .hero--page .hero__title { font-size: var(--fs-hero); }
 }
 @media (max-width: 1080px) {
-  .hero { min-height: min(92svh, 51.25rem); }
   .hero--page { min-height: min(55svh, 31.25rem); }
   .hero--page .hero__title { max-width: none; }
   .hero__lead { max-width: none; margin-bottom: 0; }
