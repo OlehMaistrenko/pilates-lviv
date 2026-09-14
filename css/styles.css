@@ -170,8 +170,7 @@
   height: 4.5rem;
   flex: none;
   border: 1px solid var(--clr-accent);
-  /* арка — та сама форма кадру, що в портретах тренерів на team.php */
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
   color: var(--clr-accent);
 }
 .slot-detail__ava .icon { width: 2rem; height: 2rem; }
@@ -596,7 +595,7 @@
   display: block;
   aspect-ratio: 3 / 4;
   margin-bottom: var(--sp-2);
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
   overflow: hidden;
 }
 .benefit-card__media > img { width: 100%; height: 100%; object-fit: cover; }
@@ -658,8 +657,9 @@
 /* ============================================================
    Component: .posts / .post — сітка карток-тизерів (блог, події,
    інші тренування). Та сама візуальна мова, що в .direction/.trainer
-   (арка, --fs-h4/--fw-lt, золотий hover), але кадр ширший: портретна
-   арка читається як людина або зал, а стаття — не портрет.
+   (легке скруглення --r-card, --fs-h4/--fw-lt, золотий hover), але кадр
+   ширший: портретне пропорції там читаються як людина або зал, а стаття —
+   не портрет.
    Генерично, а не .blog__card: тими самими картками підуть події,
    команда й локації.
    ============================================================ */
@@ -676,7 +676,7 @@
   width: 100%;
   aspect-ratio: 16 / 10;
   margin-bottom: var(--sp-4);
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
   overflow: hidden;
   outline: 1px solid transparent;
   outline-offset: -1px;
@@ -1061,9 +1061,7 @@
   position: relative;
   width: var(--path-stage-w);
   height: var(--path-stage-h);
-  /* пігулка, а не арка: кадр вертикальний, тож --r-pill скруглює його
-     однаково зверху й знизу */
-  border-radius: var(--r-pill);
+  border-radius: var(--r-card);
   overflow: hidden;
   background: color-mix(in srgb, var(--clr-ink) 7%, transparent);
 }
@@ -1075,7 +1073,7 @@
   margin: 0;
   max-width: none;
   /* форму й фон тримає сам .path__shots — тут кадр лише заповнює його
-     цілком, інакше лежача 5/2 пігулка з базового правила лишилась би */
+     цілком, інакше лежача 5/2 форма з базового правила лишилась би */
   aspect-ratio: auto;
   border-radius: 0;
   background: none;
@@ -1105,9 +1103,7 @@
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
 }
-/* Пігулка — свідомий виняток із «арка = кадр» (--r-pill у main.css):
-   лежача 5/2 форма читається саме пігулкою, а не заокругленим кадром.
-   Фон і aspect-ratio на самій figure: доки кадру немає (або він не
+/* Фон і aspect-ratio на самій figure: доки кадру немає (або він не
    довантажився), рамка тримає висоту й alt не висить голим текстом. */
 .path__shot {
   margin: var(--sp-9) 0 0;
@@ -1118,7 +1114,7 @@
   font-size: var(--fs-h4);
   aspect-ratio: 5 / 2;
   overflow: hidden;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-card);
   background: color-mix(in srgb, var(--clr-ink) 7%, transparent);
 }
 .path__shot img {
@@ -1158,7 +1154,7 @@
 }
 
 /* ============================================================
-   Home 03 — Напрямки: картка = напрямок, 3 у ряд, кадр-арка зверху,
+   Home 03 — Напрямки: картка = напрямок, 3 у ряд, скруглений кадр зверху,
    підпис під ним по центру (той самий патерн, що в Тренерах нижче).
    ============================================================ */
 .directions__list {
@@ -1180,7 +1176,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   margin-bottom: var(--sp-3);
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
   outline: 1px solid transparent;
   outline-offset: -1px;
   transition: outline-color .3s var(--ease);
@@ -1601,7 +1597,7 @@
 .gallery__item {
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
 }
 .gallery__item > img { width: 100%; height: 100%; object-fit: cover; }
 /* посилання-обгортка навколо кадру існує лише заради лайтбокса — власної
@@ -1874,7 +1870,7 @@
 }
 
 /* ============================================================
-   Home 09 — Тренери: портрет-арка, ім'я, напрямок, цитата
+   Home 09 — Тренери: портрет зі скругленим кадром, ім'я, напрямок, цитата
    ============================================================ */
 .team .swiper { overflow: visible; }
 .team .swiper-slide { height: auto; }
@@ -1882,12 +1878,12 @@
 .trainer__media {
   aspect-ratio: 3 / 4;
   margin-bottom: var(--sp-3);
-  border-radius: var(--r-arch);
+  border-radius: var(--r-card);
 }
 .trainer__media > .ph { width: 100%; height: 100%; object-fit: cover; }
 .trainer__name { font-size: var(--fs-h4); font-weight: var(--fw-lt); line-height: var(--lh-tight); transition: color .25s var(--ease); }
-/* Остання плитка — посилання на команду: арка-контур із левом із лого.
-   Кольори й поведінка ті самі, що в .btn--outlined: контур і вміст на
+/* Остання плитка — посилання на команду: скруглений контур із левом із
+   лого. Кольори й поведінка ті самі, що в .btn--outlined: контур і вміст на
    --clr-accent, на hover інверсія в заливку. Лев і підпис беруть
    currentColor, тож перемикаються разом одним правилом на плитці. */
 .trainer--all .trainer__media {
@@ -1948,8 +1944,8 @@
    рахує слайди по контенту й вилазить за колонку */
 .reviews__grid > .swiper { min-width: 0; width: 100%; }
 .review { margin: 0; display: flex; gap: var(--sp-7); align-items: stretch; }
-/* вертикальна пігулка — та сама свідома «пігулка як кадр», що й .path__shot,
-   лише повернута: 3/5 замість 5/2 */
+/* вертикальна пігулка — свідомий виняток із «--r-card = кадр» (--r-pill
+   у main.css): портретна 2/3 форма читається саме пігулкою */
 .review__shot {
   flex: none;
   margin: 0;
@@ -2524,15 +2520,15 @@
   .map__actions a:hover { color: var(--clr-accent); }
 }
 
-/* Маркер залу — арка бренду; активний — золота обвідка, не заливка
-   (золото суцільною плямою дозволене лише на .btn--filled). Масштаб від
-   низу: точка на карті лишається на місці. */
+/* Маркер залу — активний стан: золота обвідка, не заливка (золото
+   суцільною плямою дозволене лише на .btn--filled). Масштаб від низу:
+   точка на карті лишається на місці. */
 .map__marker {
   display: block;
   width: 1.5rem;
   height: 2rem;
   padding: 0;
-  border-radius: 999px 999px 2px 2px;
+  border-radius: var(--r-card);
   background: var(--clr-surface);
   border: 2px solid var(--clr-page);
   cursor: pointer;
