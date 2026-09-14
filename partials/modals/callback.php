@@ -2,17 +2,28 @@
 /**
  * «Замовити дзвінок» — коротка форма з футера. Тригер — [data-modal="callback"].
  * Та сама логіка, що й у діючого сайту: одне поле, одна дія.
+ * Зі сторінки цін тригер несе [data-modal="callback?tariff=…"] — назва
+ * тарифу тоді йде в заголовок і в приховане поле форми.
  * Бекенду ще немає — action порожній.
  */
+$tariff = $_GET['tariff'] ?? '';
 ?>
 <div class="modal__head">
-  <h2 class="modal__title" id="modal-overlay-title">Замовити дзвінок</h2>
+  <h2 class="modal__title" id="modal-overlay-title"><?= $tariff ? 'Купити абонемент' : 'Замовити дзвінок' ?></h2>
   <p class="text text--muted mt-3">
-    Ми передзвонимо та відповімо на питання.
+    <?php if ($tariff): ?>
+      Тариф: «<?= htmlspecialchars($tariff) ?>». Залиште телефон — передзвонимо й оформимо.
+    <?php else: ?>
+      Ми передзвонимо та відповімо на питання.
+    <?php endif; ?>
   </p>
 </div>
 
 <form class="form modal__body" action="" method="post">
+  <?php if ($tariff): ?>
+    <input type="hidden" name="tariff" value="<?= htmlspecialchars($tariff) ?>">
+  <?php endif; ?>
+
   <div class="form__row">
     <label class="form__label" for="callback-phone">Вкажіть, будь ласка, ваш телефон</label>
     <input class="form__input" type="tel" id="callback-phone" name="phone" autocomplete="tel"

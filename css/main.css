@@ -305,6 +305,11 @@ main { overflow: clip; }
   color: var(--clr-page);
   border-color: color-mix(in srgb, var(--clr-page) 38%, transparent);
 }
+/* Таб/фільтр (.filters у styles.css): контур неактивний, заливка золотом
+   лише на .is-current — той самий перемикач стану, що .btn--filled, але
+   .is-current задає JS/URL, а не HTML-структура кнопки. */
+.btn--tab { background: transparent; color: var(--clr-accent); border-color: var(--clr-line); }
+.btn--tab.is-current { background: var(--clr-accent); color: var(--clr-on-accent); }
 /* Хедер має рівно 2 стани, а не 4: темний (банер на першому екрані АБО
    відкрите меню — .header-fixed--over/--dark, поки НЕ .is-scrolled, і
    .menu-open) і світлий (усе інше). У світлому кнопка виглядає як
@@ -331,6 +336,7 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
   .btn--filled.btn--light:hover:not([disabled]) { background: transparent; border-color: var(--clr-page); color: var(--clr-page); }
   .btn--outlined:hover:not([disabled]) { background: var(--clr-accent); border-color: var(--clr-accent); color: var(--clr-on-accent); }
   .btn--outlined.btn--light:hover:not([disabled]) { background: var(--clr-page); border-color: var(--clr-page); color: var(--clr-ink); }
+  .btn--tab:hover:not([disabled]):not(.is-current) { border-color: var(--clr-accent);  }
   body:not(.is-scrolled) .header-fixed--over .btn--outlined.btn--header:hover:not([disabled]),
   body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header:hover:not([disabled]),
   .menu-open .header-fixed .btn--outlined.btn--header:hover:not([disabled]) {

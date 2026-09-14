@@ -201,7 +201,7 @@ if (!$sch_ajax):
     <div class="schedule__bar">
       <nav class="filters schedule__views" aria-label="Вид календаря">
         <?php foreach ($sch_views as $sch_k => $sch_label): ?>
-          <a class="filters__item<?= $sch_view === $sch_k ? ' is-current' : '' ?>"
+          <a class="btn btn--sm btn--tab<?= $sch_view === $sch_k ? ' is-current' : '' ?>"
              href="<?= $sch_url(['view' => $sch_k]) ?>"<?= $sch_view === $sch_k ? ' aria-current="page"' : '' ?>><?= $sch_label ?></a>
         <?php endforeach; ?>
       </nav>

@@ -100,6 +100,15 @@
       }
       io.observe(el);
     });
+
+    // Tabs (нижче) перезапускає reveal своєї панелі при кожному відкритті —
+    // той самий observer, щоб не плодити другий IntersectionObserver
+    window._functions.rearmReveal = (root) => {
+      root.querySelectorAll('[data-reveal]').forEach((el) => {
+        el.classList.remove('is-visible');
+        io.observe(el);
+      });
+    };
   })();
 
   /* ---- Motion: Lenis smooth scroll + GSAP ScrollTrigger --------------
@@ -646,7 +655,15 @@
       return new Swiper(el, options);
     }
 
-    document.querySelectorAll('.swiper').forEach(initSwiper);
+    // [data-tab-panel][hidden] (Tabs нижче): ширина 0 на сховану панель дала
+    // б Swiper порахувати нульові слайди — ті ініціалізує сам Tabs.fadeIn
+    // при першому показі, через той самий initSwiper (без другого джерела
+    // логіки для однієї й тієї ж лінивої ініціалізації).
+    document.querySelectorAll('.swiper').forEach((el) => {
+      if (el.closest('[data-tab-panel][hidden]')) return;
+      initSwiper(el);
+    });
+    window._functions.initSwiper = initSwiper;
   })();
 
   /* ---- GLightbox: фулскрін-перегляд галерей (vendor підключає лише
@@ -1197,6 +1214,10 @@
     const fadeIn = (panel) => {
       panel.hidden = false;
       setDisabled(panel, false);
+      window._functions.rearmReveal?.(panel);
+      // Swiper пропущений глобальною ініціалізацією, поки панель була
+      // [hidden] (нульова ширина) — тепер вона видима, можна порахувати слайди
+      panel.querySelectorAll('.swiper:not(.swiper-initialized)').forEach((el) => window._functions.initSwiper?.(el));
       // подвійний rAF, не одинарний: викликається з transitionend-колбека
       // fade-out, тобто вже всередині кадру рендеру — один rAF потрапляє
       // в той самий кадр, що й зняття [hidden], і браузер знову склеює
@@ -1217,7 +1238,7 @@
 
       buttons.forEach((b) => {
         const on = b.dataset.tabBtn === slug;
-        b.classList.toggle('topic--active', on);
+        b.classList.toggle('is-current', on);
         b.setAttribute('aria-selected', on ? 'true' : 'false');
       });
 
@@ -1244,6 +1265,15 @@
     };
 
     buttons.forEach((b) => b.addEventListener('click', () => select(b.dataset.tabBtn)));
+
+    // [data-tab-goto="slug"] — посилання-якір, що одразу перемикає на
+    // потрібну тему (напр. лінк із іншої секції на конкретний тариф)
+    document.querySelectorAll('[data-tab-goto]').forEach((link) => {
+      const slug = link.dataset.tabGoto;
+      if (!panels.some((p) => p.dataset.tabPanel === slug)) return;
+      link.addEventListener('click', () => select(slug));
+    });
+
     // is-hidden одразу, не лише hidden: без нього перший показ панелі (яка
     // ще ніколи не була "leaving") не має з чого анімувати вхід — fadeIn
     // знімає клас, якого й так нема, і панель стрибає в кінцевий стан різко

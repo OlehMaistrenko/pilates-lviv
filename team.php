@@ -70,15 +70,15 @@ include 'partials/header.php';
 <!-- ============================================================
      02 · Сітка тренерів із фільтром за напрямком
      ============================================================ -->
-<section class="section">
+<section class="section section--tight-top">
   <div class="container">
     <!-- Звичайні посилання, не таби: фільтр лишається в URL, тож напрямок
          можна відкрити напряму, зберегти й проіндексувати. JS не потрібен. -->
-    <nav class="filters" aria-label="Напрямки">
-      <a class="filters__item<?= $active === '' ? ' is-current' : '' ?>"
+    <nav class="filters mb-7" aria-label="Напрямки">
+      <a class="btn btn--sm btn--tab<?= $active === '' ? ' is-current' : '' ?>"
          href="team.php"<?= $active === '' ? ' aria-current="page"' : '' ?>>Усі</a>
       <?php foreach ($directions as $key => $d): ?>
-        <a class="filters__item<?= $active === $key ? ' is-current' : '' ?>"
+        <a class="btn btn--sm btn--tab<?= $active === $key ? ' is-current' : '' ?>"
            href="team.php?direction=<?= $key ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>>
           <?= $d['label'] ?>
           <span class="filters__count"><?= $d['count'] ?></span>

@@ -111,15 +111,15 @@ include 'partials/header.php';
 <!-- ============================================================
      02 · Список статей — три в ряд, пагінація під сіткою
      ============================================================ -->
-<section class="section">
+<section class="section section--tight-top">
   <div class="container">
     <!-- Звичайні посилання, не таби: фільтр лишається в URL, тож рубрику
          можна відкрити напряму, зберегти й проіндексувати. JS не потрібен. -->
-    <nav class="filters" aria-label="Рубрики блогу">
-      <a class="filters__item<?= $active === '' ? ' is-current' : '' ?>"
+    <nav class="filters mb-7" aria-label="Рубрики блогу">
+      <a class="btn btn--sm btn--tab<?= $active === '' ? ' is-current' : '' ?>"
          href="blog.php"<?= $active === '' ? ' aria-current="page"' : '' ?>>Усі</a>
       <?php foreach ($rubrics as $slug => $r): ?>
-        <a class="filters__item<?= $active === $slug ? ' is-current' : '' ?>"
+        <a class="btn btn--sm btn--tab<?= $active === $slug ? ' is-current' : '' ?>"
            href="blog.php?rubric=<?= $slug ?>"<?= $active === $slug ? ' aria-current="page"' : '' ?>>
           <?= $r['label'] ?>
           <span class="filters__count"><?= $r['count'] ?></span>

@@ -1,0 +1,30 @@
+{
+  "count": 11,
+  "next": null,
+  "previous": null,
+  "results": [
+    { "id": 1, "order": 1, "title": "Абонемент 4 заняття (мат)", "subtitle": "1 заняття – 400 грн", "group": 1, "price": "1600.00", "amount": 4, "duration": 30, "transfer": 0, "pauses": 0, "pause_duration": 0 },
+    { "id": 2, "order": 2, "title": "Абонемент 8 занять (мат)", "subtitle": "1 заняття – 300 грн", "group": 1, "price": "2400.00", "amount": 8, "duration": 30, "transfer": 1, "pauses": 1, "pause_duration": 7 },
+    { "id": 3, "order": 3, "title": "Абонемент 12 занять (мат)", "subtitle": "1 заняття – 250 грн", "group": 1, "price": "3000.00", "amount": 12, "duration": 30, "transfer": 1, "pauses": 1, "pause_duration": 14 },
+
+    { "id": 4, "order": 1, "title": "Реформер 4 заняття", "subtitle": "1 заняття – 550 грн", "group": 2, "price": "2200.00", "amount": 4, "duration": 30, "transfer": 0, "pauses": 0, "pause_duration": 0 },
+    { "id": 5, "order": 2, "title": "Реформер 8 занять", "subtitle": "1 заняття – 500 грн", "group": 2, "price": "4000.00", "amount": 8, "duration": 30, "transfer": 1, "pauses": 1, "pause_duration": 7 },
+    { "id": 6, "order": 3, "title": "Безлімітний місяць", "subtitle": "Реформер і Wall Unit", "group": 2, "price": "6500.00", "amount": -1, "duration": 30, "transfer": 0, "pauses": 1, "pause_duration": 7 },
+
+    { "id": 7, "order": 1, "title": "Кульки BALLance 4 заняття", "subtitle": "1 заняття – 450 грн", "group": 3, "price": "1800.00", "amount": 4, "duration": 30, "transfer": 0, "pauses": 0, "pause_duration": 0 },
+    { "id": 8, "order": 2, "title": "Кульки BALLance 8 занять", "subtitle": "1 заняття – 400 грн", "group": 3, "price": "3200.00", "amount": 8, "duration": 30, "transfer": 1, "pauses": 1, "pause_duration": 7 },
+
+    { "id": 9, "order": 1, "title": "Персональне заняття", "subtitle": "Разове", "group": 4, "price": "900.00", "amount": 1, "duration": 14, "transfer": 0, "pauses": 0, "pause_duration": 0 },
+    { "id": 10, "order": 2, "title": "Персональні 5 занять", "subtitle": "1 заняття – 800 грн", "group": 4, "price": "4000.00", "amount": 5, "duration": 45, "transfer": 1, "pauses": 1, "pause_duration": 14 },
+
+    { "id": 11, "order": 1, "title": "Спліт 8 занять (стара ціна)", "subtitle": "1 заняття – 350 грн", "group": 9, "price": "2800.00", "amount": 8, "duration": 30, "transfer": 0, "pauses": 0, "pause_duration": 0 }
+  ],
+  "_groups": [
+    { "id": 1, "order": 1, "title": "Групові тренування (мат)", "status": 1, "status_detail": "Активні" },
+    { "id": 2, "order": 2, "title": "Реформер та Wall Unit", "status": 1, "status_detail": "Активні" },
+    { "id": 3, "order": 3, "title": "Кульки BALLance", "status": 1, "status_detail": "Активні" },
+    { "id": 4, "order": 4, "title": "Індивідуальні тренування", "status": 1, "status_detail": "Активні" },
+    { "id": 5, "order": 5, "title": "Парні тренування", "status": 1, "status_detail": "Активні" },
+    { "id": 9, "order": 9, "title": "Спліт (старий прайс)", "status": 3, "status_detail": "Архів" }
+  ]
+}

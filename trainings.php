@@ -80,7 +80,7 @@ include 'partials/header.php';
      02 · Сітка напрямків — той самий .direction, що на головній.
      Фільтра немає навмисно: пунктів пʼять, фільтрувати нічого.
      ============================================================ -->
-<section class="section">
+<section class="section section--tight-top">
   <div class="container">
     <ul class="directions__list">
       <?php foreach ($directions as $i => [$title, $href, $note, $slug]): ?>
@@ -101,23 +101,7 @@ include 'partials/header.php';
   </div>
 </section>
 
-<!-- ============================================================
-     03 · На чому займаємось — обладнання студії
-     ============================================================ -->
-<section class="section pt-0">
-  <div class="container container--narrow">
-    <h2 class="mb-5" data-reveal="lines">На чому займаємось</h2>
 
-    <ul class="rows" data-reveal>
-      <?php foreach ($equipment as [$name, $note]): ?>
-        <li class="rows__item rows__item--pair">
-          <span class="rows__title"><?= $name ?></span>
-          <span class="text--sm text--muted"><?= $note ?></span>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-</section>
 
 <!-- ============================================================
      04 · Записатись — єдине умброве поле сторінки («двері»)

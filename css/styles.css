@@ -376,6 +376,8 @@
    Vendor: Swiper — базові оверрайди (усі каруцелі сайту, гейт
    $vendor_swiper у partials/footer.php)
    ============================================================ */
+   .swiper{overflow: visible;}
+   .swiper-slide{height: auto;}
 /* opacity: 1 — вендор за замовчуванням глушить неактивну кульку до .2
    через --swiper-pagination-bullet-inactive-opacity; колір несе --clr-line */
 .swiper-pagination-bullet { background: var(--clr-line); opacity: 1; }
@@ -725,41 +727,18 @@
 }
 
 /* ============================================================
-   Component: .filters — фільтр списку за категорією. Звичайні
-   посилання (?rubric=), не таби: стан живе в URL, тому працює без JS
-   і індексується. Активний пункт — заливка мохом; золото тут не
-   використовуємо, воно лишається лінією й акцентом, не фоном.
+   Component: .filters — фільтр списку за категорією. Пункти — звичайні
+   .btn.btn--sm.btn--tab (посилання ?rubric= або, у табах, <button> із
+   JS-станом) — форма, кольори й .is-current цілком з .btn--tab (main.css),
+   тут лишається тільки layout обгортки й лічильник.
    ============================================================ */
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  margin-bottom: var(--sp-8);
-}
-.filters__item {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  border: 1px solid var(--clr-line);
-  border-radius: var(--r-pill);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-med);
-  transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
-}
-.filters__item.is-current {
-  background: var(--clr-surface);
-  border-color: var(--clr-surface);
-  color: var(--clr-page);
 }
 /* лічильник — службова цифра, тому дрібніша й тихіша за назву */
 .filters__count { font-size: var(--fs-xs); opacity: .6; }
-@media (min-width: 1081px) {
-  .filters__item:not(.is-current):hover { border-color: var(--clr-ink); }
-}
-@media (max-width: 768px) {
-  .filters { margin-bottom: var(--sp-7); }
-}
 
 /* ============================================================
    Component: .pagination — посторінкова навігація списків
@@ -872,6 +851,86 @@
     gap: var(--sp-4);
   }
   .rows__item--slot > .rows__place { justify-content: flex-start; align-self: center; }
+}
+
+/* [data-tabs]: .filters той самий, лише на <button> замість <a>, is-current
+   перемикає JS, а не URL. is-hidden на панелі теми не декоративний —
+   initTabs чекає transitionend від панелі, що йде, і лише в тому колбеку
+   показує наступну; без opacity-переходу подія ніколи не настає, і
+   перемикання зависає назавжди після першого кліку. */
+
+/* Панель теми — opacity-перехід обов'язковий (див. коментар вище), не косметика.
+   pointer-events: none теж обов'язковий, не косметика: is-hidden додається
+   ДО transitionend (js/main.js select()), а [hidden] і disabled на полях —
+   лише ПІСЛЯ нього (у колбеку). Без pointer-events на цю паузу (тривалість
+   transition) панель невидима, але лишається клікабельною й фокусованою. */
+[data-tab-panel] { transition: opacity .25s var(--ease); }
+[data-tab-panel].is-hidden { opacity: 0; pointer-events: none; }
+
+/* ============================================================
+   Component: .tariff — картка тарифу (сторінка цін, ціни курсів).
+   Ряд карток — .swiper-wrap/.swiper (той самий генеричний слайдер, що
+   .team-slider): fixed slidesPerView замість flex-wrap, тож 5+ тарифів
+   в одній групі гортаються, а не ламають рядок.
+   .tariffs .swiper-wrapper — grid-auto-flow:column (не Swiper-дефолтний
+   flex): колонка на кожен слайд, Swiper і далі рахує ширину/скрол з
+   фактичного bounding rect слайда й рухає трек своїм transform — той
+   лишається на .swiper-wrapper незалежно від display, тому власне
+   гортання не ламається. Рядки колонок (title/rows/price/btn) фіксовані
+   й іменовані — .tariff:not(.swiper-slide) далі йде subgrid по них, тож
+   базові лінії карток в одному ряду збігаються навіть при різній
+   кількості .tariff__rows.
+   .tariff — окремий <article> усередині .swiper-slide, не сам слайд:
+   [data-reveal] і Swiper обидва анімують transform на своєму елементі
+   (перший — вхід у вʼюпорт, другий — горизонтальний трек), на одному
+   вузлі inline-style Swiper перебив би reveal.
+   Картка не посилання — клікабельна лише кнопка, тому власного hover
+   немає (CLAUDE.md: hover тільки на клікабельному).
+   ============================================================ */
+.tariffs .swiper-wrapper {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+  grid-template-rows: [head] auto [rows] auto [price] 1fr [btn] auto;
+}
+.tariffs .swiper-slide { display: grid; grid-template-rows: subgrid; grid-row: 1 / -1; }
+.tariff {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: 1 / -1;
+  padding: var(--sp-6);
+  background: var(--clr-page);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-block);
+}
+/* rows/price — умовні (API може не віддати жодного), тому кожен прямий
+   нащадок мапиться на свою іменовану лінію явно: без цього subgrid
+   розкидав би рядки за порядком дітей, і відсутній .tariff__rows зсунув
+   би ціну/кнопку сусідньої картки в чужий рядок */
+.tariff__head { grid-row: head; }
+.tariff__rows { grid-row: rows; margin-top: var(--sp-5); align-self: start; }
+/* золото цифрою, не заливкою — заливка лишається тільки за .btn--filled */
+.tariff__price {
+  grid-row: price;
+  align-self: end;
+  padding-top: var(--sp-5);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  color: var(--clr-accent);
+}
+.tariff__btn { grid-row: btn; margin-top: var(--sp-4); }
+.tariff__title {
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+}
+
+/* Рядок тарифу: лейбл ліворуч, значення праворуч. .rows дає волосини між
+   рядками, але свій --fs-h5 заголовок тут не потрібен — ліва колонка це
+   .label (службова назва умови), а не назва картки. */
+.rows__item--tariff {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-block: var(--sp-3);
 }
 
 /* ============================================================
@@ -2128,19 +2187,7 @@
 .schedule__today { margin-right: auto; }
 /* .btn — inline-flex, він переважив би UA-стиль [hidden] */
 .schedule__today[hidden] { display: none; }
-/* Активний вид — акцентом, а не мохом (глобальний .filters лишається
-   моховим: ним користуються blog.php і team.php).
-   Свідомий виняток із «золото заливкою лише на .btn--filled»: це стан
-   перемикача, як :checked у нативному контролі, а не декоративна пляма —
-   той самий виняток уже зроблено для .ss-selected у SlimSelect. */
-.schedule__views .filters__item.is-current {
-  background: var(--clr-accent);
-  border-color: var(--clr-accent);
-  color: var(--clr-on-accent);
-}
-@media (min-width: 1081px) {
-  .schedule__views .filters__item:not(.is-current):hover { border-color: var(--clr-accent); color: var(--clr-accent); }
-}
+/* .is-current і hover — глобальний акцентний стиль .filters (вище) підходить без перевизначення */
 
 .schedule__nav {
   display: flex;
