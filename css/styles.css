@@ -1325,6 +1325,30 @@
   .split__body { padding-block: var(--section-py); max-width: none; }
 }
 
+/* .split--boxed — компактний варіант: не повноекранний паралакс-банер
+   від краю до краю, а картка в межах звичайного .container. Кадр не
+   тягнеться на всю висоту рядка (fixed aspect-ratio замість min-height:
+   100%), колонки рівні.
+   .split__layer лишає свій overscan (-12%/124%) з базового правила: він з
+   запасом покриває parallax-хід картки, окремо переозначати не треба. */
+.split--boxed .split__grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-8);
+  min-height: 0;
+  padding-block: var(--section-py);
+}
+.split--boxed .split__media {
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  border-radius: var(--r-card);
+}
+.split--boxed .split__body { padding: 0; max-width: none; }
+@media (max-width: 1080px) {
+  .split--boxed .split__grid { grid-template-columns: minmax(0, 1fr); }
+  .split--boxed .split__media { aspect-ratio: 1 / 1; }
+}
+
 /* ============================================================
    Home 05 — Переваги: фулскрін-пін, картка «заголовок → кадр → текст»
    Секція вища за екран рівно настільки, скільки треба на прокрут

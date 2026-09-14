@@ -22,39 +22,41 @@ $cta_img       = $cta_img       ?? 'cta.jpg';
 $cta_img_alt   = $cta_img_alt   ?? 'Групове заняття в залі студії';
 $cta_locations = $cta_locations ?? null;
 ?>
-<section class="split split--umber split--cta on-dark">
-  <div class="split__grid patterned">
-    <figure class="split__media">
-      <img class="split__layer" src="assets/img/<?= $cta_img ?>" alt="<?= htmlspecialchars($cta_img_alt) ?>"
-           width="2048" height="1365" loading="lazy"
-           data-anim="parallax" data-parallax="10">
-    </figure>
+<section class="split split--umber split--cta split--boxed on-dark">
+  <div class="container">
+    <div class="split__grid patterned">
+      <figure class="split__media">
+        <img class="split__layer" src="assets/img/<?= $cta_img ?>" alt="<?= htmlspecialchars($cta_img_alt) ?>"
+             width="2048" height="1365" loading="lazy"
+             data-anim="parallax" data-parallax="10">
+      </figure>
 
-    <div class="split__body" data-anim="parallax" data-parallax="4">
-      <h2 data-reveal="lines"><?= $cta_title ?></h2>
-      <?php if ($cta_text): ?>
-        <p class="text--lead text--muted" data-reveal><?= $cta_text ?></p>
-      <?php endif; ?>
+      <div class="split__body" data-anim="parallax" data-parallax="4">
+        <h2 data-reveal="lines"><?= $cta_title ?></h2>
+        <?php if ($cta_text): ?>
+          <p class="text--lead text--muted" data-reveal><?= $cta_text ?></p>
+        <?php endif; ?>
 
-      <div class="split__actions" data-reveal>
-        <button type="button" class="btn btn--filled btn--light" data-modal="<?= $cta_modal ?>"><?= $cta_btn ?></button>
-        <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
+        <div class="split__actions" data-reveal>
+          <button type="button" class="btn btn--filled btn--light" data-modal="<?= $cta_modal ?>"><?= $cta_btn ?></button>
+          <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
+        </div>
+
+        <?php if ($cta_locations): ?>
+          <?php /* Опис залу сюди не тягнемо: поруч із кнопкою запису потрібна
+                   адреса, куди прийти, а не характеристика обладнання. */ ?>
+          <ul class="split__locations" data-reveal style="--reveal-i: 1">
+            <?php foreach ($cta_locations as $l): ?>
+              <li>
+                <a href="locations.php">
+                  <span class="split__loc-name"><?= $l[0] ?></span>
+                  <span class="text--sm text--muted">Львів, <?= $l[1] ?></span>
+                </a>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
       </div>
-
-      <?php if ($cta_locations): ?>
-        <?php /* Опис залу сюди не тягнемо: поруч із кнопкою запису потрібна
-                 адреса, куди прийти, а не характеристика обладнання. */ ?>
-        <ul class="split__locations" data-reveal style="--reveal-i: 1">
-          <?php foreach ($cta_locations as $l): ?>
-            <li>
-              <a href="locations.php">
-                <span class="split__loc-name"><?= $l[0] ?></span>
-                <span class="text--sm text--muted">Львів, <?= $l[1] ?></span>
-              </a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      <?php endif; ?>
     </div>
   </div>
 </section>

@@ -1,7 +1,7 @@
 <?php
 $nav = 'team';
-$page_title = 'Галина — пілатес Springtone | Студія «Пілатес Львів»';
-$page_description = 'Галина, тренерка пілатесу Springtone. 12 років досвіду, робота зі спиною і поставою на Cadillac і Reformer. Розклад занять і сертифікати.';
+$page_title = 'Галина — пілатес на тренажерах | Студія «Пілатес Львів»';
+$page_description = 'Галина, тренерка пілатесу на тренажерах. 12 років досвіду, робота зі спиною і поставою на Cadillac і Reformer. Розклад занять і сертифікати.';
 $vendor_swiper = true;   // галерея занять
 $vendor_lightbox = true; // клік по кадру галереї
 $header_over_hero = true; // моховий банер темний — хедер лягає поверх нього прозорим
@@ -13,9 +13,9 @@ $header_over_hero = true; // моховий банер темний — хеде
 
 // Інші тренери під низом сторінки — [імʼя, slug, напрямок]
 $others = [
-  ['Оксана',  'oksana',  'Пілатес Springtone'],
-  ['Сюзанна', 'suzanna', 'Пілатес Springtone'],
-  ['Ірина',   'iryna',   'Пілатес Springtone'],
+  ['Оксана',  'oksana',  'Пілатес на тренажерах'],
+  ['Сюзанна', 'suzanna', 'Пілатес на тренажерах'],
+  ['Ірина',   'iryna',   'Пілатес на тренажерах'],
 ];
 
 $gallery = [
@@ -27,11 +27,11 @@ $gallery = [
 ];
 
 $certs = [
-  ['Springtone Pilates — базовий курс інструктора', 'Springtone Education', '2013'],
+  ['Пілатес на тренажерах — базовий курс інструктора', 'Школа інструкторів пілатесу', '2013'],
   ['Reformer та Cadillac: робота з обладнанням', 'Polestar Pilates', '2015'],
   ['Пілатес при протрузіях і грижах хребта', 'Український центр реабілітації', '2018'],
   ['Пілатес після пологів: відновлення тазового дна', 'BALLance® Method', '2021'],
-  ['Робота з осанкою у дорослих', 'Springtone Education', '2024'],
+  ['Робота з осанкою у дорослих', 'Школа інструкторів пілатесу', '2024'],
 ];
 
 include 'partials/header.php';
@@ -52,14 +52,14 @@ include 'partials/header.php';
 
     <div class="profile">
       <figure class="profile__media">
-        <img src="assets/img/team/halyna.jpg" alt="Галина, тренерка пілатесу Springtone"
+        <img src="assets/img/team/halyna.jpg" alt="Галина, тренерка пілатесу на тренажерах"
              width="900" height="1200" loading="eager">
       </figure>
 
       <div class="profile__body">
         <div class="profile__head">
           <h1 class="post-header__title" data-reveal="lines">Галина</h1>
-          <p class="text--lead text--muted" data-reveal>Пілатес Springtone</p>
+          <p class="text--lead text--muted" data-reveal>Пілатес на тренажерах</p>
         </div>
 
         <q class="profile__quote" data-reveal style="--reveal-i: 1">

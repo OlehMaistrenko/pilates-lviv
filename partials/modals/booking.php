@@ -7,7 +7,7 @@
 $direction = $_GET['direction'] ?? '';
 
 $directions = [
-  'pilates'  => 'Пілатес Springtone',
+  'pilates'  => 'Пілатес на тренажерах',
   'recovery' => 'Функціональне відновлення',
   'yoga'     => 'Йога',
   'dance'    => 'Танці',
