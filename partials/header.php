@@ -140,6 +140,11 @@ $primary = [
         </a>
 
         <div class="site-header__actions">
+          <a class="btn btn--outlined btn--header btn--sm booking-btn" href="schedule.php" aria-label="Записатись">
+            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-calendar"></use></svg>
+            <span class="booking-btn__label" aria-hidden="true">Записатись</span>
+          </a>
+
           <details class="dropdown account">
             <summary class="btn btn--outlined btn--header btn--sm" aria-label="Кабінет клієнта">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>

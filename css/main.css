@@ -237,6 +237,10 @@ main { overflow: clip; }
 .text--lead { font-size: var(--fs-lead); line-height: var(--lh-lead); }
 .text--muted { color: var(--clr-ink-mute); }
 .text--accent { color: var(--clr-accent); }
+/* Тримає пару слів (чи слово + тире) разом — тире не має лишатись
+   на початку рядка. Ставиться на конкретну пару в розмітці, а не
+   на весь блок. */
+.nowrap { white-space: nowrap; }
 
 /* ============================================================
    Utility: .on-dark — перевизначає колірні токени на темному полі
@@ -977,12 +981,13 @@ html.lenis, html.lenis body { height: auto; }
    (--sp-5 з кожного боку) розтягував би їх у зайво широкі пігулки, тож
    тут вони стають колом сталої ширини, як .btn--icon деінде. */
 @media (max-width: 560px) {
-  .nav-toggle__label, .account__label { display: none; }
+  .nav-toggle__label, .account__label, .booking-btn__label { display: none; }
   .site-header__lead { gap: var(--sp-2); }
   .site-header__actions { gap: var(--sp-2); }
   .nav-toggle,
   .lang > summary,
-  .account > summary {
+  .account > summary,
+  .booking-btn {
     width: 2.5rem;
     padding-inline: 0;
     justify-content: center;
