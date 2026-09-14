@@ -993,8 +993,8 @@
   /* ширина кадру й похідна від неї висота (2/3) — в одному місці, бо на них
      міряється і спільна висота одометра. Та сама міра, що в .review__shot:
      кадр у відгуках — еталон вертикальної пігулки на сайті */
-  --path-stage-w: clamp(12rem, 26vw, 25rem);
-  --path-stage-h: calc(var(--path-stage-w) * 3 / 2);
+  --path-stage-w: min(calc(90svh - var(--header-h-min)*2), 30vw);
+  --path-stage-h: calc(var(--path-stage-w));
   /* line-height: 1 на .path__roll, тож висота цифри = її кегль.
      18vw, не 26: кадр по центру забирає свою ширину, і на 1280px лівій
      колонці лишається ~24.5rem — двозначне число при 26vw туди не влазило
@@ -1087,11 +1087,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  padding-block:calc(var(--path-stage-h)*0.2);
 }
-/* 50vh дає одометру де крутитись, але на низькому екрані він менший за
-   кадр — і крок ставав коротшим за фото, яке стоїть поруч у піні. max()
-   лишає кадр підлогою. */
-.path__item { min-height: max(50vh, var(--path-stage-h)); display: grid; align-content: center; }
+
+.path__item { min-height: calc(var(--path-stage-h)*0.6); display: grid; align-content: center; }
 /* крок закінчується кадром, а наступний починається текстом — без цього
    відступу фото щільно підпирає наступний абзац */
 .path__item + .path__item { margin-top: var(--sp-9); }
@@ -2570,4 +2569,3 @@
   .map__marker { transition: none; }
   .map__me::after { animation: none; display: none; }
 }
-
