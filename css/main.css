@@ -980,7 +980,7 @@ html.lenis, html.lenis body { height: auto; }
 /* Без підписів контроли лишаються самими іконками — паддінг .btn--sm
    (--sp-5 з кожного боку) розтягував би їх у зайво широкі пігулки, тож
    тут вони стають колом сталої ширини, як .btn--icon деінде. */
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .nav-toggle__label, .account__label, .booking-btn__label { display: none; }
   .site-header__lead { gap: var(--sp-2); }
   .site-header__actions { gap: var(--sp-2); }

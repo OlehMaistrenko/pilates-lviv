@@ -1197,7 +1197,7 @@
 .direction__body { display: block; }
 .direction__title {
   display: block;
-  font-size: var(--fs-h3);
+  font-size: var(--fs-h4);
   font-weight: var(--fw-lt);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
@@ -1217,7 +1217,6 @@
   /* .card__note генерично тримає --fs-body для всіх карток (напрямок/
      тренер/стаття) — тут дрібніше, бо картка в 2 колонки вужча */
   .direction .card__note { font-size: var(--fs-sm); }
-  .direction__title { font-size: var(--fs-h4); }
 }
 
 /* ============================================================
