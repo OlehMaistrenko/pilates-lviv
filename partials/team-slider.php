@@ -29,7 +29,7 @@ if ($team_items):
     </div>
 
     <div class="swiper-wrap" data-reveal>
-      <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":2.2},"1081":{"slidesPerView":4}}}'>
+      <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":2.2},"1081":{"slidesPerView":4},"1440":{"slidesPerView":5}}}'>
         <ul class="swiper-wrapper">
           <?php foreach ($team_items as [$name, $role, $quote, $slug]): ?>
             <li class="trainer swiper-slide">

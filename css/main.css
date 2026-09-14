@@ -1118,6 +1118,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: flex-start;
   gap: var(--sp-5);
 }
+.hero__bottom:not(:last-child){margin-top: auto;}
 /* Від'ємний margin-left гасить бокову напівапрош гліфа: без нього літера
    стоїть правіше за край кнопки на ширину порожнього поля в шрифті. em —
    кегль fluid. */

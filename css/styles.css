@@ -315,8 +315,8 @@
 
 .menu__groups {
   grid-area: groups;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-6);
   /* підгрупи стоять на рівні першого великого пункту, а не по центру колонки */
   padding-top: var(--sp-3);
@@ -365,7 +365,7 @@
     align-content: start;
   }
   .menu__list a { font-size: var(--fs-h3); }
-  .menu__groups { padding-top: 0; gap: var(--sp-5); }
+  .menu__groups { grid-template-columns: minmax(0, 1fr); padding-top: 0; gap: var(--sp-5); }
 }
 @media (max-width: 560px) {
   .menu__foot { flex-direction: column; align-items: flex-start; }
@@ -1228,7 +1228,7 @@
   align-items: stretch;
   /* вище за екран: секція мусить не влазити в перший екран цілком, інакше
      паралаксу нема на чому відпрацювати — шари доїжджають ще до входу */
-  min-height: 135svh;
+  min-height: min(135svh, 53rem);
 }
 .split__media { position: relative; overflow: hidden; min-height: 100%; }
 /* шар вищий за колонку — інакше паралакс відкрив би порожнечу зверху/знизу */
@@ -1310,7 +1310,7 @@
    135svh потрібні паралаксу на повний хід; наприкінці списку статей
    повноекранний блок став би найбільшим елементом сторінки. Ходу
    паралаксу тут вистачає: запас шару (±12%) від висоти не залежить. */
-.split--cta .split__grid { min-height: 90svh; }
+.split__grid--compact { min-height: min(90svh, 30rem); }
 
 @media (max-width: 1080px) {
   /* в один стовпець кадр і текст складаються по висоті — власний мінімум
@@ -1964,7 +1964,7 @@
   width: clamp(10rem, 22vw, 21rem);
   aspect-ratio: 2/3;
   overflow: hidden;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-card);
   background: color-mix(in srgb, var(--clr-page) 12%, transparent);
 }
 .review__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
