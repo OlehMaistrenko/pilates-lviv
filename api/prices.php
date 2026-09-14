@@ -49,7 +49,9 @@ function instasport_get_all(string $path): array {
 /** GET /public/card_template/ — усі тарифи клубу. */
 function fetch_card_templates(): array {
   global $INSTASPORT;
-  if ($INSTASPORT) return instasport_get_all('/public/card_template/');
+  // 'key', не сам масив: config.local.php тепер несе й інші секрети
+  // (напр. mapbox) — файл існує й без InstaSport-ключа.
+  if (!empty($INSTASPORT['key'])) return instasport_get_all('/public/card_template/');
 
   $mock = json_decode(file_get_contents(__DIR__ . '/prices-mock.json'), true);
   return $mock['results'];
@@ -58,7 +60,7 @@ function fetch_card_templates(): array {
 /** GET /public/card_template_group/ — групи (таби) тарифів. */
 function fetch_card_template_groups(): array {
   global $INSTASPORT;
-  if ($INSTASPORT) return instasport_get_all('/public/card_template_group/');
+  if (!empty($INSTASPORT['key'])) return instasport_get_all('/public/card_template_group/');
 
   $mock = json_decode(file_get_contents(__DIR__ . '/prices-mock.json'), true);
   return $mock['_groups'];

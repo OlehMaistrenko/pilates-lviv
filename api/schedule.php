@@ -35,7 +35,9 @@ $INSTASPORT = file_exists($__cfg) ? require $__cfg : null;
 function fetch_events(string $from, string $to, ?int $hall = null): array {
   global $INSTASPORT;
 
-  if ($INSTASPORT) {
+  // 'key', не сам масив: config.local.php тепер несе й інші секрети
+  // (напр. mapbox) — файл існує й без InstaSport-ключа.
+  if (!empty($INSTASPORT['key'])) {
     // Живий API. Пагінація обов'язкова: page_size стелить видачу, а
     // діапазон у два місяці легко перевищує одну сторінку.
     $url = rtrim($INSTASPORT['base'], '/') . "/public/event/?" . http_build_query(array_filter([
@@ -87,7 +89,7 @@ function fetch_events(string $from, string $to, ?int $hall = null): array {
 function fetch_event_by_id(int $id): ?array {
   global $INSTASPORT;
 
-  if ($INSTASPORT) {
+  if (!empty($INSTASPORT['key'])) {
     $ch = curl_init(rtrim($INSTASPORT['base'], '/') . "/public/event/{$id}/");
     curl_setopt_array($ch, [
       CURLOPT_RETURNTRANSFER => true,

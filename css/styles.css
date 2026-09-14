@@ -2454,3 +2454,124 @@
   /* на мобільному селекти йдуть у стовпчик: два в ряд дають ~8 символів */
   .schedule-filters__row { flex: 1 1 100%; }
 }
+
+/* ============================================================
+   Locations — карта (partials/map.php): полотно Mapbox ліворуч, панель
+   із залами, «де я» й маршрутом праворуч. Без JS/токена секція
+   деградує до списку: полотно схлопнуте, а «де я» і перемикач режиму
+   сховані — без карти їм нема чим керувати (Google-посилання лишається).
+   ============================================================ */
+.map__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--sp-7);
+  align-items: start;
+}
+/* Висота — в svh/rem, не aspect-ratio: Mapbox міряє контейнер у момент
+   створення, і полотно без явної висоти лишається порожнім. Фон видно,
+   поки тайли не приїхали. */
+.map__canvas {
+  height: min(70svh, 44rem);
+  border-radius: var(--r-block);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--clr-ink) 6%, transparent);
+}
+.map:not(.is-ready) .map__canvas,
+.map:not(.is-ready) [data-map-locate],
+.map:not(.is-ready) [data-map-mode] { display: none; }
+/* Бренд без тіней — і на контролах карти теж */
+.map .mapboxgl-ctrl-group { box-shadow: none; border: 1px solid var(--clr-line); }
+
+.map__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.map__hint { flex-basis: 100%; }
+
+.map__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+}
+/* Волосина між однотипними рядками — той самий випадок, що список
+   обладнання: без неї три зали з однаковою структурою зливаються в один
+   стовпчик тексту. */
+.map__hall { padding-block: var(--sp-5); border-top: 1px solid var(--clr-line); }
+.map__hall:first-child { border-top: 0; padding-top: 0; }
+.map__hall-name {
+  padding: 0;
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+  text-align: left;
+  cursor: pointer;
+  transition: color .25s var(--ease);
+}
+.map__hall.is-current .map__hall-name { color: var(--clr-accent); }
+.map__route { margin-top: var(--sp-2); color: var(--clr-accent); }
+.map__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: var(--sp-3);
+}
+.map__actions a { transition: color .25s var(--ease); }
+@media (min-width: 1081px) {
+  .map__hall-name:hover,
+  .map__actions a:hover { color: var(--clr-accent); }
+}
+
+/* Маркер залу — арка бренду; активний — золота обвідка, не заливка
+   (золото суцільною плямою дозволене лише на .btn--filled). Масштаб від
+   низу: точка на карті лишається на місці. */
+.map__marker {
+  display: block;
+  width: 1.5rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 999px 999px 2px 2px;
+  background: var(--clr-surface);
+  border: 2px solid var(--clr-page);
+  cursor: pointer;
+  transform-origin: bottom;
+  transition: transform .25s var(--ease), border-color .25s var(--ease);
+}
+.map__marker.is-current { border-color: var(--clr-accent-light); transform: scale(1.25); }
+/* Точка відвідувача. Кільце — box-shadow, бо це обвідка поверх карти, а
+   не тінь; пульс лише opacity/transform. */
+.map__me {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--clr-ink);
+  box-shadow: 0 0 0 3px var(--clr-page);
+}
+.map__me::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--clr-ink);
+  animation: map-pulse 2s var(--ease) infinite;
+}
+@keyframes map-pulse {
+  from { transform: scale(1); opacity: .7; }
+  to   { transform: scale(2.6); opacity: 0; }
+}
+
+@media (max-width: 1080px) {
+  .map__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
+  .map__canvas { height: 60svh; }
+}
+@media (max-width: 560px) {
+  .map__actions { flex-direction: column; gap: var(--sp-2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map__marker { transition: none; }
+  .map__me::after { animation: none; display: none; }
+}
+

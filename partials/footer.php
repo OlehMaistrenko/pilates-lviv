@@ -26,9 +26,7 @@
     'Студія' => [
       ['Про студію', 'about.php'],
       ['Наша команда', 'team.php'],
-      ['Брюховичі', 'location-bryukhovychi.php'],
-      ['Чупринки', 'location-chuprynky.php'],
-      ['Сихів', 'location-sykhiv.php'],
+      ['Локації', 'locations.php'],
       ['Події', 'events.php'],
     ],
     'Клієнтам' => [
@@ -168,8 +166,9 @@
     <script defer src="js/vendor/swiper/swiper-bundle.min.js"></script>
   <?php endif; ?>
   <?php if (!empty($vendor_map)): ?>
-    <!-- Без defer, як swiper: main.js читає window.mapboxgl у момент свого
-         запуску. Сама карта створюється ліниво (IntersectionObserver). -->
+    <!-- js/map.js читає window.mapboxgl у момент свого запуску, тому мусить
+         виконатись після цього тега — обидва defer, порядок дає розмітка.
+         Сама карта створюється ліниво (IntersectionObserver у js/map.js). -->
     <script defer src="js/vendor/mapbox/mapbox-gl.js"></script>
   <?php endif; ?>
   <?php if (!empty($vendor_lightbox)): ?>
@@ -185,6 +184,9 @@
   <script defer src="js/main.js"></script>
   <?php if (!empty($vendor_schedule)): ?>
     <script defer src="js/schedule.js"></script>
+  <?php endif; ?>
+  <?php if (!empty($vendor_map)): ?>
+    <script defer src="js/map.js"></script>
   <?php endif; ?>
 </body>
 

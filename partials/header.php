@@ -30,10 +30,13 @@ $contact = [
   'facebook'   => 'https://facebook.com/pilateslviv',
   // 3 локації студії. Чупринки — реальні дані з діючого сайту; Брюховичі
   // й Сихів — плейсхолдер, контакти для них ще треба отримати від клієнта.
+  // hall — id зали в InstaSport (api/schedule-mock.json → _refs.halls), ним
+  // фільтрує розклад і модалка запису. lat/lng Брюховичів і Сихова —
+  // приблизні (за плейсхолдерними адресами), уточнити разом з адресами.
   'locations'  => [
-    ['label' => 'Чупринки',  'address' => 'м. Львів, вул. Б. Романицького, 24а', 'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
-    ['label' => 'Брюховичі', 'address' => 'м. Львів, вул. Сагайдачного, 7',       'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
-    ['label' => 'Сихів',     'address' => 'м. Львів, просп. Червоної Калини, 62', 'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
+    ['slug' => 'chuprynky',    'hall' => 1, 'lat' => 49.8317, 'lng' => 24.0129, 'label' => 'Чупринки',  'address' => 'м. Львів, вул. Б. Романицького, 24а', 'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
+    ['slug' => 'bryukhovychi', 'hall' => 2, 'lat' => 49.8987, 'lng' => 23.9610, 'label' => 'Брюховичі', 'address' => 'м. Львів, вул. Сагайдачного, 7',       'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
+    ['slug' => 'sykhiv',       'hall' => 3, 'lat' => 49.7919, 'lng' => 24.0575, 'label' => 'Сихів',     'address' => 'м. Львів, просп. Червоної Калини, 62', 'phone' => '+38 (063) 015-05-17', 'phone_href' => 'tel:+380630150517'],
   ],
 ];
 
@@ -52,9 +55,9 @@ $primary = [
   'schedule'  => ['Розклад', 'schedule.php'],
   'prices'    => ['Ціни', 'prices.php'],
   'locations' => ['Локації', 'locations.php', [
-    'location-bryukhovychi' => ['Брюховичі', 'location-bryukhovychi.php'],
-    'location-chuprynky'    => ['Чупринки', 'location-chuprynky.php'],
-    'location-sykhiv'       => ['Сихів', 'location-sykhiv.php'],
+    'location-chuprynky'    => ['Чупринки', 'location-single.php?loc=chuprynky'],
+    'location-bryukhovychi' => ['Брюховичі', 'location-single.php?loc=bryukhovychi'],
+    'location-sykhiv'       => ['Сихів', 'location-single.php?loc=sykhiv'],
   ]],
   'team'      => ['Команда', 'team.php'],
   'about'     => ['Про нас', 'about.php', [
