@@ -6,13 +6,19 @@ $header_over_hero = true;   // герой моховий — хедер ляга
 $vendor_swiper = true;      // слайдер відгуків
 $vendor_lightbox = true;    // клік по кадру галереї
 
-// Реальний каталог занять із instasport.ua/uk/club/pilates_lviv
+// Реформер/Персональне/Спліт — реальний каталог із instasport.ua/uk/club/pilates_lviv.
+// Решта — за зразком секції WHAT WE DO на exhalepilateslondon.com, TODO
+// уточнити з клієнтом. Фото — реальні кадри студії з customer-photos,
+// підібрані під кожен напрямок за назвою (assets/img/directions/{slug}.jpg).
 $directions = [
-  ['Пілатес', 'training-pilates-mat.php', 'На матах: глибокий м’язовий корсет, постава, гнучкість. Для початківців і досвідчених.', 'pilates-mat'],
+  ['Ознайомче заняття', 'training-intro.php', 'Знайомство з тренажерами, технікою і термінологією — перед першим повноцінним заняттям.', 'intro'],
   ['Пілатес-Реформер', 'training-reformer.php', 'На реформерах і Wall Unit. Точне дозування навантаження, робота з усім тілом.', 'reformer'],
-  ['Здорова спина', 'training-back.php', 'З кульками BALLance®. Здоров’я хребта, зняття напруги в спині, постава.', 'back'],
+  ['Кадилак', 'training-cadillac.php', 'Мат-робота на Cadillac: витягнення хребта у висі на стропах, робота на все тіло.', 'cadillac'],
+  ['Wunda Chair і Barrel', 'training-chair-barrel.php', 'Складніший рівень на двох тренажерах одразу: баланс, концентрація, сила.', 'chair-barrel'],
   ['Персональне', 'training-personal.php', 'Індивідуальні тренування — програма під ваші цілі й особливості тіла.', 'personal'],
   ['Спліт', 'training-split.php', 'Парні й мінігрупові заняття — з тренером на двох чи трьох.', 'split'],
+  ['Навчальний центр', 'academy.php', 'Курси для тих, хто хоче викладати пілатес.', 'academy'],
+  ['Воркшопи', 'events.php', 'Щомісячні тематичні зустрічі для тренерів і клієнтів.', 'events'],
 ];
 
 // Три точки — з цитати Джозефа Пілатеса (10/20/30); тексти під кожну — наші.
@@ -82,7 +88,7 @@ $locations = [
 // Кадр іде двічі (фон + картка), тому alt-а не має: він декоративний,
 // зміст несе текст поруч.
 $advantages = [
-  ['Cadillac і Reformer', 'Єдина у Львові студія з професійними тренажерами для пілатесу. Не мат на підлозі — робота на пружинах.', 'location-1/1.jpg'],
+  ['Cadillac і Reformer', 'Одна з перших у Львові студій з професійними тренажерами для пілатесу. Не мат на підлозі — робота на пружинах.', 'location-1/1.jpg'],
   ['Група — до 8 людей',  'Тренер бачить техніку кожного і встигає поправити. Персональні заняття — в окремій кімнаті.', 'location-1/3.jpg'],
   ['Перше — знайомство',  'Приходите подивитись зал і спробувати тренажери. Далі вирішуєте самі, без абонемента наперед.', 'location-1/6.jpg'],
 ];
@@ -130,7 +136,7 @@ include 'partials/header.php';
      вʼюпорта (pin + scrub), кроки з кадрами йдуть поверх неї.
      ============================================================ -->
 <section class="section path">
-  <div class="container container--full">
+  <div class="container container--wide">
     <div class="section-head">
       <h2 class="path__title" data-reveal="lines">Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</h2>
       <p class="text--sm text--accent" data-reveal>Джозеф Пілатес</p>
@@ -185,6 +191,44 @@ include 'partials/header.php';
     </div>
   </div>
 </section>
+<!-- ============================================================
+     06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
+     пунктирний розділювач, три аргументи знизу.
+     ============================================================ -->
+<section class="why on-dark">
+  <div class="why__bg" aria-hidden="true">
+    <img class="why__layer" src="assets/img/gallery/1.jpg" alt=""
+         width="2048" height="1365" loading="lazy"
+         data-anim="parallax" data-parallax="12">
+  </div>
+
+  <div class="container why__inner">
+    <h2 class="why__title" data-reveal="lines">Одна з перших у Львові студій з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
+
+    <dl class="why__facts">
+      <div data-reveal><dt>2015</dt><dd>рік у Львові</dd></div>
+      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd>тренажери — Cadillac і Reformer</dd></div>
+      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd>напрямків тренувань</dd></div>
+      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd>тренерів у команді</dd></div>
+    </dl>
+
+    <div class="why__list">
+      <div class="why__item" data-reveal>
+        <h3>Пружина замість ваги</h3>
+        <p>М’якше для суглобів, техніка кожного руху видно тренеру.</p>
+      </div>
+      <div class="why__item" data-reveal style="--reveal-i: 1">
+        <h3>Тренери, які вчаться</h3>
+        <p>Молодий колектив, постійні семінари й майстер-класи.</p>
+      </div>
+      <div class="why__item" data-reveal style="--reveal-i: 2">
+        <h3>Метод Springtone</h3>
+        <p>Робота на пружинах із постійним контролем техніки.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ============================================================
      03 · Напрямки — рядок = напрямок, скруглений кадр на всю висоту рядка
@@ -194,7 +238,7 @@ include 'partials/header.php';
     <div class="section-head section-head--split">
       <h2 data-reveal="lines">Напрямки</h2>
       <p class="text--lead text--muted" data-reveal>
-        П’ять напрямків в одній студії. Якщо не знаєте, з чого почати, —
+        Вісім напрямків в одній студії. Якщо не знаєте, з чого почати, —
         почніть із консультації: там і розберемось.
       </p>
     </div>
@@ -204,8 +248,8 @@ include 'partials/header.php';
         <li class="direction" data-reveal style="--reveal-i: <?= $i % 3 ?>">
           <a class="direction__link" href="<?= $href ?>">
             <span class="direction__media media-swap">
-              <img class="media-swap__img" src="assets/img/directions/<?= $i + 1 ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
-              <img class="media-swap__img media-swap__hover" src="assets/img/directions/<?= $i + 1 ?>-hover.jpg" alt="" width="2048" height="1365" loading="lazy">
+              <img class="media-swap__img" src="assets/img/directions/<?= $slug ?>.jpg" alt="" width="2048" height="1365" loading="lazy">
+              <img class="media-swap__img media-swap__hover" src="assets/img/directions/<?= $slug ?>-hover.jpg" alt="" width="2048" height="1365" loading="lazy">
             </span>
             <span class="direction__body">
               <span class="direction__title"><?= $title ?></span>
@@ -230,47 +274,7 @@ $cta_locations = $locations;
 include 'partials/cta.php';
 ?>
 
-<!-- ============================================================
-     05 · Переваги — фулскрін-пін: заголовок, кадр, текст. Кадри
-     міняються шторкою (clip-path, той самий прийом, що в блоках
-     одометра), тексти — стрибком на середині кроку, зсувом рядків зі
-     стагером. Розрахована на JS (js/main.js, data-anim="pinstack");
-     без нього видно перший аргумент статично.
-     ============================================================ -->
-<section class="pinstack" data-anim="pinstack">
-  <!-- Панелі — h3 під цим h2: аргументи однорідні, тож рівень один -->
-  <h2 class="sr-only">Чому саме тут</h2>
-  <div class="pinstack__stage">
-    <!-- Фон: той самий кадр, що й у картці, але на весь екран. Кожен
-         наступний відкривається шторкою знизу вгору (clip-path, як у
-         блоках одометра) — тягнеться зі скролом. -->
-    <div class="pinstack__bgs" aria-hidden="true">
-      <?php foreach ($advantages as $a): ?>
-        <div class="pinstack__bg" style="background-image: url('assets/img/<?= $a[2] ?>')"></div>
-      <?php endforeach; ?>
-    </div>
 
-    <!-- Картка: заголовок → кадр → текст. Кадри тут окремим стосом, а не
-         в панелі: текст міняється стрибком на середині кроку, а кадр
-         тягнеться шторкою зі скролом — різні ритми, тож і різні шари.
-         Стос стоїть у 2-му рядку гріда, між заголовком і текстом. -->
-    <div class="pinstack__card">
-      <div class="pinstack__shots" aria-hidden="true">
-        <?php foreach ($advantages as $a): ?>
-          <img class="pinstack__shot" src="assets/img/<?= $a[2] ?>" alt=""
-               width="1600" height="1067" loading="lazy">
-        <?php endforeach; ?>
-      </div>
-
-      <?php foreach ($advantages as $i => $a): ?>
-        <article class="pinstack__panel<?= $i ? '' : ' is-active' ?>">
-          <h3 class="pinstack__title"><?= $a[0] ?></h3>
-          <p class="pinstack__desc"><?= $a[1] ?></p>
-        </article>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
 <!-- ============================================================
      07 · Про студію — історія засновниці, дослівно з діючого сайту
      ============================================================ -->
@@ -310,52 +314,15 @@ include 'partials/cta.php';
 </section>
 
 
-<!-- ============================================================
-     06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
-     пунктирний розділювач, три аргументи знизу.
-     ============================================================ -->
-<section class="why on-dark">
-  <div class="why__bg" aria-hidden="true">
-    <img class="why__layer" src="assets/img/gallery/1.jpg" alt=""
-         width="2048" height="1365" loading="lazy"
-         data-anim="parallax" data-parallax="12">
-  </div>
-
-  <div class="container why__inner">
-    <h2 class="why__title" data-reveal="lines">Єдина у Львові студія з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
-
-    <dl class="why__facts">
-      <div data-reveal><dt>2015</dt><dd>рік у Львові</dd></div>
-      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd>тренажери — Cadillac і Reformer</dd></div>
-      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd>напрямків тренувань</dd></div>
-      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd>тренерів у команді</dd></div>
-    </dl>
-
-    <div class="why__list">
-      <div class="why__item" data-reveal>
-        <h3>Пружина замість ваги</h3>
-        <p>М’якше для суглобів, техніка кожного руху видно тренеру.</p>
-      </div>
-      <div class="why__item" data-reveal style="--reveal-i: 1">
-        <h3>Тренери, які вчаться</h3>
-        <p>Молодий колектив, постійні семінари й майстер-класи.</p>
-      </div>
-      <div class="why__item" data-reveal style="--reveal-i: 2">
-        <h3>Метод Springtone</h3>
-        <p>Робота на пружинах із постійним контролем техніки.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 <!-- ============================================================
      08 · Галерея — зал як він є; розміри кадрів різні навмисно
      ============================================================ -->
 <?php
-$gallery_items = $gallery;
-$gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
-include 'partials/gallery.php';
+// $gallery_items = $gallery;
+// $gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+// include 'partials/gallery.php';
 ?>
 
 <!-- ============================================================
@@ -401,8 +368,8 @@ $seo_title = 'Пілатес у Львові на Cadillac і Reformer';
 $seo_text  = <<<HTML
   <p>
     Pilates Lviv — студія на вулиці Романицького, що працює з 2015 року.
-    Ми єдина у Львові пілатес-студія з професійними тренажерами Cadillac
-    і Reformer: пружинний опір дозволяє точно дозувати навантаження, тому
+    Ми одна з перших у Львові пілатес-студій з професійними тренажерами
+    Cadillac і Reformer: пружинний опір дозволяє точно дозувати навантаження, тому
     заняття підходять і тим, хто відновлюється після травми чи пологів,
     і тим, хто хоче міцне тіло без болю в спині.
   </p>

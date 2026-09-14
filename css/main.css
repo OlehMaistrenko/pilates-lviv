@@ -519,6 +519,7 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 .container--narrow { max-width: var(--container-narrow); }
 /* герой, CTA, панелі, полотна */
 .container--full { max-width: none; }
+.container--wide { max-width: 125rem; }   /* 2000px — ширше за дефолт, але не безлімітно, як --full */
 
 .section { padding-block: var(--section-py); z-index: 1; position: relative; }
 

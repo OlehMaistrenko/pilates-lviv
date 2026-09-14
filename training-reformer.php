@@ -1,7 +1,7 @@
 <?php
 $nav = 'training-reformer';
 $page_title = 'Пілатес-Реформер у Львові — студія «Пілатес Львів»';
-$page_description = 'Заняття на реформерах і Wall Unit: пружинний опір, точне дозування навантаження, робота з усім тілом. Єдина у Львові студія з Cadillac і Reformer.';
+$page_description = 'Заняття на реформерах і Wall Unit: пружинний опір, точне дозування навантаження, робота з усім тілом. Одна з перших у Львові студій з Cadillac і Reformer.';
 $header_over_hero = true;   // банер темний — хедер лягає поверх нього прозорим
 $vendor_swiper = true;      // тренери, відгуки, галерея
 $vendor_lightbox = true;    // клік по кадру галереї
@@ -44,9 +44,9 @@ $faq = [
 
 // Інші напрямки каталогу — без поточного
 $others = [
-  ['Пілатес', 'training-pilates-mat.php', 'На матах: глибокий м’язовий корсет, постава, гнучкість.', 1],
-  ['Здорова спина', 'training-back.php', 'З кульками BALLance®. Здоров’я хребта, зняття напруги в спині.', 3],
-  ['Персональне', 'training-personal.php', 'Індивідуальні тренування — програма під ваші цілі.', 4],
+  ['Кадилак', 'training-cadillac.php', 'Мат-робота на Cadillac: витягнення хребта у висі на стропах.', 'cadillac'],
+  ['Wunda Chair і Barrel', 'training-chair-barrel.php', 'Складніший рівень на двох тренажерах одразу: баланс, сила.', 'chair-barrel'],
+  ['Персональне', 'training-personal.php', 'Індивідуальні тренування — програма під ваші цілі.', 'personal'],
 ];
 
 // Переваги — [фото, заголовок, текст]. Фото замість іконки: клієнту
@@ -264,7 +264,7 @@ include 'partials/faq.php';
           <a class="post__link" href="<?= $href ?>">
             <!-- alt порожній навмисно: назва вже є текстом самого посилання -->
             <span class="post__media">
-              <img src="assets/img/directions/<?= $img ?>.jpeg" alt="" width="1792" height="2400" loading="lazy">
+              <img src="assets/img/directions/<?= $img ?>.jpg" alt="" width="2048" height="1365" loading="lazy">
             </span>
             <span class="post__title"><?= $title ?></span>
             <span class="card__note text--muted"><?= $note ?></span>

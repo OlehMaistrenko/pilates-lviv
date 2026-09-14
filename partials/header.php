@@ -42,15 +42,20 @@ $contact = [
 
 // Праймері-меню (фулскрін-меню). key => [label, href, children?]
 // children — вкладений список [key => [label, href]] — друга колонка меню.
-// Каталог напрямків — реальний, із діючого pilateslviv.com.
+// Каталог напрямків: Реформер/Персональне/Спліт — реальні, з діючого
+// pilateslviv.com; Ознайомче/Кадилак/Wunda Chair і Barrel — формати за
+// зразком секції WHAT WE DO на exhalepilateslondon.com, TODO уточнити з
+// клієнтом. Навчальний центр тут же — Події й Співпраця (теж пункти
+// WHAT WE DO) уже мають свій пункт нижче, у «Про нас».
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
-    'training-pilates-mat' => ['Пілатес', 'training-pilates-mat.php'],
-    'training-reformer'    => ['Пілатес-Реформер', 'training-reformer.php'],
-    'training-back'        => ['Здорова спина', 'training-back.php'],
-    'training-personal'    => ['Персональне', 'training-personal.php'],
-    'training-split'       => ['Спліт', 'training-split.php'],
-    'academy'              => ['Навчальний центр', 'academy.php'],
+    'training-intro'        => ['Ознайомче заняття', 'training-intro.php'],
+    'training-reformer'     => ['Пілатес-Реформер', 'training-reformer.php'],
+    'training-cadillac'     => ['Кадилак', 'training-cadillac.php'],
+    'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-chair-barrel.php'],
+    'training-personal'     => ['Персональне', 'training-personal.php'],
+    'training-split'        => ['Спліт', 'training-split.php'],
+    'academy'               => ['Навчальний центр', 'academy.php'],
   ]],
   'schedule'  => ['Розклад', 'schedule.php'],
   'prices'    => ['Ціни', 'prices.php'],
