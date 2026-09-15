@@ -901,7 +901,9 @@
   padding: var(--sp-6);
   background: var(--clr-page);
   border: 1px solid var(--clr-line);
-  border-radius: var(--r-block);
+  /* --r-card, а не --r-block: за брендбуком це картка, а --r-block (2px)
+     читається як гострий кут. Той самий радіус, що в решти карток сайту. */
+  border-radius: var(--r-card);
 }
 /* rows/price — умовні (API може не віддати жодного), тому кожен прямий
    нащадок мапиться на свою іменовану лінію явно: без цього subgrid
