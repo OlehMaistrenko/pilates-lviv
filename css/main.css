@@ -1201,6 +1201,25 @@ html.lenis, html.lenis body { height: auto; }
    ВИСОТУ, і рядок тягнувся б на всю ширину контейнера (на 1920 це ~1900px). */
 .hero__lead { max-width: 44rem; margin-bottom: 0.2em; }
 
+/* .hero--intro — повноекранний банер із лідом на кілька речень (about.php).
+   Окремою секцією під банером лід читався огризком, тож стоїть праворуч
+   від заголовка на тій самій нижній лінії. Колонка тексту вужча за
+   половину: заголовок тут плакатного кегля (--fs-mega), і рівні половини
+   ламали б його на два рядки. */
+.hero--intro .hero__bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 42ch);
+  align-items: end;
+  gap: var(--sp-5) var(--sp-8);
+}
+/* .hero__lead розрахований на колонку .hero--page; у своїй сітці стеля
+   зайва — ширину вже тримає трек. */
+.hero--intro .hero__lead { max-width: none; }
+
+@media (max-width: 1080px) {
+  .hero--intro .hero__bottom { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* 1081–87.5rem: поруч зі стовпчиком кнопок заголовку лишається ~60.375rem, а
    --fs-mega у версалах вимагає більше й ламає його на два рядки. Власний
    clamp за Utopia (1081→1400) тримає рядок цілим; ширші екрани — --fs-mega. */

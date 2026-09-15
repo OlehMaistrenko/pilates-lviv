@@ -1176,6 +1176,22 @@
   gap: var(--sp-8) var(--sp-5);
 }
 .direction { flex: 0 1 calc(25% - var(--sp-5) * 3 / 4); }
+/* .directions__list--slider — той самий список у ролі .swiper-wrapper
+   (about.php). Ширину слайда, проміжки й розкладку рядка рахує Swiper
+   інлайново, тож гасимо і треки, і gap, і wrap із центруванням: у
+   каруселі ряд мусить бути один і починатись від лівого краю, інакше
+   центрування зсуває слайди проти трансформу вендора.
+   !important тут через каскад, а не від ліні: нижче у файлі є
+   @media-правила на .directions__list / .direction (рядки 1218–1222),
+   які за специфічністю рівні цим, але стоять пізніше — без нього на
+   вузьких екранах повертались би і gap, і 50% ширина слайда.
+   Сітка на index.php / trainings.php лишається незмінною. */
+.directions__list--slider {
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+.directions__list--slider .direction { flex: 0 0 auto; }
 
 .direction__link {
   display: flex;
@@ -1343,6 +1359,20 @@
   border-radius: var(--r-card);
 }
 .split--boxed .split__body { padding: 0; max-width: none; }
+
+/* .split__body--narrow — стеля рядка там, де колонка ширша за комфортне
+   читання (короткий текст у широкому .split--boxed розтягувався б на всю
+   половину гріду). Стоїть саме тут, ПІСЛЯ .split--boxed і після
+   мобільного @media вище: обидва скидають max-width у none, і з
+   одноклясовим селектором модифікатор програв би їм по специфічності.
+   Одиниця rem, не ch: ch міряється шириною «0» гарнітури, тож із
+   rem-шкалою відступів поруч ці величини не узгоджуються. */
+.split--boxed .split__body--narrow,
+.split__body--narrow { max-width: 40rem; }
+/* Історія засновниці — єдиний .split--boxed з портретом, а не з кадром
+   зали: квадрат 1/1 різав би людину по поясу, тож тут пропорція вертикальна.
+   Прив'язка до --media-end, бо саме він означає «у цій колонці портрет». */
+.split--boxed .split__grid--media-end .split__media { aspect-ratio: 3 / 4; }
 @media (max-width: 1080px) {
   .split--boxed .split__grid { grid-template-columns: minmax(0, 1fr); }
   .split--boxed .split__media { aspect-ratio: 1 / 1; }
@@ -1410,7 +1440,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--clr-ink) 45%, transparent);
+  /* Та сама заливка, що .hero__tint у банері: чистий чорний 60%, а не мох.
+     Мох підфарбовував кадр у зелень і тримав менший контраст, через що
+     світла картка на світлих знімках читалась слабше, ніж у банері. */
+  background: color-mix(in srgb, black 60%, transparent);
 }
 /* Жалюзі: маска з N однакових горизонтальних смуг, де видима частка смуги
    росте від 0 до повної. Сам градієнт збирає JS у --mask-gradient — CSS не
@@ -1442,6 +1475,7 @@
   margin-block: auto;
   padding: var(--sp-8) var(--sp-7);
   background: var(--clr-page);
+  border-radius: var(--r-card);
   text-align: center;
 }
 .pinstack__panel { display: contents; }
@@ -1458,11 +1492,7 @@
      там, де 3:2 від ширини дало б надто високий кадр; object-fit:cover
      на самому знімку тримає кадрування. */
   max-height: 42svh;
-  /* Арка = прямі боки + дуга зверху. Радіуси задані окремо по осях
-     (H / V): 50% ширини вгорі дає повну дугу, 45% висоти — її підйом.
-     Одним значенням тут не обійтись: воно ріжеться до половини меншої
-     сторони і на 3:2 дає плаский верх. */
-  border-radius: 50% 50% 2px 2px / 45% 45% 2px 2px;
+  border-radius: var(--r-card);
   overflow: hidden;
 }
 /* Наїзд веде GSAP (scale інлайном) — рамка .pinstack__shots лишається
@@ -1548,6 +1578,20 @@
 @media (max-width: 768px) {
   .pinstack__card { padding: var(--sp-7) var(--sp-5); gap: var(--sp-5); }
 }
+/* Понад FHD: картка рахується від min(34rem, 88vw), тобто з 39rem вікна
+   вона вже не росте — на 2560 це дрібний острівець посеред екрана, і
+   кегль --fs-h3 поруч із повноекранним кадром читається як підпис.
+   Єдиний брейкпоінт вище за 1440 у проєкті; ширші кроки шкали
+   (--fs-h2 / --fs-lead) уже є, власних rem тут не заводимо. */
+@media (min-width: 1921px) {
+  .pinstack__card {
+    width: min(46rem, 60vw);
+    padding: var(--sp-9) var(--sp-8);
+    gap: var(--sp-7);
+  }
+  .pinstack__title { font-size: var(--fs-h2); }
+  .pinstack__desc { font-size: var(--fs-lead); line-height: var(--lh-lead); }
+}
 
 /* ============================================================
    Home 06 — Чому саме ми: банер із фоновим фото й паралаксом,
@@ -1624,6 +1668,63 @@
   .why__facts > div { flex: 0 1 calc(50% - var(--sp-6) / 2); }
   .why__item { flex: 1 1 100%; }
 }
+
+/* ============================================================
+   About — Сертифікати: сітка сканів, клік відкриває glightbox
+   (свою групу data-gallery="certs", щоб не змішуватись із галереєю
+   залу на тій самій сторінці).
+   Власна сітка, а не .direction/.posts: там кадр 3/4 під фото, а тут
+   аркуш, і чужа пропорція з'їдала б печатку або підпис. Тому й
+   object-fit: contain — документ мусить бути видний цілком, а не
+   обрізаним по центру.
+   ============================================================ */
+/* Ширину слайда й проміжки рахує Swiper (data-swiper на .swiper), тож
+   .certs лишає собі тільки скидання списку — flex-треків і gap тут бути
+   не може, інакше вони б'ються з інлайновими стилями вендора. */
+.certs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cert__zoom { display: flex; flex-direction: column; height: 100%; }
+.cert__media {
+  width: 100%;
+  aspect-ratio: 1 / 1.414;   /* A4 */
+  margin-bottom: var(--sp-3);
+  overflow: hidden;
+  border-radius: var(--r-card);
+  /* підкладка під полями скана: аркуш рідко точно A4, і без неї поля
+     світились би бежем сторінки замість рівного поля картки */
+  background: color-mix(in srgb, var(--clr-ink) 6%, transparent);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: outline-color .3s var(--ease);
+}
+/* Наїзд тримає сам кадр, а рамка .cert__media лишається на місці й
+   обрізає його (overflow: hidden вище) — той самий прийом, що в
+   .pinstack__shots. Рухаємо тільки transform: scale, нічого, що
+   тригерить layout. */
+.cert__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s var(--ease);
+}
+.cert__title {
+  display: block;
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  transition: color .25s var(--ease);
+}
+/* картка — <a> цілком, тож hover тут чесний сигнал (як у .direction).
+   Під гейтом 1081px навмисно: на тачскріні :hover залипає після тапу,
+   і картка лишалась би збільшеною до кліку деінде. */
+@media (min-width: 1081px) {
+  .cert__zoom:hover .cert__title { color: var(--clr-accent); }
+  .cert__zoom:hover .cert__media img { transform: scale(1.04); }
+}
+.cert__zoom:focus-visible .cert__media { outline-color: var(--clr-accent); }
 
 /* ============================================================
    Home 08 — Галерея: 3D coverflow-слайдер (Swiper), autoplay.

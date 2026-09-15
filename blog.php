@@ -163,8 +163,10 @@ include 'partials/header.php';
 <!-- ============================================================
      03 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
-<section class="split split--umber split--cta on-dark">
-  <div class="split__grid patterned">
+<!-- .patterned на секції, як в інших split-блоках: тут грід і так на всю
+     ширину секції, але місце класу тримаємо однакове скрізь -->
+<section class="split split--umber split--cta patterned on-dark">
+  <div class="split__grid">
     <figure class="split__media">
       <img class="split__layer" src="assets/img/cta.jpg" alt="Групове заняття в залі студії"
            width="2048" height="1365" loading="lazy"

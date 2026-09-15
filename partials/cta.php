@@ -22,9 +22,11 @@ $cta_img       = $cta_img       ?? 'cta.jpg';
 $cta_img_alt   = $cta_img_alt   ?? 'Групове заняття в залі студії';
 $cta_locations = $cta_locations ?? null;
 ?>
-<section class="split split--umber split--cta split--boxed on-dark">
+<!-- .patterned на секції, а не на гріді: грід тут лежить у .container,
+     і фактура обривалась би по краях картки замість усього умброво поля -->
+<section class="split split--umber split--cta split--boxed patterned on-dark">
   <div class="container">
-    <div class="split__grid patterned">
+    <div class="split__grid">
       <figure class="split__media">
         <img class="split__layer" src="assets/img/<?= $cta_img ?>" alt="<?= htmlspecialchars($cta_img_alt) ?>"
              width="2048" height="1365" loading="lazy"

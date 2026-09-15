@@ -203,39 +203,21 @@ include 'partials/header.php';
      06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
      пунктирний розділювач, три аргументи знизу.
      ============================================================ -->
-<section class="why on-dark">
-  <div class="why__bg" aria-hidden="true">
-    <img class="why__layer" src="assets/img/gallery/1.jpg" alt=""
-         width="2048" height="1365" loading="lazy"
-         data-anim="parallax" data-parallax="12">
-  </div>
-
-  <div class="container why__inner">
-    <h2 class="why__title" data-reveal="lines">Одна з перших у Львові студій з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em></h2>
-
-    <dl class="why__facts">
-      <div data-reveal><dt>2015</dt><dd>рік у Львові</dd></div>
-      <div data-reveal style="--reveal-i: 1"><dt>2</dt><dd>тренажери — Cadillac і Reformer</dd></div>
-      <div data-reveal style="--reveal-i: 2"><dt>6</dt><dd>напрямків тренувань</dd></div>
-      <div data-reveal style="--reveal-i: 3"><dt>7</dt><dd>тренерів у команді</dd></div>
-    </dl>
-
-    <div class="why__list">
-      <div class="why__item" data-reveal>
-        <h3>Пружина замість ваги</h3>
-        <p>М’якше для суглобів, техніка кожного руху видно тренеру.</p>
-      </div>
-      <div class="why__item" data-reveal style="--reveal-i: 1">
-        <h3>Тренери, які вчаться</h3>
-        <p>Молодий колектив, постійні семінари й майстер-класи.</p>
-      </div>
-      <div class="why__item" data-reveal style="--reveal-i: 2">
-        <h3>Контроль техніки</h3>
-        <p>Робота на пружинах із постійним контролем техніки.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$why_title = 'Одна з перших у Львові студій з професійними тренажерами для пілатесу — <em>Cadillac і Reformer</em>';
+$why_facts = [
+  ['2015', 'рік у Львові'],
+  ['2',    'тренажери — Cadillac і Reformer'],
+  ['6',    'напрямків тренувань'],
+  ['7',    'тренерів у команді'],
+];
+$why_items = [
+  ['Пружина замість ваги', 'М’якше для суглобів, техніка кожного руху видно тренеру.'],
+  ['Тренери, які вчаться', 'Молодий колектив, постійні семінари й майстер-класи.'],
+  ['Контроль техніки',     'Робота на пружинах із постійним контролем техніки.'],
+];
+include 'partials/why.php';
+?>
 
 
 <!-- ============================================================
