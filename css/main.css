@@ -734,17 +734,13 @@ html.lenis, html.lenis body { height: auto; }
    сторінка тренера починається одразу з цього блоку (без мохового
    героя), тобто це її перший екран.
    ============================================================ */
-/* Той самий банер, що .hero--page, тільки замість фото — моховий фон і
-   фірмовий патерн (.patterned .on-dark у розмітці): фото тренера тут
-   уже є скругленим кадром у .profile, дублювати його фоном секції не треба.
-   Хедер лягає прозоро поверх (як на .hero--page), тому паддінг зверху
-   рахує header-h, а не звичайний --section-py. */
-.profile-section {
-  padding-top: calc(var(--header-h-max) + var(--sp-7));
-  background: var(--clr-surface);
-  color: var(--clr-page);
-}
-.profile-section .breadcrumbs { margin-bottom: var(--sp-7); }
+/* Шапка сторінки — світла, як .post-header у статті без обкладинки:
+   сторінка тренера починається не банером, а самим профілем, тож і фон
+   тут звичайний бежевий. Не .section: відступи ті самі --sp-7, що в
+   статті, а .section дав би --section-py і ще й обнулив верхній падінг
+   наступної секції через .section + .section. */
+.profile-section { padding-block: var(--sp-7); }
+.profile-section .breadcrumbs { margin-bottom: var(--sp-6); }
 
 .profile {
   display: grid;
@@ -772,19 +768,6 @@ html.lenis, html.lenis body { height: auto; }
 /* Імʼя з напрямком — одна група, тому власний, дрібніший крок усередині:
    інакше підзаголовок відʼїхав би від імені на загальний gap колонки. */
 .profile__head { display: flex; flex-direction: column; gap: var(--sp-3); }
-
-/* Той самий набір, що в .quote (css/styles.css), але продубльований
-   свідомо: профіль — перший екран сторінки тренера, тож його стилі
-   мусять лишатись критичними, а .quote лежить у deferred-файлі.
-   Цитата тримається розміром і вагою — курсиву на сайті немає ніде.
-   Лапки малює сам <q>, тому власного ::before тут не треба. */
-.profile__quote {
-  display: block;
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-lt);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-}
 
 /* З чим працює — плашки-обведення. Контур, не заливка: умбра лишається
    тільки для блоку запису, золото — тільки для ліній і цифр. Не

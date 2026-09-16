@@ -58,8 +58,14 @@ $block_label = $no_seats ? 'Немає місць' : 'Недоступно';
     <span class="schedule__trainer">
       <?php if ($sch_slot['trainers']): ?>
         <a class="schedule__trainer-link" href="trainer-single.php?trainer=halyna">
+          <?php /* Мініатюра захардкожена разом із посиланням (див. TODO вище):
+                   на WP і кадр, і slug прийдуть з CMS. Якщо фото немає —
+                   лишити всередині іконку замість <img>, рамка під неї
+                   вмикається сама (.schedule__trainer-ava:not(:has(img))):
+                   <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg> */ ?>
           <span class="schedule__trainer-ava">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
+            <!-- alt порожній: імʼя тренера вже є текстом цього ж посилання -->
+            <img src="assets/img/team/halyna.jpg" alt="" loading="lazy">
           </span>
           <?= htmlspecialchars(implode(', ', array_column($sch_slot['trainers'], 'name'))) ?>
         </a>

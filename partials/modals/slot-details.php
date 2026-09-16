@@ -79,8 +79,14 @@ if ($sch_slot) {
 
       <?php if ($sch_slot['trainers']): ?>
         <a class="slot-detail__trainer" href="trainer-single.php?trainer=halyna">
+          <?php /* Мініатюра захардкожена разом із посиланням — на WP і кадр,
+                   і slug прийдуть з CMS. Якщо фото немає — лишити всередині
+                   іконку замість <img>, рамка під неї вмикається сама
+                   (.slot-detail__ava:not(:has(img))):
+                   <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg> */ ?>
           <span class="slot-detail__ava">
-            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
+            <!-- alt порожній: імʼя тренера вже є текстом цього ж посилання -->
+            <img src="assets/img/team/halyna.jpg" alt="" loading="lazy">
           </span>
           <span class="slot-detail__trainer-text">
             <span class="label text--muted">Заняття веде</span>

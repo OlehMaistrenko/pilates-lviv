@@ -162,17 +162,22 @@
   gap: var(--sp-4);
   transition: color .2s var(--ease);
 }
+/* Пропорція 3/4 — та сама, що в кадрі тренера (.trainer__media,
+   .profile__media): мініатюра з CMS стає на місце, не міняючи форми.
+   Контур — тільки порожньому плейсхолдеру з іконкою. */
 .slot-detail__ava {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 5rem;
+  aspect-ratio: 3 / 4;
   flex: none;
-  border: 1px solid var(--clr-accent);
   border-radius: var(--r-card);
+  overflow: hidden;
   color: var(--clr-accent);
 }
+.slot-detail__ava:not(:has(img)) { border: 1px solid var(--clr-accent); }
+.slot-detail__ava > img { width: 100%; height: 100%; object-fit: cover; }
 .slot-detail__ava .icon { width: 2rem; height: 2rem; }
 .slot-detail__trainer-text { display: flex; flex-direction: column; gap: var(--sp-1); }
 .slot-detail__trainer-name { font-size: var(--fs-h5); }
@@ -2456,17 +2461,23 @@
   white-space: nowrap;
   transition: color .2s var(--ease);
 }
+/* Пропорція 3/4 — та сама, що в кадрі тренера (.trainer__media,
+   .profile__media): мініатюра з CMS стає на місце, не міняючи форми.
+   Контур — тільки порожньому плейсхолдеру з іконкою: під фото це була б
+   зайва рамка (кадри на сайті не обводяться). */
 .schedule__trainer-ava {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--clr-accent);
-  border-radius: 50%;
+  width: 2rem;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-card);
+  overflow: hidden;
   color: var(--clr-accent);
   flex: none;
 }
+.schedule__trainer-ava:not(:has(img)) { border: 1px solid var(--clr-accent); }
+.schedule__trainer-ava > img { width: 100%; height: 100%; object-fit: cover; }
 @media (min-width: 1081px) {
   .schedule__trainer-link:hover { color: var(--clr-accent); }
 }
