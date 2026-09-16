@@ -155,16 +155,57 @@ $primary = [
             <span class="booking-btn__label" aria-hidden="true">Записатись</span>
           </a>
 
-          <details class="dropdown account">
-            <summary class="btn btn--outlined btn--header btn--sm" aria-label="Кабінет клієнта">
+          <?php
+          // Стан кабінету в хедері. api/account.php підключається тільки тут,
+          // бо це єдине місце в шапці, яке про клієнта знає; require_once —
+          // сторінки кабінету підключають його й самі.
+          require_once __DIR__ . '/../api/account.php';
+          $hdr_logged  = account_is_logged();
+          $hdr_profile = $hdr_logged ? account_profile() : null;
+          // Тільки імʼя, без прізвища: у кнопку хедера довгий рядок не влазить.
+          $hdr_name = $hdr_profile ? explode(' ', trim($hdr_profile['name']))[0] : '';
+          // Активний пункт — $account_nav уже задають самі сторінки кабінету
+          // (account.php тощо) до цього include, той самий принцип, що $nav
+          // для основного меню. На сторінках поза кабінетом просто немає.
+          $hdr_account_nav = $account_nav ?? '';
+          // Ті самі назви й порядок, що в partials/account/nav.php
+          // (бокова навігація кабінету) — один список пунктів, дві точки
+          // входу.
+          $hdr_account_menu = [
+            'profile'  => ['Персональна інформація', 'account.php'],
+            'cards'    => ['Абонементи', 'account-cards.php'],
+            'visits'   => ['Мої заняття', 'account-visits.php'],
+            'deposits' => ['Рахунок і поповнення', 'account-deposits.php'],
+          ];
+          ?>
+          <?php if ($hdr_logged): ?>
+            <details class="dropdown account">
+              <summary class="btn btn--outlined btn--header btn--sm" aria-label="Кабінет клієнта">
+                <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
+                <span class="account__label"><?= htmlspecialchars($hdr_name) ?></span>
+              </summary>
+              <ul class="dropdown__panel">
+                <?php foreach ($hdr_account_menu as $key => [$label, $href]): ?>
+                  <?php $is_current = $key === $hdr_account_nav; ?>
+                  <li><a class="lang__opt<?= $is_current ? ' is-active' : '' ?>" href="<?= $href ?>"<?= $is_current ? ' aria-current="page"' : '' ?>><?= $label ?></a></li>
+                <?php endforeach; ?>
+                <li>
+                  <!-- Та сама форма-вихід, що в сайдбарі кабінету
+                       (partials/account/nav.php) — на мобілці сайдбар
+                       прибирається, тож вихід з будь-якої сторінки має бути
+                       доступний саме тут. -->
+                  <form class="dropdown__logout" action="" method="post" data-remote>
+                    <button type="submit" class="lang__opt dropdown__logout-btn">Вийти</button>
+                  </form>
+                </li>
+              </ul>
+            </details>
+          <?php else: ?>
+            <button type="button" class="btn btn--outlined btn--header btn--sm account" data-modal="auth" aria-label="Увійти в кабінет">
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-user"></use></svg>
-              <span class="account__label">Ірина</span>
-            </summary>
-            <ul class="dropdown__panel">
-              <li><a class="lang__opt" href="account.php">Кабінет клієнта</a></li>
-              <li><a class="lang__opt" href="account.php?login">Увійти</a></li>
-            </ul>
-          </details>
+              <span class="account__label">Увійти</span>
+            </button>
+          <?php endif; ?>
         </div>
       </div>
     </header>

@@ -1,0 +1,272 @@
+{
+  "_comment": "Фікстура кабінету у формі відповідей InstaSport (User, UserPortalProfile, ProfileCard, ProfileVisit, AccountDeposit), а не у формі, зручній для розмітки. Так реальний API підставиться замість моку без правок мапінгу в api/account.php. status_detail і paid_detail — готові локалізовані рядки з InstaSport (docs/ACCOUNT-WP.md §9), не вигадані тут.",
+
+  "_user_comment": "GET /user/ — особисті дані облікового запису, єдине, що клієнт може редагувати (PATCH /user/). gender: 0 без статі · 1 чол · 2 жін (GenderEnum).",
+  "_user": {
+    "first_name": "Ірина",
+    "last_name": "Ковальчук",
+    "avatar": null,
+    "about": "Займаюсь на реформері з 2023 року.",
+    "birthday": "1991-04-18",
+    "gender": 2,
+    "instagram": "iryna.kov"
+  },
+
+  "_profile": {
+    "count": 2,
+    "results": [
+      {
+        "id": 811,
+        "name": "Ірина Ковальчук",
+        "phone": "+380631234567",
+        "email": "iryna.k@example.com",
+        "birthday": "1991-04-18",
+        "relation": 1,
+        "relation_detail": "Основний профіль",
+        "account": "1200.00",
+        "rules_accepted": true
+      },
+      {
+        "id": 812,
+        "name": "Соломія Ковальчук",
+        "phone": "",
+        "email": "",
+        "birthday": "2016-11-02",
+        "relation": 2,
+        "relation_detail": "Дитина",
+        "account": "0.00",
+        "rules_accepted": true
+      }
+    ]
+  },
+
+  "_cards": {
+    "count": 5,
+    "results": [
+      {
+        "id": 45,
+        "template": 2,
+        "title": "Абонемент 10 занять (реформер)",
+        "amount": 10,
+        "used": 4,
+        "price": "3500.00",
+        "date_start": "2026-09-01",
+        "due_date": "2026-09-30",
+        "status": 4,
+        "status_detail": "Активний",
+        "paid": 2,
+        "paid_detail": "Liqpay",
+        "transfer": 2,
+        "pauses": 1,
+        "paused_duration": 7,
+        "paused_due_date": null
+      },
+      {
+        "id": 51,
+        "template": 6,
+        "title": "Безлімітний місяць (мат)",
+        "amount": -1,
+        "used": 9,
+        "price": "2800.00",
+        "date_start": "2026-09-05",
+        "due_date": "2026-10-05",
+        "status": 4,
+        "status_detail": "Активний",
+        "paid": 4,
+        "paid_detail": "Рахунок",
+        "transfer": 0,
+        "pauses": 0,
+        "paused_duration": 0,
+        "paused_due_date": null
+      },
+      {
+        "id": 52,
+        "template": 3,
+        "title": "Абонемент 8 занять (кадилак)",
+        "amount": 8,
+        "used": 8,
+        "price": "3200.00",
+        "date_start": "2026-08-01",
+        "due_date": "2026-08-31",
+        "status": 6,
+        "status_detail": "Закінчився (по відвідуваннях)",
+        "paid": 1,
+        "paid_detail": "Готівка",
+        "transfer": 1,
+        "pauses": 0,
+        "paused_duration": 0,
+        "paused_due_date": null
+      },
+      {
+        "id": 39,
+        "template": 2,
+        "title": "Абонемент 10 занять (реформер)",
+        "amount": 10,
+        "used": 6,
+        "price": "3500.00",
+        "date_start": "2026-06-01",
+        "due_date": "2026-06-30",
+        "status": 7,
+        "status_detail": "Закінчився (по строку)",
+        "paid": 16,
+        "paid_detail": "Монобанк",
+        "transfer": 2,
+        "pauses": 1,
+        "paused_duration": 7,
+        "paused_due_date": null
+      },
+      {
+        "id": 57,
+        "template": 4,
+        "title": "Персональні тренування, 5 занять",
+        "amount": 5,
+        "used": 0,
+        "price": "4500.00",
+        "date_start": "2026-09-14",
+        "due_date": "2026-10-14",
+        "status": 1,
+        "status_detail": "Заявка",
+        "paid": -1,
+        "paid_detail": "Немає",
+        "transfer": 0,
+        "pauses": 0,
+        "paused_duration": 0,
+        "paused_due_date": null
+      }
+    ]
+  },
+
+  "_visits": {
+    "count": 6,
+    "results": [
+      {
+        "id": 9301,
+        "event": 41,
+        "date": "2026-09-18T09:30:00+03:00",
+        "title": "Пілатес на тренажерах",
+        "instructor": "Оксана",
+        "hall": "Чупринки",
+        "price": "350.00",
+        "status": 1,
+        "status_detail": "Заплановане",
+        "paid": 3,
+        "paid_detail": "Абонемент",
+        "paid_by_card": 45,
+        "decline_deadline": "2026-09-17T09:30:00+03:00"
+      },
+      {
+        "id": 9302,
+        "event": 44,
+        "date": "2026-09-20T18:00:00+03:00",
+        "title": "Йога",
+        "instructor": "Вікторія",
+        "hall": "Сихів",
+        "price": "300.00",
+        "status": 1,
+        "status_detail": "Заплановане",
+        "paid": 5,
+        "paid_detail": "Бронь",
+        "paid_by_card": null,
+        "decline_deadline": "2026-09-19T18:00:00+03:00"
+      },
+      {
+        "id": 9288,
+        "event": 33,
+        "date": "2026-09-11T09:30:00+03:00",
+        "title": "Пілатес на тренажерах",
+        "instructor": "Галина",
+        "hall": "Чупринки",
+        "price": "350.00",
+        "status": 2,
+        "status_detail": "Відвідане",
+        "paid": 3,
+        "paid_detail": "Абонемент",
+        "paid_by_card": 45,
+        "decline_deadline": "2026-09-10T09:30:00+03:00"
+      },
+      {
+        "id": 9276,
+        "event": 28,
+        "date": "2026-09-08T11:00:00+03:00",
+        "title": "Функціональне відновлення",
+        "instructor": "Вікторія",
+        "hall": "Брюховичі",
+        "price": "400.00",
+        "status": 2,
+        "status_detail": "Відвідане",
+        "paid": 4,
+        "paid_detail": "Рахунок",
+        "paid_by_card": null,
+        "decline_deadline": "2026-09-07T11:00:00+03:00"
+      },
+      {
+        "id": 9261,
+        "event": 19,
+        "date": "2026-09-04T19:00:00+03:00",
+        "title": "Танці",
+        "instructor": "Назарій",
+        "hall": "Сихів",
+        "price": "300.00",
+        "status": 3,
+        "status_detail": "Пропущене",
+        "paid": 3,
+        "paid_detail": "Абонемент",
+        "paid_by_card": 39,
+        "decline_deadline": "2026-09-03T19:00:00+03:00"
+      },
+      {
+        "id": 9254,
+        "event": 12,
+        "date": "2026-08-28T09:30:00+03:00",
+        "title": "Пілатес на тренажерах",
+        "instructor": "Сюзанна",
+        "hall": "Чупринки",
+        "price": "350.00",
+        "status": 4,
+        "status_detail": "Скасоване",
+        "paid": -1,
+        "paid_detail": "Немає",
+        "paid_by_card": null,
+        "decline_deadline": "2026-08-27T09:30:00+03:00"
+      }
+    ]
+  },
+
+  "_deposits": {
+    "count": 3,
+    "results": [
+      {
+        "id": 701,
+        "date": "2026-09-12T14:22:00+03:00",
+        "amount": "1500.00",
+        "paid": 16,
+        "paid_detail": "Монобанк",
+        "comment": "Поповнення рахунку"
+      },
+      {
+        "id": 688,
+        "date": "2026-08-30T11:05:00+03:00",
+        "amount": "1000.00",
+        "paid": 1,
+        "paid_detail": "Готівка",
+        "comment": "Поповнення в студії"
+      },
+      {
+        "id": 654,
+        "date": "2026-08-02T09:41:00+03:00",
+        "amount": "-400.00",
+        "paid": 4,
+        "paid_detail": "Рахунок",
+        "comment": "Оплата заняття з рахунку"
+      }
+    ]
+  },
+
+  "_card_templates": {
+    "_comment": "template.card_templates заняття — якими шаблонами абонементів можна оплатити конкретне тренування (§1.2). У schedule-mock.json цього поля немає, тож для демонстрації фільтра тримаємо мапу event.template.id → дозволені шаблони тут.",
+    "8": [2, 6],
+    "9": [3, 6],
+    "10": [6],
+    "11": [4]
+  }
+}

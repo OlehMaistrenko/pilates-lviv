@@ -5,6 +5,12 @@
    Critical CSS (токени, reset, utility, хедер) — у css/main.css.
    ============================================================ */
 
+/* Тег <section> у main.css йде з opacity: 0 (крім .hero, там же
+   перебито назад на 1) — щоб не блимнути неоформленим контентом до
+   підвантаження цього файлу. Тут повертаємо видимість решті секцій:
+   до цього моменту всі стилі вже застосовані. */
+section { opacity: 1; }
+
 /* ============================================================
    Modal overlay — спільна оболонка для AJAX-модалок (partials/modals/*).
    Один візуальний каркас (.modal-overlay__panel + .modal__*) для всіх —
@@ -3068,3 +3074,305 @@
    на базовому --fs-h2 п'ять таких підряд читались би як п'ять окремих
    сторінок, та ще й утричі більшими за питання під ними. */
 .faq-topics h2 { font-size: var(--fs-h3); }
+
+
+/* ============================================================
+   Component: .link-button — кнопка, яка виглядає як посилання
+   всередині абзацу («Забули пароль?», «Увійдіть»). Саме <button>,
+   а не <a>: дія відкриває модалку, нікуди не веде, тож href їй
+   немає що дати.
+   ============================================================ */
+.link-button {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  transition: color .2s var(--ease);
+}
+@media (hover: hover) {
+  .link-button:hover { color: var(--clr-accent); }
+}
+
+/* ============================================================
+   Component: .badge — коротка плашка стану. Текст у ній —
+   status_detail/paid_detail, готові локалізовані рядки з InstaSport
+   (docs/ACCOUNT-WP.md §9), тому ширина довільна, а не під фіксовані
+   варіанти.
+   Контур, не заливка: суцільне золото за дизайн-напрямком лишається
+   тільки за .btn--filled, умбра — тільки за блоком запису. --r-chip,
+   не капсула: поруч у рядку часто стоїть справжня кнопка з тим самим
+   обведенням (напр. .rows__item--visit → «Скасувати») — капсула на
+   бейджі зливалась би з нею формою, гострі кути тримають різницю
+   «статус ≠ дія» навіть коли обидва мають те саме обведення.
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-chip);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* --clr-surface-alt (умбра) сюди не йде: за дизайн-напрямком вона
+   зарезервована винятково під блок запису (CLAUDE.md — «умбра тільки
+   двері»), а поруч із --clr-accent (близька яскравість, обидва темні
+   охристі на бежі) різниця між "ok" і "warn" губилась би. Нейтральні
+   стани розведені контрастом насиченості, не спорідненими кольорами:
+   акцент заливкою й вагою (ok), повний --clr-ink (warn), приглушений
+   (muted). Рамка — на всіх модифікаторах однаково (сама .badge), тільки
+   danger отримує власний колір рамки й тексту: це не «ще один нейтральний
+   рівень», а явна відмова/пропуск, і тут службовий червоний виправданий —
+   той самий #c0392b, що вже в .form__error, а не новий вигаданий колір
+   поза брендбуком. */
+.badge--ok {
+  border-color: var(--clr-accent);
+  color: var(--clr-accent);
+  font-weight: var(--fw-sb);
+}
+.badge--warn { color: var(--clr-ink); }
+.badge--muted { color: var(--clr-ink-mute); }
+.badge--danger { border-color: #c0392b; color: #c0392b; }
+
+/* ============================================================
+   Account — кабінет клієнта: шапка з балансом, бокова навігація,
+   контент розділу. Сторінки: account*.php.
+   ============================================================ */
+
+/* Гостьовий стан — сторінка без бокової навігації: показувати меню
+   розділів тому, хто в них однаково не потрапить, немає сенсу. */
+.account-guest { max-width: 44rem; padding-block: var(--sp-7) var(--sp-9); }
+.account-guest__title { font-size: var(--fs-h2); font-weight: var(--fw-lt); line-height: var(--lh-display); letter-spacing: var(--tracking-tight); }
+.account-guest__text { margin-top: var(--sp-5); }
+.account-guest__actions { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-7); }
+
+/* Шапка кабінету: імʼя ліворуч, баланс праворуч. Волосина знизу тут
+   виправдана — вона відділяє шапку від робочої області, а не обводить
+   кожен блок. */
+.account-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5) var(--sp-7);
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--clr-line);
+}
+.account-head__name { font-size: var(--fs-h3); font-weight: var(--fw-lt); line-height: var(--lh-tight); }
+.account-head__balance { display: flex; flex-direction: column; gap: var(--sp-2); text-align: right; }
+.account-head__sum { font-size: var(--fs-h4); color: var(--clr-accent); white-space: nowrap; }
+
+@media (max-width: 560px) {
+  .account-head__balance { text-align: left; }
+}
+
+/* Сітка «навігація | контент». Колонка навігації фіксована: зі
+   ствердженим списком із чотирьох пунктів вона не має причини гуляти. */
+.account-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  gap: var(--sp-7) var(--sp-9);
+  align-items: start;
+}
+
+.account-nav { display: flex; flex-direction: column; gap: var(--sp-6); position: sticky; top: calc(var(--header-h-min) + var(--sp-5)); }
+.account-nav__list { display: flex; flex-direction: column; gap: var(--sp-1); }
+.account-nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 0;
+  border-radius: var(--r-card);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .2s var(--ease), color .2s var(--ease);
+}
+.account-nav__link .icon { flex: none; color: var(--clr-accent); }
+.account-nav__link.is-current { background: color-mix(in srgb, var(--clr-ink) 7%, transparent); font-weight: var(--fw-med); }
+@media (hover: hover) {
+  .account-nav__link:hover { background: color-mix(in srgb, var(--clr-ink) 5%, transparent); }
+}
+.account-nav__link--logout { color: var(--clr-ink-mute); }
+.account-nav__link--logout .icon { color: currentColor; }
+
+.account-content__title { font-size: var(--fs-h4); font-weight: var(--fw-reg); margin-bottom: var(--sp-6); }
+/* Підзаголовок усередині розділу: власний верхній відступ, бо списки
+   над ним закінчуються впритул. */
+.account-content__subtitle { font-size: var(--fs-h5); font-weight: var(--fw-reg); margin-top: var(--sp-8); margin-bottom: var(--sp-4); }
+
+@media (max-width: 1080px) {
+  /* Навігація над контентом — горизонтальною стрічкою: у вузькій
+     колонці вертикальне меню з'їдало б половину ширини. */
+  .account-layout { grid-template-columns: minmax(0, 1fr); }
+  .account-nav { position: static; }
+  .account-nav__list { flex-direction: row; flex-wrap: wrap; gap: var(--sp-2); }
+  .account-nav__link { width: auto; }
+}
+
+@media (max-width: 768px) {
+  /* На мобільному прибираємо сайдбар зовсім, а не стрічкою: п'ять кнопок
+     упоперек вузького екрана займають більше місця, ніж сам контент
+     розділу. Навігація між розділами лишається доступною через дропдаун
+     кабінету в хедері (partials/header.php) — там тепер усі чотири
+     розділи + вихід, і breadcrumbs, що показує назву поточного розділу
+     (partials/account/layout-open.php). */
+  .account-nav { display: none; }
+}
+
+/* Порожній стан розділу */
+.account-empty { padding-block: var(--sp-6); }
+.account-empty__link { color: var(--clr-accent); text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* Персональна інформація — пари «поле → значення» на .rows--pair */
+.account-facts .rows__item--pair > dd { font-weight: var(--fw-med); }
+
+/* ---- Абонементи: картка з прогресом ---- */
+.card-list { display: grid; gap: var(--sp-5); }
+.card-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-card);
+}
+.card-item__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.card-item__title { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
+.card-item__progress { display: flex; flex-direction: column; gap: var(--sp-2); }
+/* Смужка витрачених занять. Висота в px — волосина, у rem дала б дробові
+   значення, які браузер однаково округлить. */
+.card-item__bar { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--clr-ink) 10%, transparent); overflow: hidden; }
+.card-item__bar-fill { display: block; width: var(--fill, 0%); height: 100%; background: var(--clr-accent); }
+.card-item__unlimited { font-size: var(--fs-sm); color: var(--clr-accent); }
+.card-item__facts { display: flex; flex-wrap: wrap; gap: var(--sp-4) var(--sp-7); }
+.card-item__fact > dd { margin-top: var(--sp-1); font-size: var(--fs-sm); font-weight: var(--fw-med); }
+
+/* ---- Заняття й поповнення: колонки задає список, не кожен рядок
+   (той самий subgrid-ланцюжок, що в .schedule__list) ---- */
+/* 4 колонки: час · назва · тренер+локація+оплата · дія. Було 5 окремою
+   колонкою під paid_detail — прибрано (account-visits.php): дві сусідні
+   приглушені клітинки без бейджа між ними (він теж прибраний — у
+   ProfileVisit немає поля status) зливались в одну, тож спосіб оплати
+   тепер частина того самого рядка «тренер · локація». */
+.visit-list { display: grid; grid-template-columns: minmax(8rem, auto) minmax(0, 1fr) minmax(0, max-content) min-content; }
+.visit-list > .rows { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; }
+.rows__item--visit { grid-column: 1 / -1; grid-template-columns: subgrid; align-items: center; }
+.visit__where { white-space: nowrap; }
+.visit__action { justify-self: end; }
+
+.deposit-list { display: grid; grid-template-columns: minmax(9rem, auto) minmax(0, 1fr) minmax(0, max-content) auto; }
+.deposit-list > .rows { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; }
+.rows__item--deposit { grid-column: 1 / -1; grid-template-columns: subgrid; align-items: center; }
+.deposit__sum { font-weight: var(--fw-med); white-space: nowrap; justify-self: end; color: var(--clr-accent); }
+/* Списання — приглушене, а не червоне: це нормальна операція, не помилка */
+.deposit__sum--out { color: var(--clr-ink-mute); }
+
+@media (max-width: 1080px) {
+  /* Рядок розкладається на блок: subgrid скасовується, кожна клітинка
+     стає власним рядком у звичайному потоці. */
+  .visit-list, .deposit-list { grid-template-columns: minmax(0, 1fr); }
+  .visit-list > .rows, .deposit-list > .rows { display: flex; flex-direction: column; }
+  .rows__item--visit, .rows__item--deposit { grid-template-columns: minmax(0, 1fr); }
+  
+  .deposit__sum { justify-self: start; }
+  /* «Скасувати» — єдина дія рядка на вузькому екрані: замість дрібної
+     капсули, притисненої зліва з порожнім простором праворуч (як у
+     .filters, де вона одна з кількох рівних), тут на всю ширину блоку —
+     той самий .btn--block, що вже є в проєкті. */
+  .visit__action { justify-self: stretch; margin-top: var(--sp-2); }
+  .visit__action .btn { display: flex; width: 100%; }
+}
+
+/* ---- Баланс і поповнення ---- */
+.account-balance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-card);
+}
+.account-balance__sum { font-size: var(--fs-h2); font-weight: var(--fw-lt); line-height: var(--lh-display); color: var(--clr-accent); }
+/* Поле + кнопка в один рядок: форма з одного числа не потребує стовпця */
+.account-balance__form { flex-direction: row; flex-wrap: wrap; align-items: flex-end; gap: var(--sp-4); margin-top: var(--sp-3); }
+.account-balance__row { flex: 1 1 12rem; }
+
+/* ---- Форми кабінету ---- */
+.account-form { max-width: 28rem; margin-top: var(--sp-5); }
+.account-form__actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.account-password__intro { max-width: 40rem; }
+
+/* Форма особистих даних (PATCH /user/) — довша за account-form (кілька
+   коротких полів), тож власний ширший max-width замість модифікатора
+   вузького. */
+.account-form--wide { max-width: 40rem; }
+.account-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-5); }
+@media (max-width: 560px) {
+  .account-form__grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Пошта/телефон — рядок «підпис → значення → кнопка Змінити». Кнопка в
+   останній колонці, а не всередині dd зі значенням: інакше клік по всьому
+   рядку виглядав би клікабельним, а .rows__item не має hover навмисно. */
+.account-contact__item { grid-template-columns: minmax(8rem, auto) minmax(0, 1fr) auto; align-items: center; }
+@media (max-width: 560px) {
+  .account-contact__item { grid-template-columns: minmax(0, 1fr) auto; }
+  .account-contact__item > dt { grid-column: 1 / -1; }
+}
+
+/* ---- Радіо-список способів оплати (модалка booking, ТЗ §10) ----
+   Власний компонент, бо стилізованих радіо в проєкті не було. Рамка тут
+   структурна: варіанти оплати — це вибір, і межа кожного варіанта
+   показує зону кліку. */
+.form__radios { display: flex; flex-direction: column; gap: var(--sp-3); border: 0; padding: 0; margin: 0; }
+.form__radios > .form__label { margin-bottom: var(--sp-1); padding: 0; }
+.form__radio {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: 1px solid var(--clr-line);
+  border-radius: var(--r-card);
+  cursor: pointer;
+  transition: border-color .2s var(--ease);
+}
+.form__radio:has(input:checked) { border-color: var(--clr-accent); }
+/* appearance: none, а не тільки accent-color: нативний радіо-контрол
+   (навіть із заданим accent-color) малює суцільний білий диск під
+   обведенням у більшості браузерів — на бежевому фоні картки це
+   виглядало чужою плямою. Коло й крапка — самі, фон завжди прозорий. */
+.form__radio > input {
+  appearance: none;
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 2px;
+  border: 1px solid var(--clr-line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.form__radio > input:checked {
+  border-color: var(--clr-accent);
+  /* крапка всередині — той самий прийом, що .lang__opt.is-active::after:
+     радіальний градієнт замість вкладеного елемента чи ::after (::after
+     на input не рендериться). */
+  background: radial-gradient(circle, var(--clr-accent) 40%, transparent 42%);
+}
+.form__radio-body { display: flex; flex-direction: column; gap: var(--sp-1); }
+.form__radio-title { font-weight: var(--fw-med); }

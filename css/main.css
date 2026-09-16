@@ -527,6 +527,16 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 
 .section { padding-block: var(--section-py); z-index: 1; position: relative; }
 
+/* opacity: 0 на тег <section>, 1 — у css/styles.css (деферед). Секції
+   нижче першого екрана стилізовані повністю лише в styles.css; поки він
+   не підвантажився, секція показала б неоформлений контент і сіпнулась би
+   в готовий вигляд. Ховаємо до застосування деферед-стилів замість цього
+   стрибка. .hero і .profile-section (нижче в цьому файлі) — теж
+   <section>, але above-the-fold і critical (перший екран сторінки), тож
+   обидва перебивають назад на opacity: 1 — специфічність класу вища за
+   тег, порядок правил тут ролі не грає. */
+section { opacity: 0; }
+
 /* дві секції поспіль — прибрати подвоєний вертикальний відступ,
    лишити один section-py між ними */
 .section + .section { padding-top: 0; }
@@ -739,7 +749,9 @@ html.lenis, html.lenis body { height: auto; }
    тут звичайний бежевий. Не .section: відступи ті самі --sp-7, що в
    статті, а .section дав би --section-py і ще й обнулив верхній падінг
    наступної секції через .section + .section. */
-.profile-section { padding-block: var(--sp-7); }
+/* opacity: 1 перебиває правило `section` (Layout вище): це перший екран
+   сторінки (тренер, кабінет), той самий випадок, що .hero. */
+.profile-section { padding-top: var(--sp-7);  }
 .profile-section .breadcrumbs { margin-bottom: var(--sp-6); }
 
 .profile {
@@ -1017,7 +1029,10 @@ html.lenis, html.lenis body { height: auto; }
   transition: transform .2s var(--ease);
 }
 .dropdown[open] .dropdown__caret { transform: translateY(25%) rotate(-135deg); }
-.account .dropdown__panel { left: auto; right: 0; }
+/* Ширше за базові 10.75rem: пункти кабінету довші за мовний перемикач
+   ("Рахунок і поповнення", "Персональна інформація") і на 10.75rem
+   обгорталися б у два рядки. */
+.account .dropdown__panel { left: auto; right: 0; min-width: 15rem; }
 .dropdown__panel {
   position: absolute;
   top: calc(100% + var(--sp-2));
@@ -1056,6 +1071,18 @@ html.lenis, html.lenis body { height: auto; }
   vertical-align: middle;
 }
 
+/* Вихід із кабінету — той самий пункт .lang__opt, але це <button> у
+   <form>, тож потрібен ресет браузерних кнопкових стилів (сама .lang__opt
+   властивостей тегу не має, розрахована і на <a>, і на <button>). */
+.dropdown__logout { display: block; }
+.dropdown__logout-btn {
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 /* ============================================================
    Hero — перший екран головної, тому лежить у main.css, а не в styles.css
    Повноекранне відео під моховою плашкою: колір відео у зйомці різний
@@ -1075,6 +1102,10 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--clr-surface);
   color: var(--clr-page);
   overflow: hidden;
+  /* Перебиває opacity:0 з правила `section` вище: герой above-the-fold і
+     повністю стилізований тут-таки в main.css, ховати його до styles.css
+     не потрібно. */
+  opacity: 1;
 }
 .hero__video {
   position: absolute;

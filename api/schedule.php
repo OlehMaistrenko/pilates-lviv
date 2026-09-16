@@ -181,6 +181,11 @@ function denormalize(array $e, array $refs, DateTimeZone $tz): array {
     'price'       => $e['price'] ?? ($tpl['price'] ?? null),
     'is_bookable' => $seats !== 0 && !$is_past,
     'variant'     => $tpl['variant'] ?? null,
+    // Якими шаблонами абонементів можна оплатити це заняття — вхід фільтра
+    // способів оплати (docs/ACCOUNT-WP.md §1.2). Мок поля не має, тож
+    // фолбек — порожній масив: «обмежень не знаємо», фільтр їх не накладає.
+    'template_id'     => $tpl['id'] ?? null,
+    'card_templates'  => $tpl['card_templates'] ?? [],
     'activity'    => $activity,
     'direction'   => $activity !== null ? ($refs['activities'][$activity] ?? '') : '',
     'hall'        => $hall,

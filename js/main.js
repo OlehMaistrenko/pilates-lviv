@@ -1164,10 +1164,15 @@
 
   /* ---- Сабміт будь-якої .form → модалка подяки замість реального POST
      (беку під форми поки немає). Делеговано на document: форми живуть у
-     модалках і в DOM на момент підписки ще не існують. */
+     модалках і в DOM на момент підписки ще не існують.
+
+     [data-remote] — виняток: форми кабінету й входу підуть реальним
+     запитом на свої ендпоінти (docs/ACCOUNT-WP.md §12). Без цієї перевірки
+     вхід у кабінет мовчки перетворювався б на «дякуємо за заявку», ще й із
+     form.reset() нижче, який стирає введене. */
   document.addEventListener('submit', (e) => {
     const form = e.target.closest('.form');
-    if (!form || e.defaultPrevented) return;
+    if (!form || form.hasAttribute('data-remote') || e.defaultPrevented) return;
     e.preventDefault();
     form.reset();
     window._functions.loadModal('thanks');
