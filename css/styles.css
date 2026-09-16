@@ -3210,7 +3210,10 @@ section { opacity: 1; }
 .account-nav__link--logout { color: var(--clr-ink-mute); }
 .account-nav__link--logout .icon { color: currentColor; }
 
-.account-content__title { font-size: var(--fs-h4); font-weight: var(--fw-reg); margin-bottom: var(--sp-6); }
+/* font-weight не перебиваємо: тег — h2, база (main.css) вже дає йому
+   --fw-lt — та сама вага, що на .account-head__name (теж --fs-h3, поряд
+   на сторінці). Явний --fw-reg тут раніше сперечався з власним тегом. */
+.account-content__title { font-size: var(--fs-h3); margin-bottom: var(--sp-6); }
 /* Підзаголовок усередині розділу: власний верхній відступ, бо списки
    над ним закінчуються впритул. */
 .account-content__subtitle { font-size: var(--fs-h5); font-weight: var(--fw-reg); margin-top: var(--sp-8); margin-bottom: var(--sp-4); }
@@ -3252,7 +3255,10 @@ section { opacity: 1; }
   border-radius: var(--r-card);
 }
 .card-item__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); }
-.card-item__title { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
+/* --fw-lt, не --fw-reg: та сама роль і кегль, що .rows__title (назва
+   заняття/сертифіката в списку) — обидва мали бути одним компонентом,
+   не двома з різною вагою. */
+.card-item__title { font-size: var(--fs-h5); font-weight: var(--fw-lt); }
 .card-item__progress { display: flex; flex-direction: column; gap: var(--sp-2); }
 /* Смужка витрачених занять. Висота в px — волосина, у rem дала б дробові
    значення, які браузер однаково округлить. */
