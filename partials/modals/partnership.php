@@ -27,12 +27,14 @@ $formats = [
 <form class="form modal__body" action="" method="post">
   <div class="form__row">
     <label class="form__label" for="partnership-name">Ім’я</label>
-    <input class="form__input" type="text" id="partnership-name" name="name" autocomplete="name" required>
+    <input class="form__input" type="text" id="partnership-name" name="name" autocomplete="name"
+           placeholder="Ірина" required>
   </div>
 
   <div class="form__row">
     <label class="form__label" for="partnership-company">Компанія або напрям діяльності</label>
-    <input class="form__input" type="text" id="partnership-company" name="company" autocomplete="organization">
+    <input class="form__input" type="text" id="partnership-company" name="company" autocomplete="organization"
+           placeholder="Продуктова компанія, студія, клініка">
   </div>
 
   <div class="form__row">

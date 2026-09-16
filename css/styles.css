@@ -242,9 +242,9 @@
    висоту тримає --field-size, а не падінг */
 .form__input { min-height: var(--field-size); padding-block: 0; }
 /* Багаторядкове поле — не капсула: половина висоти на textarea дала б
-   овал. Власна висота, прямокутна форма й звичайний вертикальний падінг. */
+   овал. Власна висота, легке скруглення --r-card (як у картки й кадру)
+   і звичайний вертикальний падінг. */
 .form__textarea {
-  --field-radius: var(--r-chip);
   padding-block: var(--sp-3);
   resize: vertical;
   min-height: 7.5rem;
@@ -405,7 +405,7 @@
   --ss-primary-color: var(--clr-accent);
   --ss-focus-color: var(--clr-accent);
   --ss-disabled-color: transparent;
-  --ss-border-radius: var(--r-chip);
+  --ss-border-radius: var(--field-radius);
   --ss-main-height: auto;
   --ss-spacing-l: var(--sp-4);
   --ss-spacing-m: var(--sp-2);
@@ -421,7 +421,7 @@
    що й у закритому стані. Значення приходить із .form__input (вендор
    копіює клас на .ss-main), фолбек — на випадок .ss-main без нього. */
 .ss-main.ss-open-below,
-.ss-main.ss-open-above { border-radius: var(--field-radius, var(--r-chip)); }
+.ss-main.ss-open-above { border-radius: var(--field-radius); }
 /* Вендор малює значення власним рядком, а висоту поля тримає min-height
    із --field-size (padding-block у поля нульовий) — без цього текст
    сидів би вище середини. */
@@ -433,11 +433,26 @@
 /* Вендор копіює клас <select> (тут .form__input) і на .ss-content, тому
    наш паддінг поля потрапляв і на контейнер списку — прибираємо його тут. */
 .ss-content {
+  /* Вендор монтує список у <body>, тож --field-radius із .form__input сюди
+     не успадковується — оголошуємо його тут, щоб радіус картки й закритого
+     поля лишався одним значенням, а не двома, які треба правити окремо. */
+  --field-radius: var(--r-card);
   margin-top: var(--sp-2);
   padding: 0;
   border-color: var(--clr-accent);
   background: var(--clr-page);
+  /* Заливка крайніх пунктів (hover, .ss-selected) — прямокутник на всю
+     ширину списку, тож без обрізання вона залазила б на скруглені кути. */
+  overflow: hidden;
 }
+/* Вендор скруглює список тільки з боку, протилежного до поля
+   (.ss-open-below дає лише нижні кути, .ss-open-above — лише верхні),
+   щоб список зростався з полем у суцільну фігуру. Нам потрібні всі
+   чотири: список відсунутий від поля на --sp-2 і читається окремою
+   карткою. Ті самі два класи в селекторі — інакше вендорські
+   border-*-radius переб'ють shorthand вище. */
+.ss-content.ss-open-below,
+.ss-content.ss-open-above { border-radius: var(--field-radius); }
 .ss-content .ss-list .ss-option { color: var(--clr-ink); }
 /* hover/keyboard-highlight — тиха підсвітка фоном, без заливки.
    Вибраний пункт (.ss-selected) — виняток із правила «золото лише на
@@ -648,7 +663,7 @@
    Component: .icon-link — текстове посилання з іконкою зліва
    (телефон, адреса тощо)
    ============================================================ */
-.icon-link { display: inline-flex; align-items: flex-start; gap: var(--sp-2); transition: color .2s var(--ease); }
+.icon-link { display: inline-flex; align-items: center; gap: var(--sp-2); transition: color .2s var(--ease); }
 .icon-link .icon { margin-top: 1px; color: var(--clr-accent); flex: none; }
 @media (min-width: 1081px) {
   .icon-link:hover { color: var(--clr-accent); }
@@ -3007,3 +3022,46 @@
   .map__marker { transition: none; }
   .map__me::after { animation: none; display: none; }
 }
+
+
+/* ============================================================
+   Contacts — звʼязок: телефон і соцмережі ліворуч, форма звʼязку
+   праворуч. Поля цілком з блоку Form вище — тут лише сітка секції.
+   ============================================================ */
+.contact__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--sp-8) var(--sp-9);
+  align-items: start;
+}
+.contact__aside p { max-width: 30rem; }
+/* Та сама колонка .icon-link, що в футері й банері локації. font-style
+   тут обовʼязковий: <address> браузер рендерить курсивом, а курсиву на
+   сайті немає ніде. */
+.contact__contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  font-style: normal;
+  font-size: var(--fs-h5);
+  line-height: var(--lh-body);
+}
+.contact__social { display: flex; gap: var(--sp-2); }
+/* Кнопка по ширині напису, не на всю колонку: у модалках її тримає
+   .modal__foot, а тут форма закінчується самим рядком. */
+.contact__submit { display: flex; }
+@media (max-width: 1080px) {
+  .contact__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-7); }
+}
+
+
+/* ============================================================
+   FAQ — сторінка: групи питань за темами під фільтром .filters.
+   Сам акордеон — компонент вище; тут лише відступ між групами.
+   ============================================================ */
+.faq-topics { display: grid; gap: var(--sp-9); }
+/* Назва теми — підрозділ усередині однієї секції, а не заголовок секції:
+   на базовому --fs-h2 п'ять таких підряд читались би як п'ять окремих
+   сторінок, та ще й утричі більшими за питання під ними. */
+.faq-topics h2 { font-size: var(--fs-h3); }

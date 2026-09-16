@@ -25,7 +25,8 @@ $directions = [
 <form class="form modal__body" action="" method="post">
   <div class="form__row">
     <label class="form__label" for="booking-name">Ім’я</label>
-    <input class="form__input" type="text" id="booking-name" name="name" autocomplete="name" required>
+    <input class="form__input" type="text" id="booking-name" name="name" autocomplete="name"
+           placeholder="Ірина" required>
   </div>
 
   <div class="form__row">
