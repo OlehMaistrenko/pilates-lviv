@@ -4,7 +4,7 @@
  * GET name — ключ фрагмента з whitelist нижче; решта $_GET прозоро долітає
  * до конкретного фрагмента (напр. ?name=info&id=2 → info.php читає $_GET['id']).
  */
-$modals = ['example', 'booking', 'callback', 'thanks', 'slot-details'];
+$modals = ['example', 'booking', 'callback', 'partnership', 'thanks', 'slot-details'];
 $name = $_GET['name'] ?? '';
 
 if (!in_array($name, $modals, true)) {

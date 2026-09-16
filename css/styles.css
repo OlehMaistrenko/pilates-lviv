@@ -1876,6 +1876,36 @@
 .gallery__zoom > img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ============================================================
+   Component: .video-card — постер із кнопкою play. Саме відео
+   відкриває GLightbox (той самий [data-glightbox], що галерея),
+   тож на сторінці не лежить ні плеєр, ні важкий <video>.
+   Кнопка — <span> з класами .btn: усередині посилання інтерактивного
+   елемента бути не може, а форма й кольори тут ті самі, що в
+   .btn--icon.btn--filled — дублювати їх не треба.
+   ============================================================ */
+.video-card {
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.video-card > img { width: 100%; height: 100%; object-fit: cover; }
+.video-card__play {
+  --btn-size: 4.5rem;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  /* явна висота, а не тільки min-height із .btn: при inset:0 автовисота
+     розтягнула б кружок на весь постер, і margin:auto не спрацював би */
+  height: var(--btn-size);
+  pointer-events: none;   /* клікає весь постер, а не тільки кружок */
+}
+@media (max-width: 768px) {
+  .video-card__play { --btn-size: 3.5rem; }
+}
+
+/* ============================================================
    GLightbox — фулскрін-перегляд галерей. Вендорські контроли
    перемальовуємо у власні кнопки-іконки: та сама форма й поведінка,
    що в .btn--icon.btn--outlined.btn--light (світлий контур на темному

@@ -7,6 +7,9 @@
  *   $cta_modal     — ключ модалки для кнопки; можна з квері:
  *                    'booking?direction=pilates'. Дефолт 'booking'.
  *   $cta_btn       — підпис основної кнопки. Дефолт 'Записатись'.
+ *   $cta_link      — друга кнопка: [підпис, href]. Дефолт — розклад занять;
+ *                    на сторінках, де запис не про заняття (співпраця),
+ *                    підміняється своєю дією.
  *   $cta_img       — кадр відносно assets/img/. Дефолт 'cta.jpg'.
  *   $cta_img_alt   — alt кадру.
  *   $cta_locations — [[назва, адреса], …] списком під кнопками (як на
@@ -18,6 +21,7 @@ $cta_title     = $cta_title     ?? '';
 $cta_text      = $cta_text      ?? '';
 $cta_modal     = $cta_modal     ?? 'booking';
 $cta_btn       = $cta_btn       ?? 'Записатись';
+$cta_link      = $cta_link      ?? ['Розклад занять', 'schedule.php'];
 $cta_img       = $cta_img       ?? 'cta.jpg';
 $cta_img_alt   = $cta_img_alt   ?? 'Групове заняття в залі студії';
 $cta_locations = $cta_locations ?? null;
@@ -41,7 +45,7 @@ $cta_locations = $cta_locations ?? null;
 
         <div class="split__actions" data-reveal>
           <button type="button" class="btn btn--filled btn--light" data-modal="<?= $cta_modal ?>"><?= $cta_btn ?></button>
-          <a class="btn btn--outlined btn--light" href="schedule.php">Розклад занять</a>
+          <a class="btn btn--outlined btn--light" href="<?= $cta_link[1] ?>"><?= $cta_link[0] ?></a>
         </div>
 
         <?php if ($cta_locations): ?>
@@ -63,4 +67,4 @@ $cta_locations = $cta_locations ?? null;
   </div>
 </section>
 <?php
-unset($cta_title, $cta_text, $cta_modal, $cta_btn, $cta_img, $cta_img_alt, $cta_locations);
+unset($cta_title, $cta_text, $cta_modal, $cta_btn, $cta_link, $cta_img, $cta_img_alt, $cta_locations);
