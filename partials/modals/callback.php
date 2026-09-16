@@ -2,19 +2,31 @@
 /**
  * «Замовити дзвінок» — коротка форма з футера. Тригер — [data-modal="callback"].
  * Та сама логіка, що й у діючого сайту: одне поле, одна дія.
- * Зі сторінки цін тригер несе [data-modal="callback?tariff=…"], з
- * навчального центру — [data-modal="callback?course=…"]; назва тоді йде
- * в заголовок і в приховане поле форми.
+ * Тригер може нести назву того, на що записуються — вона йде в заголовок
+ * і в приховане поле форми:
+ *   ?tariff=… — абонемент зі сторінки цін
+ *   ?course=… — курс навчального центру (весь центр або окремий тариф)
+ *   ?event=…  — подія чи потік зі списку (partials/events.php)
+ * Параметри різні, бо в поле форми мусить лягти те, чим воно є: воркшоп
+ * на дві години — не курс.
  * Бекенду ще немає — action порожній.
  */
 $tariff = $_GET['tariff'] ?? '';
 $course = $_GET['course'] ?? '';
+$event  = $_GET['event']  ?? '';
 ?>
 <div class="modal__head">
-  <h2 class="modal__title" id="modal-overlay-title"><?= $course ? 'Записатись на курс' : ($tariff ? 'Купити абонемент' : 'Замовити дзвінок') ?></h2>
+  <h2 class="modal__title" id="modal-overlay-title">
+    <?php if ($course): ?>Записатись на курс
+    <?php elseif ($event): ?>Записатись
+    <?php elseif ($tariff): ?>Купити абонемент
+    <?php else: ?>Замовити дзвінок<?php endif; ?>
+  </h2>
   <p class="text text--muted mt-3">
     <?php if ($course): ?>
       Курс: «<?= htmlspecialchars($course) ?>». Залиште телефон — передзвонимо, спитаємо про ваш досвід і розкажемо про програму.
+    <?php elseif ($event): ?>
+      «<?= htmlspecialchars($event) ?>». Залиште телефон — передзвонимо, підтвердимо місце й скажемо, що взяти з собою.
     <?php elseif ($tariff): ?>
       Тариф: «<?= htmlspecialchars($tariff) ?>». Залиште телефон — передзвонимо й оформимо.
     <?php else: ?>
@@ -29,6 +41,9 @@ $course = $_GET['course'] ?? '';
   <?php endif; ?>
   <?php if ($course): ?>
     <input type="hidden" name="course" value="<?= htmlspecialchars($course) ?>">
+  <?php endif; ?>
+  <?php if ($event): ?>
+    <input type="hidden" name="event" value="<?= htmlspecialchars($event) ?>">
   <?php endif; ?>
 
   <div class="form__row">
