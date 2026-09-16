@@ -2649,49 +2649,111 @@
    Locations — карта (partials/map.php): полотно Mapbox ліворуч, панель
    із залами, «де я» й маршрутом праворуч. Без JS/токена секція
    деградує до списку: полотно схлопнуте, а «де я» і перемикач режиму
-   сховані — без карти їм нема чим керувати (Google-посилання лишається).
+   сховані — без карти їм нема чим керувати (посилання на зал лишається).
    ============================================================ */
-.map__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--sp-7);
-  align-items: start;
-}
-/* Висота — в svh/rem, не aspect-ratio: Mapbox міряє контейнер у момент
-   створення, і полотно без явної висоти лишається порожнім. Фон видно,
-   поки тайли не приїхали. */
-.map__canvas {
-  height: min(70svh, 44rem);
-  border-radius: var(--r-block);
+
+/* Секція — контекст позиціювання для полотна. Висота живе тут, бо
+   .map__canvas абсолютний і власної висоти секції не дає: без min-height
+   вона схлопнулась би, а Mapbox міряє контейнер у конструкторі й
+   отримав би нуль. */
+.map {
+  position: relative;
+  min-height: min(88svh, 52rem);
+  display: flex;
+  align-items: center;
   overflow: hidden;
+}
+/* Контейнер із панеллю — поверх карти, у звичайному потоці */
+.map__over {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  pointer-events: none;
+}
+/* Мохова підкладка на ВСІХ ширинах, не лише в десктопному @media: у
+   розмітці панель має .on-dark, а він лише перемикає токени (муть, лінії,
+   золото) і не чіпає сам color. Без темного фону під ним світлий текст
+   ліг би на беж сторінки.
+   color теж явно: .on-dark не задає його, тож основний текст лишався б
+   --clr-ink, тобто темним на моху. */
+.map__panel {
+  padding: var(--sp-6);
+  background: var(--clr-surface);
+  border-radius: var(--r-card);
+  color: var(--clr-page);
+  /* Секція має overflow: hidden, тож панель, вища за неї, обрізалась би.
+     Стеля від тієї ж висоти, що й у секції, мінус повітря зверху й знизу. */
+  max-height: calc(min(88svh, 52rem) - var(--sp-7) * 2);
+  overflow-y: auto;
+  pointer-events: auto;
+}
+/* Полотно на всю секцію. Власної висоти не має й не мусить: її задає
+   min-height секції — Mapbox міряє контейнер у конструкторі, тож нуль
+   тут дав би порожню карту. */
+.map__canvas {
+  position: absolute;
+  inset: 0;
+  /* Підкладка під колір землі на тайлах (js/map.js перефарбовує її в
+     --clr-page): поки тайли їдуть, полотно не блимає чужим тоном. */
   background: color-mix(in srgb, var(--clr-ink) 6%, transparent);
 }
+@media (min-width: 1081px) {
+  /* Панель — вузька картка ліворуч у контейнері; гатер дає сам
+     .container, тож власних бокових маргінів їй не треба. */
+  /* max-height і overflow-y — у базовому .map__panel вище; тут лише
+     ширина картки й більший падінг. */
+  .map__panel {
+    width: min(26rem, 34vw);
+    padding: var(--sp-7);
+  }
+}
+@media (max-width: 1080px) {
+  /* Панель притиснута донизу: на вузькому екрані вона широка й по центру
+     закривала б саме той шматок карти, де стоять маркери. Знизу — як
+     звичний мобільний «лист», а карта лишається видимою над ним. */
+  .map { align-items: flex-end; }
+  .map__over { padding-block: var(--sp-5); }
+  /* Нижча стеля, ніж у базовому правилі: там вона рахується від усієї
+     секції, і панель займала б майже весь екран — карти над нею не
+     лишалось би. Список усередині й так горизонтальний, тож висоти
+     йому треба небагато. */
+  .map__panel { max-height: min(55svh, 26rem); }
+}
+/* Без токена/JS полотна немає (display:none нижче), тож тримати під нього
+   висоту нема сенсу — секція стискається до самої панелі. */
+.map:not(.is-ready) { min-height: 0; padding-block: var(--sp-9); }
 .map:not(.is-ready) .map__canvas,
 .map:not(.is-ready) [data-map-locate],
 .map:not(.is-ready) [data-map-mode] { display: none; }
 /* Бренд без тіней — і на контролах карти теж */
 .map .mapboxgl-ctrl-group { box-shadow: none; border: 1px solid var(--clr-line); }
 
+/* Один ряд: режим ліворуч, «Де я» праворуч. Саме space-between розводить
+   їх по краях — це й відділяє перемикач від дії, без підписів і зайвих
+   обгорток. */
 .map__tools {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-3);
+  justify-content: space-between;
+  gap: var(--sp-4);
 }
-.map__hint { flex-basis: 100%; }
+/* Перемикач стискається, кнопка — ні: на вузькій панелі «Де я» інакше
+   переносилась на свій рядок і ховалась під підказкою, яка в цьому ж
+   флексі має flex-basis: 100%. */
+.map__tools .filters { min-width: 0; flex-shrink: 1; }
+.map__tools [data-map-locate] { flex: none; }
+/* Підказка — завжди з нового рядка під обома контролами */
+.map__hint { flex-basis: 100%; margin-top: var(--sp-1); }
 
 .map__list {
   list-style: none;
   display: flex;
   flex-direction: column;
+  gap: var(--sp-5);
   margin: var(--sp-6) 0 0;
   padding: 0;
 }
-/* Волосина між однотипними рядками — той самий випадок, що список
-   обладнання: без неї три зали з однаковою структурою зливаються в один
-   стовпчик тексту. */
-.map__hall { padding-block: var(--sp-5); border-top: 1px solid var(--clr-line); }
-.map__hall:first-child { border-top: 0; padding-top: 0; }
 .map__hall-name {
   padding: 0;
   font-size: var(--fs-h5);
@@ -2701,17 +2763,33 @@
   transition: color .25s var(--ease);
 }
 .map__hall.is-current .map__hall-name { color: var(--clr-accent); }
-.map__route { margin-top: var(--sp-2); color: var(--clr-accent); }
-.map__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-5);
-  margin-top: var(--sp-3);
+/* Зали горизонтальним рядом зі скролом (мобільний). Блок стоїть ПІСЛЯ
+   базових .map__list/.map__hall навмисно: специфічність у них однакова,
+   тож вирішує порядок — вище по файлу ці правила програвали б стовпчику. */
+@media (max-width: 1080px) {
+  .map__list {
+    flex-direction: row;
+    overflow-x: auto;
+    /* Скрол на всю ширину панелі, а не її контент-бокс: інакше картки
+       обрізались по лінії падінгу, не доходячи до краю. Маргін рівно
+       на падінг панелі (--sp-6 нижче 1081px) — список дорівнює її
+       падінг-боксу і за екран не вилазить; якщо падінг панелі
+       зміниться, міняти тут теж. */
+    margin-inline: calc(var(--sp-6) * -1);
+    padding-inline: var(--sp-6);
+    scroll-padding-inline: var(--sp-6);
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    gap: var(--sp-6);
+  }
+  .map__hall {
+    flex: 0 0 min(17rem, 72vw);
+    scroll-snap-align: start;
+  }
 }
-.map__actions a { transition: color .25s var(--ease); }
+.map__route {  color: var(--clr-accent); }
 @media (min-width: 1081px) {
-  .map__hall-name:hover,
-  .map__actions a:hover { color: var(--clr-accent); }
+  .map__hall-name:hover { color: var(--clr-accent); }
 }
 
 /* Маркер залу — активний стан: золота обвідка, не заливка (золото
@@ -2719,47 +2797,97 @@
    точка на карті лишається на місці. */
 .map__marker {
   display: block;
-  width: 1.5rem;
-  height: 2rem;
   padding: 0;
-  border-radius: var(--r-card);
-  background: var(--clr-surface);
-  border: 2px solid var(--clr-page);
   cursor: pointer;
   transform-origin: bottom;
-  transition: transform .25s var(--ease), border-color .25s var(--ease);
+  transition: transform .25s var(--ease);
 }
-.map__marker.is-current { border-color: var(--clr-accent-light); transform: scale(1.25); }
-/* Точка відвідувача. Кільце — box-shadow, бо це обвідка поверх карти, а
-   не тінь; пульс лише opacity/transform. */
+/* Крапля з левом усередині. Тіло — мох (найтемніше на карті, як і має
+   бути за брендом), лев вирізаний із неї кольором землі, тож усередині
+   читається силует, а не друга пляма.
+   Кольори йдуть ТІЛЬКИ змінними: вміст <use> із зовнішнього файлу лежить
+   у тіньовому дереві, і селектор на кшталт .map__pin .pin__body туди не
+   дістає — fill стоїть на самих фігурах у спрайті, а сюди приходить
+   через --pin-*, бо кастомні властивості успадковуються крізь <use>. */
+/* Пропорція 48:60 із самого символу — міняти обидва значення разом,
+   інакше лев усередині краплі попливе. */
+.map__pin {
+  display: block;
+  width: 2.5rem;
+  height: 3.125rem;
+  --pin-body: var(--clr-surface);
+  --pin-lion: var(--clr-page);
+}
+/* Активний — золота крапля: єдиний стан, де золото заливкою виправдане
+   (це стан елемента керування, як :checked, а не декор). */
+/* Тултип активного залу (Mapbox Popup, className: map__tip). Вендор дає
+   білу бульбашку з тінню — перефарбовуємо в мох і знімаємо тінь: бренд
+   без тіней, а мохове поле тут те саме, що в панелі залів. */
+.map__tip .mapboxgl-popup-content {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--clr-surface);
+  border-radius: var(--r-card);
+  box-shadow: none;
+  text-align: center;
+  /* Адреса — короткий рядок, який вендор ламав по середині назви вулиці.
+     pretty розкладає перенос розумніше за звичайний wrap. */
+  text-wrap: pretty;
+}
+/* Вістря бульбашки — окремий елемент вендора, фарбується через border.
+   Усі вісім якорів, а не чотири: кутові Mapbox обирає сам біля краю
+   вʼюпорта, а панель зліва саме туди тултип і відтискає — незафарбоване
+   вістря лишалось би білим. */
+.map__tip.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.map__tip.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.map__tip.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip { border-top-color: var(--clr-surface); }
+.map__tip.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.map__tip.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.map__tip.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip { border-bottom-color: var(--clr-surface); }
+.map__tip.mapboxgl-popup-anchor-left .mapboxgl-popup-tip { border-right-color: var(--clr-surface); }
+.map__tip.mapboxgl-popup-anchor-right .mapboxgl-popup-tip { border-left-color: var(--clr-surface); }
+.map__tip-name {
+  display: block;
+  /* Назва — на два кроки шкали вище за адресу під нею (--fs-sm):
+     без явного розміру вона брала --fs-body від body й читалась
+     майже однаково з адресою. */
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+  line-height: var(--lh-tight);
+  color: var(--clr-page);
+}
+.map__tip-addr {
+  display: block;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-sm);
+  color: color-mix(in srgb, var(--clr-page) 68%, transparent);
+}
+.map__marker.is-current { transform: scale(1.2); }
+.map__marker.is-current .map__pin { --pin-body: var(--clr-accent-light); --pin-lion: var(--clr-surface); }
+/* Точка відвідувача. Ядро — мох (крапля залу золота, тож «я» мусить
+   читатись іншим кольором, а не тим самим акцентом). Кільце —
+   box-shadow, бо це обвідка поверх карти, а не тінь; пульс — золота
+   волосина, єдиний дозволений поза кнопкою вид золота. */
 .map__me {
   position: relative;
-  width: 1rem;
-  height: 1rem;
+  width: 0.75rem;
+  height: 0.75rem;
   border-radius: 50%;
-  background: var(--clr-ink);
+  background: var(--clr-surface);
   box-shadow: 0 0 0 3px var(--clr-page);
 }
 .map__me::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -3px;   /* від зовнішнього краю кільця, інакше пульс стартує під ним */
   border-radius: 50%;
-  border: 2px solid var(--clr-ink);
-  animation: map-pulse 2s var(--ease) infinite;
+  border: 1px solid var(--clr-accent);
+  animation: map-pulse 2.4s var(--ease) infinite;
 }
 @keyframes map-pulse {
-  from { transform: scale(1); opacity: .7; }
-  to   { transform: scale(2.6); opacity: 0; }
+  from { transform: scale(1); opacity: .9; }
+  to   { transform: scale(3); opacity: 0; }
 }
 
-@media (max-width: 1080px) {
-  .map__grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
-  .map__canvas { height: 60svh; }
-}
-@media (max-width: 560px) {
-  .map__actions { flex-direction: column; gap: var(--sp-2); }
-}
 @media (prefers-reduced-motion: reduce) {
   .map__marker { transition: none; }
   .map__me::after { animation: none; display: none; }

@@ -65,7 +65,7 @@
             const p = Math.min((now - start) / dur, 1);
             const eased = 1 - (1 - p) ** 3;
             if (p < 1) {
-              el.textContent = orig.replace(digits, Math.round(target * eased).toLocaleString('uk-UA'));
+              el.textContent = orig.replace(digits, Math.round(target * eased).toLocaleString(document.documentElement.lang || undefined));
               requestAnimationFrame(tick);
             } else {
               el.textContent = orig;

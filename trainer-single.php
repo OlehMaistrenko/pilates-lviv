@@ -109,7 +109,7 @@ include 'partials/header.php';
 <!-- ============================================================
      02 · Загальна інформація — біографія
      ============================================================ -->
-<section class="section pt-0">
+<section class="section ">
   <div class="container container--narrow">
     <div class="simple-text" data-reveal>
       <p class="text--lead">

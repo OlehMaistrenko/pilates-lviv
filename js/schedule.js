@@ -43,10 +43,11 @@
   // (той самий ICU, що серверний IntlDateFormatter у partials/schedule.php);
   // рік дописуємо окремим текстом, бо 'year: numeric' в опціях Intl
   // додає "р." (уk-UA locale suffix), якого нема в PHP-патерні "d MMMM y".
+  const lang = document.documentElement.lang || undefined;
   const captionFmt = {
-    dayMonth:   new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'long' }),
-    dayMonthShort: new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'short' }),
-    month: new Intl.DateTimeFormat('uk-UA', { month: 'long' }),
+    dayMonth:   new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long' }),
+    dayMonthShort: new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short' }),
+    month: new Intl.DateTimeFormat(lang, { month: 'long' }),
   };
   const STEP_DAYS = { day: 1, week: 7 }; // 'month' рахуємо окремо — змінна довжина
 

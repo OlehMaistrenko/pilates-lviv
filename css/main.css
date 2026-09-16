@@ -1153,6 +1153,18 @@ html.lenis, html.lenis body { height: auto; }
   flex-wrap: wrap;
   gap: var(--sp-3);
 }
+/* Адреса й телефон у банері (location-single.php) — та сама колонка
+   .icon-link, що в футері, тільки на кегль ліду: тут це головний текст
+   банера, а не дрібний рядок у підвалі. */
+.hero__contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  font-style: normal;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-body);
+}
 /* Банер контентної сторінки — той самий герой, але не на весь екран:
    під ним одразу список, тож 100svh зайві — під банером має бути видно
    початок контенту. Заголовок на крок дрібніший за --fs-mega головної:
