@@ -1025,9 +1025,12 @@
    рядками, але свій --fs-h5 заголовок тут не потрібен — ліва колонка це
    .label (службова назва умови), а не назва картки. */
 .rows__item--tariff {
-  grid-template-columns: minmax(0, 1fr) auto;
+  /* обидві колонки minmax(0,…): з auto праворуч довге значення не
+     стискається й налазить на лейбл, що перенісся у два рядки */
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   padding-block: var(--sp-3);
 }
+.rows__item--tariff > :last-child { text-align: right; }
 
 /* ============================================================
    Component: .patterned — фактура патерном з брендбуку (с.13).
