@@ -449,10 +449,17 @@
 }
 
 /* ============================================================
-   Component: .post-header — заголовок детальної сторінки статті.
-   Глобальний h1 задає --fs-hero (для повноекранних hero-банерів),
-   тут заголовок стоїть під фото в звичайному контейнері — крок нижче.
+   Component: .post-header — шапка статті без обкладинки
+   (blog-single.php, ?cover=0).
+   Не .section: відступи тут ті самі, що в банерному варіанті
+   (.hero — --sp-7 зверху й знизу), а .section дав би --section-py і
+   ще й обнулив би верхній падінг тіла статті через .section + .section.
+   Так обидва варіанти сторінки мають однаковий ритм до тексту.
    ============================================================ */
+.post-header { padding-block: var(--sp-7); }
+/* Глобальний h1 задає --fs-hero (для повноекранних hero-банерів), тут
+   заголовок стоїть у звичайному контейнері — крок нижче. Той самий
+   кегль, що .hero__title--post у банері. */
 .post-header__title { font-size: var(--fs-h2); font-weight: var(--fw-reg); }
 
 /* ============================================================
@@ -741,34 +748,42 @@
 .filters__count { font-size: var(--fs-xs); opacity: .6; }
 
 /* ============================================================
-   Component: .pagination — посторінкова навігація списків
+   Component: .pagination — посторінкова навігація списків.
+   Номери — ті самі .btn.btn--sm.btn--tab, що у .filters: це такий самий
+   перемикач стану (активна сторінка = .is-current), тож форма, кольори
+   й hover цілком з .btn--tab (main.css). Тут лишається лише layout.
    ============================================================ */
 .pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--sp-2);
   margin-top: var(--sp-9);
 }
-.pagination__page {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.5rem;
-  height: 2.5rem;
-  padding-inline: var(--sp-2);
-  border-radius: var(--r-pill);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-med);
-  transition: background-color .2s var(--ease), color .2s var(--ease);
+/* номер вужчий за звичайну кнопку: одна-дві цифри всередині --btn-pad
+   лишали б плашку майже квадратною за рахунок порожніх полів */
+.pagination__page { --btn-pad: var(--sp-3); min-width: 2.5rem; }
+/* Стрілки трохи відсунуті від ряду номерів — щоб керування періодом
+   читалось окремо від самих номерів, а не як ще дві плашки в ряду. */
+.pagination__prev { margin-right: var(--sp-3); }
+.pagination__next { margin-left: var(--sp-3); }
+.pagination__prev .icon { transform: scaleX(-1); }   /* у спрайті лише стрілка вправо */
+/* Пропуск між віддаленими номерами — не кнопка, тож без плашки й hover;
+   ширина як у номера, щоб ряд не збивався в купу. */
+.pagination__dots {
+  min-width: 1.5rem;
+  text-align: center;
+  color: var(--clr-ink-mute);
 }
-.pagination__page.is-current { background: var(--clr-ink); color: var(--clr-page); }
-@media (min-width: 1081px) {
-  a.pagination__page:hover { background: color-mix(in srgb, var(--clr-ink) 10%, transparent); }
+/* На вузькому екрані повний ряд (сім плашок і дві стрілки) не влазить і
+   рветься на два рядки. Прибираємо стрілки, а не номери: сусідня
+   сторінка лишається видимою цифрою поруч із поточною, тобто те саме
+   «вперед/назад» доступне без окремих кнопок. */
+@media (max-width: 560px) {
+  .pagination__prev,
+  .pagination__next { display: none; }
 }
-/* «Далі» відсунуте від номерів, але не притиснуте до правого краю:
-   на широкому екрані сітка ліворуч, тож і навігація лишається зліва */
-.pagination__next { margin-left: var(--sp-4); }
 
 /* ============================================================
    Component: .rows — список однотипних рядків (сертифікати тренера,
@@ -794,15 +809,9 @@
 /* рік/час — золото як цифра, ніколи не заливка */
 .rows__num { color: var(--clr-accent); white-space: nowrap; }
 
-/* Сертифікат: назва тягнеться, організація під нею, рік праворуч */
-.rows__item--cert { grid-template-columns: minmax(0, 1fr) auto; }
-.rows__item--cert > .rows__title { grid-column: 1; }
-.rows__item--cert > .text--muted { grid-column: 1; }
-.rows__item--cert > .rows__num { grid-column: 2; grid-row: 1 / span 2; }
-
 /* Пара «назва → пояснення»: обладнання, формат заняття. Дві колонки в
-   один рядок, а не назва над описом, як у --cert: тут другий стовпчик
-   несе зміст, а не службовий рік, тож він мусить читатись поруч. */
+   один рядок, а не назва над описом: другий стовпчик несе зміст, а не
+   службове число, тож він мусить читатись поруч. */
 .rows__item--pair { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
 @media (max-width: 768px) {
   .rows__item--pair { grid-template-columns: minmax(0, 1fr); }

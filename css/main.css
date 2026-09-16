@@ -530,6 +530,11 @@ body:not(.is-scrolled) .header-fixed--dark .btn--outlined.btn--header,
 /* дві секції поспіль — прибрати подвоєний вертикальний відступ,
    лишити один section-py між ними */
 .section + .section { padding-top: 0; }
+/* …але тільки коли обидві на спільному фоні. Секція з власним темним
+   полем (.on-dark) віддає свій padding-bottom СОБІ, а не проміжку між
+   блоками: наступна секція починається на іншому фоні й без власного
+   верхнього падінга її текст лип би до межі кольору. */
+.section.on-dark + .section { padding-top: var(--section-py); }
 
 /* utility: вертикальний падінг секції через токен шкали */
 .section--pad-sm { padding-block: var(--sp-7); }
@@ -814,6 +819,13 @@ html.lenis, html.lenis body { height: auto; }
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-3) var(--sp-6);
+}
+
+/* Біографія під сіткою профілю. Ширину рядка тримає цей врапер, а не
+   .container--narrow: контейнер секції спільний з .profile, і другий
+   вкладений контейнер зсунув би текст відносно портрета над ним. */
+.profile__bio {
+  margin-top: var(--sp-9);
 }
 
 @media (max-width: 1080px) {
@@ -1183,20 +1195,6 @@ html.lenis, html.lenis body { height: auto; }
    третій порожній <div> (як у героя головної, де він відтискає лінію)
    розкидав би їх на три позиції й лишав діру посередині банера. */
 .hero--page .hero__inner { gap: var(--sp-6); justify-content: space-between; }
-/* Банер без заголовка (напр. blog-single.php з $has_cover) — самі крихти
-   без .hero__bottom, justify-content: space-between тут нічого не робить
-   (один child), тож притискаємо крихти до низу банера вручну. Додатковий
-   градієнт знизу (поверх рівного .hero__tint) — крихти лежать прямо на
-   фото понизу кадру, самого тінту там не завжди досить для контрасту. */
-.hero--page .hero__inner--end { justify-content: end; }
-.hero--page:has(.hero__inner--end)::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 40%;
-  background: linear-gradient(to top, color-mix(in srgb, black 55%, transparent), transparent);
-  pointer-events: none;
-}
 /* margin-bottom: -0.15em на .hero__title опускає заголовок до рівня кнопок
    на головній; тут кнопок під ним немає, тож від'ємний відступ лише з'їдав
    би padding-bottom банера.
@@ -1207,6 +1205,17 @@ html.lenis, html.lenis body { height: auto; }
   max-width: 55rem;
   font-size: var(--fs-hero);
   margin-bottom: 0;
+}
+/* Заголовок статті (blog-single.php) — не назва розділу у версалах, а
+   ціле речення в 8–12 слів: на --fs-hero воно займає весь банер. Кегль
+   той самий, що в безбанерному варіанті (.post-header__title), тож
+   сторінка читається однаково в обох станах $has_cover. Стеля ширини
+   знята: на цьому кеглі рядок і так не розганяється, а ліміт лише
+   ламав би речення раніше, ніж треба. */
+.hero--page .hero__title--post {
+  max-width: none;
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-reg);
 }
 /* лід замість кнопок: у банері списку вести нікуди, СТА стоїть унизу сторінки.
    max-width, а не flex-basis: .hero__bottom — колонка, тож flex-basis міряв би

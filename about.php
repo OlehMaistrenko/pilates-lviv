@@ -127,51 +127,14 @@ include 'partials/team-slider.php';
 <?php include 'partials/about-split.php'; ?>
 
 <!-- ============================================================
-     04 · Сертифікати — сітка сканів, клік відкриває їх на весь екран
-     (glightbox, своя група data-gallery="certs")
+     04 · Сертифікати — слайдер сканів, клік відкриває їх на весь екран
+     (partials/certs.php; той самий блок на сторінці тренера)
      ============================================================ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Сертифікати</h2>
-      <p class="text--lead text--muted" data-reveal>
-        Тренери щороку проходять сертифікаційні курси й семінари. 
-      </p>
-    </div>
-
-    <div class="swiper-wrap" data-reveal>
-      <div class="swiper" data-swiper='{"slidesPerView":1.2,"spaceBetween":24,"breakpoints":{"769":{"slidesPerView":2.2},"1081":{"slidesPerView":3.2},"1440":{"slidesPerView":5}}}'>
-        <ul class="certs swiper-wrapper">
-          <?php foreach ($certs as [$title, $org, $year, $img]): ?>
-            <li class="cert swiper-slide">
-              <?php /* без data-title/data-description: назва стоїть під
-                       карткою, у лайтбоксі підпис лише перекривав би скан.
-                       $org і $year лишаються в alt — скрінрідеру потрібен
-                       повний опис документа, якого на екрані вже немає. */ ?>
-              <a class="cert__zoom" href="assets/img/<?= $img ?>"
-                 data-glightbox data-gallery="certs"
-                 aria-label="Відкрити на весь екран: <?= htmlspecialchars($title) ?>">
-                <span class="cert__media">
-                  <img src="assets/img/<?= $img ?>" alt="<?= htmlspecialchars($title) ?>, <?= htmlspecialchars($org) ?>, <?= $year ?>" loading="lazy">
-                </span>
-                <span class="cert__title"><?= $title ?></span>
-              </a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-      <div class="slider-controls mt-5">
-        <button type="button" class="btn btn--icon btn--outlined swiper-prev" aria-label="Попередній сертифікат">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-        </button>
-        <div class="swiper-pagination"></div>
-        <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступний сертифікат">
-          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+<?php
+$certs_items = $certs;
+$certs_lead  = 'Тренери щороку проходять сертифікаційні курси й семінари.';
+include 'partials/certs.php';
+?>
 
 <!-- ============================================================
      05 · Досягнення — той самий банер із цифрами, що на головній

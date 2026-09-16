@@ -11,16 +11,28 @@ $vendor_lightbox = true; // клік по кадру галереї
 //         поверх нього (як на blog.php)
 // false — сторінка одразу починається з заголовка, без банера — тоді
 //         хедер звичайний, бежевий, з .header-spacer
-$has_cover = true;
+// Перемикач для перегляду верстки: ?cover=0 відкриває варіант без банера
+// (на бойовій сторінці прапорець прийде з CMS — «є обкладинка чи ні»).
+$has_cover = ($_GET['cover'] ?? '1') !== '0';
 $header_over_hero = $has_cover;
+
+// Заголовок і вихідні дані статті — змінними, бо друкуються у двох
+// місцях (у банері або в секції під ним, залежно від $has_cover), і
+// розходження між копіями було б непомітним.
+$post_title  = 'Чим пілатес на реформері відрізняється від пілатесу на матах';
+$post_crumb  = 'Reformer vs Mat';   // коротка назва для хлібних крихт
+$post_date   = '2025-03-12';
+$post_date_h = '12 березня 2025';
+$post_rubric = 'Пілатес';
 
 include 'partials/header.php';
 ?>
 
 <?php if ($has_cover): ?>
   <!-- ============================================================
-       01 · Банер — той самий .hero--page, що на blog.php, тільки без
-       заголовка/ліда: тут вони йдуть окремим блоком нижче (02).
+       01 · Банер — той самий .hero--page, що на blog.php: заголовок
+       статті й дата стоять просто в кадрі, окремої секції під ним
+       більше немає.
        ============================================================ -->
   <section class="hero hero--page on-dark">
     <img class="hero__video" src="assets/img/gallery/1.jpg" alt="" aria-hidden="true"
@@ -28,46 +40,56 @@ include 'partials/header.php';
     <div class="hero__tint" aria-hidden="true"></div>
 
     <div class="container container--full">
-      <div class="hero__inner hero__inner--end">
+      <div class="hero__inner">
         <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
           <a href="index.php">Головна</a>
           <span aria-hidden="true">·</span>
           <a href="blog.php">Блог</a>
           <span aria-hidden="true">·</span>
-          <span aria-current="page">Reformer vs Mat</span>
+          <span aria-current="page"><?= $post_crumb ?></span>
         </nav>
+
+        <div class="hero__bottom">
+          <div class="text--sm text--muted" data-reveal>
+            <time datetime="<?= $post_date ?>"><?= $post_date_h ?></time>
+            <span aria-hidden="true"> · </span>
+            <span class="label"><?= $post_rubric ?></span>
+          </div>
+
+          <h1 class="hero__title hero__title--post" data-reveal="lines" style="--reveal-i: 1"><?= $post_title ?></h1>
+        </div>
       </div>
     </div>
   </section>
-<?php endif; ?>
-
-<!-- ============================================================
-     02 · Заголовок і дата публікації
-     ============================================================ -->
-<section class="section pb-0">
-  <div class="container container--narrow">
-    <?php if (!$has_cover): ?>
-      <nav class="breadcrumbs text--sm mb-5" aria-label="Хлібні крихти">
+<?php else: ?>
+  <!-- ============================================================
+       01 · Заголовок і дата публікації — варіант без банера. Порядок,
+       кроки між блоками й кегль заголовка ті самі, що в банері вище;
+       .post-header (а не .section) тримає ті самі відступи, що .hero.
+       ============================================================ -->
+  <div class="post-header">
+    <div class="container">
+      <nav class="breadcrumbs breadcrumbs--rule text--sm mb-6" aria-label="Хлібні крихти">
         <a href="index.php">Головна</a>
         <span aria-hidden="true">·</span>
         <a href="blog.php">Блог</a>
         <span aria-hidden="true">·</span>
-        <span aria-current="page">Reformer vs Mat</span>
+        <span aria-current="page"><?= $post_crumb ?></span>
       </nav>
-    <?php endif; ?>
 
-    <h1 class="post-header__title" data-reveal="lines">Чим пілатес на реформері відрізняється від пілатесу на матах</h1>
+      <div class="text--sm text--muted mb-5" data-reveal>
+        <time datetime="<?= $post_date ?>"><?= $post_date_h ?></time>
+        <span aria-hidden="true"> · </span>
+        <span class="label"><?= $post_rubric ?></span>
+      </div>
 
-    <div class="text--sm text--muted mt-5">
-      <time datetime="2025-03-12">12 березня 2025</time>
-      <span aria-hidden="true"> · </span>
-      <span class="label">Пілатес</span>
+      <h1 class="post-header__title" data-reveal="lines" style="--reveal-i: 1"><?= $post_title ?></h1>
     </div>
   </div>
-</section>
+<?php endif; ?>
 
 <!-- ============================================================
-     03 · Тіло статті — .simple-text, повний набір WP rich-text тегів
+     02 · Тіло статті — .simple-text, повний набір WP rich-text тегів
      ============================================================ -->
 <section class="section">
   <div class="container container--narrow">
@@ -224,7 +246,7 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     04 · Питання — акордеон, той самий патерн що на головній (FAQ)
+     03 · Питання — акордеон, той самий патерн що на головній (FAQ)
      ============================================================ -->
 <section class="section pt-0">
   <div class="container container--narrow">

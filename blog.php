@@ -147,14 +147,28 @@ include 'partials/header.php';
       <?php endforeach; ?>
     </ul>
 
-    <!-- Статична розмітка: сторінок поки одна, ?p=N обробить CMS.
-         В окремій рубриці статей на другу сторінку не набирається. -->
+    <!-- Статична розмітка-приклад: показує довгий випадок (12 сторінок,
+         відкрита пʼята) — вікно сусідніх номерів, перша й остання по краях,
+         пропуск «…» між ними. Реальні номери підставить CMS; ?p=N вона ж
+         і обробить. В окремій рубриці статей на другу сторінку не
+         набирається, тому пагінація тільки в повному списку. -->
     <?php if ($active === ''): ?>
       <nav class="pagination" aria-label="Сторінки блогу">
-        <span class="pagination__page is-current" aria-current="page">1</span>
-        <a class="pagination__page" href="blog.php?p=2">2</a>
-        <a class="pagination__page" href="blog.php?p=3">3</a>
-        <a class="btn btn--outlined pagination__next" href="blog.php?p=2">Далі</a>
+        <a class="btn btn--sm btn--icon btn--outlined pagination__prev" href="blog.php?p=4" aria-label="Попередня сторінка" rel="prev">
+          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+        </a>
+
+        <a class="btn btn--sm btn--tab pagination__page" href="blog.php">1</a>
+        <span class="pagination__dots" aria-hidden="true">…</span>
+        <a class="btn btn--sm btn--tab pagination__page" href="blog.php?p=4">4</a>
+        <span class="btn btn--sm btn--tab pagination__page is-current" aria-current="page">5</span>
+        <a class="btn btn--sm btn--tab pagination__page" href="blog.php?p=6">6</a>
+        <span class="pagination__dots" aria-hidden="true">…</span>
+        <a class="btn btn--sm btn--tab pagination__page" href="blog.php?p=12">12</a>
+
+        <a class="btn btn--sm btn--icon btn--outlined pagination__next" href="blog.php?p=6" aria-label="Наступна сторінка" rel="next">
+          <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+        </a>
       </nav>
     <?php endif; ?>
   </div>

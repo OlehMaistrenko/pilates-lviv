@@ -11,13 +11,6 @@ $header_over_hero = true; // моховий банер темний — хеде
 // віддаватиме CMS. Реальні тільки імʼя, напрямок і цитата (з pilateslviv.com);
 // біографія, сертифікати й розклад — TODO: дані від клієнта.
 
-// Інші тренери під низом сторінки — [імʼя, slug, напрямок]
-$others = [
-  ['Оксана',  'oksana',  'Пілатес на тренажерах'],
-  ['Сюзанна', 'suzanna', 'Пілатес на тренажерах'],
-  ['Ірина',   'iryna',   'Пілатес на тренажерах'],
-];
-
 $gallery = [
   ['gallery/1.jpg',     'Вправа на реформері під наглядом тренера'],
   ['gallery/2.jpg',     'Cadillac у залі студії'],
@@ -26,12 +19,14 @@ $gallery = [
   ['directions/3.jpeg', 'Індивідуальне заняття з тренером'],
 ];
 
+// TODO: реальні скани від клієнта — поки в усіх картках один бланк-заглушка
+// (assets/img/cert.jpeg), як на about.php. [назва, організація, рік, скан]
 $certs = [
-  ['Пілатес на тренажерах — базовий курс інструктора', 'Школа інструкторів пілатесу', '2013'],
-  ['Reformer та Cadillac: робота з обладнанням', 'Polestar Pilates', '2015'],
-  ['Пілатес при протрузіях і грижах хребта', 'Український центр реабілітації', '2018'],
-  ['Пілатес після пологів: відновлення тазового дна', 'BALLance® Method', '2021'],
-  ['Робота з осанкою у дорослих', 'Школа інструкторів пілатесу', '2024'],
+  ['Пілатес на тренажерах — базовий курс інструктора', 'Школа інструкторів пілатесу', '2013', 'cert.jpeg'],
+  ['Reformer та Cadillac: робота з обладнанням', 'Polestar Pilates', '2015', 'cert.jpeg'],
+  ['Пілатес при протрузіях і грижах хребта', 'Український центр реабілітації', '2018', 'cert.jpeg'],
+  ['Пілатес після пологів: відновлення тазового дна', 'BALLance® Method', '2021', 'cert.jpeg'],
+  ['Робота з осанкою у дорослих', 'Школа інструкторів пілатесу', '2024', 'cert.jpeg'],
 ];
 
 include 'partials/header.php';
@@ -103,15 +98,11 @@ include 'partials/header.php';
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ============================================================
-     02 · Загальна інформація — біографія
-     ============================================================ -->
-<section class="section ">
-  <div class="container container--narrow">
-    <div class="simple-text" data-reveal>
+    <!-- Біографія — у тій самій моховій шапці, під сіткою профілю:
+         окремою бежевою секцією вона відривалась від імені й фактів,
+         хоча розповідає про них же. -->
+    <div class="profile__bio simple-text" data-reveal>
       <p class="text--lead">
         Веде пілатес на Cadillac і Reformer. Найчастіше до неї приходять
         зі спиною: сидяча робота, грижі, стан після пологів.
@@ -137,41 +128,33 @@ include 'partials/header.php';
   </div>
 </section>
 
-<!-- ============================================================
-     03 · Сертифікати — список однотипних рядків, тому волосина між
-     ними тут виправдана (див. CLAUDE.md: розділювач розвʼязує реальну
-     задачу компонування, а не обводить кожен блок).
-     ============================================================ -->
-<section class="section pt-0">
-  <div class="container container--narrow">
-    <h2 class="mb-5" data-reveal="lines">Сертифікати</h2>
-
-    <ul class="rows" data-reveal>
-      <?php foreach ($certs as [$title, $org, $year]): ?>
-        <li class="rows__item rows__item--cert">
-          <span class="rows__title"><?= $title ?></span>
-          <span class="text--sm text--muted"><?= $org ?></span>
-          <span class="label rows__num"><?= $year ?></span>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-</section>
 
 <!-- ============================================================
-     04 · Які заняття і де проводить — спільний календар
-     (partials/schedule.php), пришпилений до цього тренера
+     02 · Які заняття і де проводить — спільний календар
+     (partials/schedule.php), пришпилений до цього тренера.
+     Без pt-0: секція йде одразу за моховою шапкою, тобто починає
+     нове бежеве поле.
      ============================================================ -->
 <?php
 $schedule_trainer = 3;   // TODO: id інструктора з CMS замість константи
 $schedule_title = 'Які заняття і де проводить';
 $schedule_link = ['Повний розклад студії', 'schedule.php'];
-$schedule_class = 'pt-0';
 include 'partials/schedule.php';
 ?>
 
 <!-- ============================================================
-     05 · Галерея занять — спільний блок (partials/gallery.php)
+     03 · Сертифікати — той самий слайдер сканів, що на about.php
+     (partials/certs.php)
+     ============================================================ -->
+<?php
+$certs_items = $certs;
+$certs_lead  = 'Щороку — хоча б один сертифікаційний курс або семінар.';
+$certs_group = 'trainer-certs';
+include 'partials/certs.php';
+?>
+
+<!-- ============================================================
+     04 · Галерея занять — спільний блок (partials/gallery.php)
      ============================================================ -->
 <?php
 $gallery_items = $gallery;
@@ -181,7 +164,7 @@ include 'partials/gallery.php';
 ?>
 
 <!-- ============================================================
-     06 · Записатись — єдине умброве поле сторінки («двері»)
+     05 · Записатись — єдине умброве поле сторінки («двері»)
      ============================================================ -->
 <?php
 $cta_title = 'Записатись на заняття';
@@ -189,34 +172,5 @@ $cta_text  = 'Передзвонимо, підберемо час у розкл�
 $cta_modal = 'booking?direction=pilates';
 include 'partials/cta.php';
 ?>
-
-<!-- ============================================================
-     07 · Інші тренери — генерична сітка карток
-     ============================================================ -->
-<section class="section">
-  <div class="container">
-    <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Інші тренери</h2>
-      <a class="btn btn--outlined" href="team.php">Уся команда</a>
-    </div>
-
-    <ul class="posts">
-      <?php foreach ($others as $i => [$name, $slug, $role]): ?>
-        <li class="post" data-reveal style="--reveal-i: <?= $i ?>">
-          <a class="post__link" href="trainer-single.php?trainer=<?= $slug ?>">
-            <!-- alt порожній навмисно: імʼя вже є текстом самого посилання -->
-            <span class="post__media">
-              <img src="assets/img/team/<?= $slug ?>.jpg" alt="" width="900" height="1200" loading="lazy">
-            </span>
-            <span class="post__meta text--xs text--muted">
-              <span class="label post__rubric"><?= $role ?></span>
-            </span>
-            <span class="post__title"><?= $name ?></span>
-          </a>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-</section>
 
 <?php include 'partials/footer.php'; ?>

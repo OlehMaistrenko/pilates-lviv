@@ -28,6 +28,10 @@
 require_once __DIR__ . '/../api/schedule.php';
 
 $sch_ajax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+/* Викидаємо все, що сторінка надрукувала до цього моменту (буфер відкрив
+   partials/header.php) — у відповідь іде лише фрагмент календаря. while,
+   а не один ob_end_clean: рівнів буфера може бути більше одного. */
+if ($sch_ajax) while (ob_get_level()) ob_end_clean();
 
 $schedule_trainer   = $schedule_trainer   ?? null;
 $schedule_direction = $schedule_direction ?? null;
