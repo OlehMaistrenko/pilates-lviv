@@ -17,7 +17,7 @@ $account_title = $account_title ?? 'Кабінет';
 $is_logged     = account_is_logged();
 $profile       = $is_logged ? account_profile() : null;
 ?>
-<section class="profile-section">
+<section class="page-open">
   <div class="container">
     <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
       <a href="index.php">Головна</a>

@@ -3382,3 +3382,36 @@ section { opacity: 1; }
 }
 .form__radio-body { display: flex; flex-direction: column; gap: var(--sp-1); }
 .form__radio-title { font-weight: var(--fw-med); }
+
+/* ============================================================
+   404 — той самий принцип, що .account-guest у кабінеті (title/text/
+   actions порожнього стану), але центровано: тут це весь вміст
+   сторінки, а не один з можливих станів розділу.
+   ============================================================ */
+/* --full — модифікатор .page-open на весь перший екран (404): висота
+   рахується від секції, а не від .error-404 всередині, мінус хедер
+   (--header-h-max, той самий, що й .header-spacer). Інші сторінки
+   .page-open (тренер, кабінет) без модифікатора висоту по контенту
+   не втрачають. */
+.page-open--full { display: flex; flex-direction: column; min-height: calc(100svh - var(--header-h-max)); }
+.page-open--full > .container { display: flex; flex-direction: column; flex: 1; }
+.error-404 {
+  margin: auto;   /* auto по обох осях центрує блок у флекс-контейнері контейнера */
+  max-width: 45rem;
+  padding-block: var(--sp-8);
+  text-align: center;
+}
+/* більше за --fs-mega (верхню межу шкали): цифра тут єдиний елемент
+   сторінки, а не заголовок серед іншого контенту, тож власний clamp,
+   а не токен — той самий Utopia-розрахунок (320→1600px), що й у токенів. */
+.error-404__code {
+  font-size: clamp(9rem, 8.25rem + 3.75vw, 12rem);
+  font-weight: var(--fw-lt);
+  line-height: 1;
+  color: var(--clr-accent);
+}
+/* заголовок навмисно дрібніший за глобальний h1 (--fs-hero): акцент
+   сторінки — цифра над ним, заголовок лише підписує її */
+.error-404__title { margin-top: var(--sp-4); font-size: var(--fs-h2); font-weight: var(--fw-lt); }
+.error-404__text { margin-top: var(--sp-5); }
+.error-404__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-4); margin-top: var(--sp-7); }

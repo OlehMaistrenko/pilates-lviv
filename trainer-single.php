@@ -38,7 +38,7 @@ include 'partials/header.php';
      Світла, як шапка статті без обкладинки (blog-single.php ?cover=0):
      той самий ритм — крихти з лінією, далі вміст, відступи --sp-7.
      ============================================================ -->
-<section class="profile-section">
+<section class="page-open">
   <div class="container">
     <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
       <a href="index.php">Головна</a>
