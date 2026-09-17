@@ -59,12 +59,12 @@ $contact = [
 // WHAT WE DO) уже мають свій пункт нижче, у «Про нас».
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
-    'training-intro'        => ['Ознайомче заняття', 'training-intro.php'],
-    'training-reformer'     => ['Пілатес-Реформер', 'training-reformer.php'],
-    'training-cadillac'     => ['Кадилак', 'training-cadillac.php'],
-    'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-chair-barrel.php'],
-    'training-personal'     => ['Персональне', 'training-personal.php'],
-    'training-split'        => ['Спліт', 'training-split.php'],
+    'training-intro'        => ['Ознайомче заняття', 'training-detail.php?training=intro'],
+    'training-reformer'     => ['Пілатес-Реформер', 'training-detail.php?training=reformer'],
+    'training-cadillac'     => ['Кадилак', 'training-detail.php?training=cadillac'],
+    'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
+    'training-personal'     => ['Персональне', 'training-detail.php?training=personal'],
+    'training-split'        => ['Спліт', 'training-detail.php?training=split'],
     'academy'               => ['Навчальний центр', 'academy.php'],
   ]],
   'schedule'  => ['Розклад', 'schedule.php'],

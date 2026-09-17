@@ -5,7 +5,7 @@ $page_description = 'Відповіді на питання про перше з
 $header_over_hero = true;   // банер темний — хедер лягає поверх нього прозорим
 
 // Сторінка збирає в одне місце FAQ, розкидані по розділах: index.php,
-// trainings.php, training-reformer.php, prices.php, location-single.php,
+// trainings.php, training-detail.php, prices.php, location-single.php,
 // academy.php, events.php. Формулювання мусять збігатися з тими — інакше
 // відвідувач дістане дві різні відповіді на те саме питання.
 // [slug => ['label' => назва теми, 'items' => [[питання, відповідь], …]]]
