@@ -101,6 +101,11 @@ section { opacity: 1; }
 .modal__body--wide { max-width: none; }
 .modal__foot { margin-top: var(--sp-6); display: flex; gap: var(--sp-3); flex-wrap: wrap; }
 
+/* Кнопка з відліком («Надіслати код ще раз (59 с)», js/main.js): моноширинні
+   цифри, щоб кнопка не сіпалась щосекунди. Кількість знаків тримає сам
+   відлік — padStart до двох. */
+.btn[data-resend] { font-variant-numeric: tabular-nums; }
+
 @media (max-width: 560px) {
   .modal-overlay__panel { padding: var(--sp-5); border-radius: var(--r-card); }
 }
@@ -308,7 +313,9 @@ section { opacity: 1; }
   gap: var(--sp-8) var(--sp-9);
   align-content: space-between;
   min-height: 100%;
-  padding-top: calc(var(--header-offset) + var(--sp-7));
+  /* --header-h-min, а не поточна --header-h: поки панель відкрита, body
+     має .menu-open — хедер завжди стиснутий, а топбар схлопнутий у 0. */
+  padding-top: calc(var(--header-h-min) + var(--sp-7));
   padding-bottom: var(--sp-7);
 }
 
@@ -1898,6 +1905,26 @@ section { opacity: 1; }
 .cert__zoom:focus-visible .cert__media { outline-color: var(--clr-accent); }
 
 /* ============================================================
+   About — Партнери: назви рядком під сертифікатами. Без рамок і без
+   hover: жодна клітинка не клікабельна, а межу між ними тримає
+   простір (CLAUDE.md).
+   ============================================================ */
+.partners {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--sp-7) var(--sp-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.partner__name {
+  display: block;
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-med);
+  line-height: var(--lh-tight);
+}
+
+/* ============================================================
    Home 08 — Галерея: 3D coverflow-слайдер (Swiper), autoplay.
    Ефект: глядач ніби стоїть в центрі круглої каруселі кадрів.
    ============================================================ */
@@ -1977,6 +2004,10 @@ section { opacity: 1; }
 .glightbox-clean .gnext svg,
 .glightbox-clean .gprev svg { width: 1.25rem; height: 1.25rem; }
 .glightbox-prev-icon { display: inline-flex; transform: scaleX(-1); }
+/* вендор ховає стрілки, коли в data-gallery один елемент, але його
+   .glightbox-button-hidden (0,1,0) слабший за наш перемальований
+   .glightbox-clean .gnext (0,2,0) — повторюємо правило в тій же вазі */
+.glightbox-clean .glightbox-button-hidden { display: none; }
 @media (min-width: 1081px) {
   .glightbox-clean .gclose:hover,
   .glightbox-clean .gnext:hover,
@@ -2297,6 +2328,22 @@ section { opacity: 1; }
   background: color-mix(in srgb, var(--clr-page) 12%, transparent);
 }
 .review__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* відеовідгук: те саме .video-card__play коло, але кадр тут вузький —
+   тому менший діаметр. position — щоб inset:0 кружка міряв саме кадр */
+.review__play { display: block; position: relative; width: 100%; height: 100%; }
+.review__play .video-card__play { --btn-size: 3.5rem; }
+.review__play img { transition: transform .5s var(--ease); }
+/* гейт 1081px — як у .cert__zoom: на тачскріні :hover залипає після тапу.
+   Кружок інвертується сам (та сама пара, що .btn--filled:hover), але
+   :hover на ньому не спрацює — у нього pointer-events: none */
+@media (min-width: 1081px) {
+  .review__play:hover img { transform: scale(1.04); }
+  .review__play:hover .video-card__play {
+    background: transparent;
+    border-color: var(--clr-accent);
+    color: var(--clr-accent);
+  }
+}
 /* розтягнуто на висоту фото (align-items: stretch на .review) — текст
    лишається зверху, meta притиснуто донизу через space-between */
 .review__body { min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
@@ -2320,7 +2367,7 @@ section { opacity: 1; }
 @media (max-width: 768px) {
   .review { gap: var(--sp-5); }
   .review__shot { width: clamp(5.5rem, 26vw, 7.5rem); }
-  
+  .review__play .video-card__play { --btn-size: 2.5rem; }
 }
 
 /* ============================================================

@@ -46,7 +46,13 @@ include 'partials/header.php';
       </div>
       <div class="form__row">
         <label class="form__label" for="user-birthday">Дата народження</label>
+        <!-- min/max — щоб у поле не вписався рік на кшталт 222222: без них
+             нативний пікер приймає будь-яку кількість цифр у році. Нижня
+             межа — 120 років, верхня — вчора (сьогоднішніх новонароджених
+             у студії не буває). -->
         <input class="form__input" type="date" id="user-birthday" name="birthday"
+               min="<?= date('Y-m-d', strtotime('-120 years')) ?>"
+               max="<?= date('Y-m-d', strtotime('-1 day')) ?>"
                value="<?= htmlspecialchars($user['birthday'] ?? '') ?>">
       </div>
       <div class="form__row">

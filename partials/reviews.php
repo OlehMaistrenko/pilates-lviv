@@ -1,8 +1,11 @@
 <?php
 /**
  * Відгуки — мохове поле зі слайдером цитат. Перед include задай:
- *   $reviews_items — [[текст, імʼя, напрямок, файл кадру в assets/img/gallery/], …].
- *                    Обовʼязково.
+ *   $reviews_items — [[текст, імʼя, напрямок, файл кадру в assets/img/gallery/,
+ *                    ?файл відео в assets/video/], …]. Обовʼязково.
+ *                    Пʼятий елемент необовʼязковий: якщо є — кадр стає
+ *                    відеовідгуком (play + GLightbox), тоді сторінці
+ *                    потрібен ще $vendor_lightbox = true.
  *   $reviews_title — заголовок секції.
  *
  * Мохове поле: рахуй разом із героєм і футером — їх на сторінці максимум три
@@ -34,10 +37,24 @@ if ($reviews_items):
 
       <div class="swiper reviews__swiper" data-swiper='{"slidesPerView":1,"autoHeight":true,"spaceBetween":48,"loop":true}'>
         <div class="swiper-wrapper">
-          <?php foreach ($reviews_items as [$text, $name, $role, $shot]): ?>
+          <?php foreach ($reviews_items as $i => $r): [$text, $name, $role, $shot] = $r; $video = $r[4] ?? ''; ?>
             <blockquote class="swiper-slide review">
               <figure class="review__shot">
-                <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
+                <?php if ($video): ?>
+                  <?php /* своя data-gallery на слайд: ролик у лайтбоксі сам,
+                           без стрілок у галерею залів (їх вендор ховає, коли
+                           в групі один елемент). */ ?>
+                  <a class="review__play" href="assets/video/<?= $video ?>"
+                     data-glightbox data-gallery="review-<?= $i ?>"
+                     aria-label="Дивитись відеовідгук — <?= $name ?>">
+                    <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
+                    <span class="btn btn--icon btn--filled video-card__play" aria-hidden="true">
+                      <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-play"></use></svg>
+                    </span>
+                  </a>
+                <?php else: ?>
+                  <img src="assets/img/gallery/<?= $shot ?>" alt="" loading="lazy">
+                <?php endif; ?>
               </figure>
               <div class="review__body">
                 <p class="quote review__text"><?= $text ?></p>

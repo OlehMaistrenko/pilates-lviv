@@ -4,16 +4,6 @@ $page_title = 'Контакти — студія «Пілатес Львів»';
 $page_description = 'Телефон, адреси трьох залів студії «Пілатес Львів» у Львові, форма зв’язку й карта з маршрутом до найближчої локації.';
 $header_over_hero = true;   // банер темний — хедер лягає поверх нього прозорим
 
-// Теми звернення для селекта у формі. Ключі збігаються з розділами сайту —
-// у WP підуть у тему листа.
-$subjects = [
-  'booking'  => 'Запис на заняття',
-  'prices'   => 'Абонементи й ціни',
-  'academy'  => 'Навчальний центр',
-  'partner'  => 'Співпраця',
-  'other'    => 'Інше',
-];
-
 include 'partials/header.php';
 ?>
 
@@ -49,77 +39,7 @@ include 'partials/header.php';
      02 · Звʼязок — контакти ліворуч, форма праворуч. Адрес тут немає
      навмисно: усі три зали з адресами й маршрутом — у карті нижче
      ============================================================ -->
-<section class="section">
-  <div class="container">
-    <div class="contact__grid">
-      <div class="contact__aside" data-reveal>
-        <h2>Напишіть або зателефонуйте</h2>
-
-        <p class="text--muted mt-5">
-          Відповідаємо в робочий час. Якщо питання про запис — скажіть, коли
-          вам зручно, і ми одразу назвемо вільні вікна на найближчій локації.
-        </p>
-
-        <address class="contact__contacts mt-6">
-          <a class="icon-link" href="<?= $contact['phone_href'] ?>">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-            <?= $contact['phone'] ?>
-          </a>
-        </address>
-
-        <div class="contact__social mt-5">
-          <a class="btn btn--icon btn--sm btn--outlined" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
-          </a>
-          <a class="btn btn--icon btn--sm btn--outlined" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
-            <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
-          </a>
-        </div>
-
-        <p class="text--sm text--muted mt-6">
-          Питання про заняття, абонементи чи курс — <a href="faq.php">у відповідях на часті питання</a>.
-        </p>
-      </div>
-
-      <!-- Перша інлайн-форма на сайті: решта живе в модалках. Маска телефону
-           (IMask) і SlimSelect на селекті — з js/main.js, він проходить по
-           всьому документу; сабміт перехоплює той самий обробник .form
-           і відкриває модалку подяки. Бекенду ще немає — action порожній. -->
-      <form class="form" action="" method="post" data-reveal style="--reveal-i: 1">
-        <div class="form__row">
-          <label class="form__label" for="contact-name">Імʼя</label>
-          <input class="form__input" type="text" id="contact-name" name="name" autocomplete="name"
-                 placeholder="Ірина" required>
-        </div>
-
-        <div class="form__row">
-          <label class="form__label" for="contact-phone">Телефон</label>
-          <input class="form__input" type="tel" id="contact-phone" name="phone" autocomplete="tel"
-                 placeholder="+380 63 015 05 17" required>
-        </div>
-
-        <div class="form__row">
-          <label class="form__label" for="contact-subject">Тема</label>
-          <select class="form__input" id="contact-subject" name="subject" data-slimselect>
-            <?php foreach ($subjects as $key => $label): ?>
-              <option value="<?= $key ?>"><?= $label ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-
-        <div class="form__row">
-          <label class="form__label" for="contact-note">Повідомлення</label>
-          <textarea class="form__textarea" id="contact-note" name="note" rows="4"
-                    placeholder="Коли вам зручно займатись і чи є травми, про які варто знати"></textarea>
-        </div>
-
-        <div class="contact__submit">
-          <button type="submit" class="btn btn--filled">Надіслати</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+<?php include 'partials/contact-form.php'; ?>
 
 <!-- ============================================================
      03 · Карта — три зали, «де я», маршрут (partials/map.php;

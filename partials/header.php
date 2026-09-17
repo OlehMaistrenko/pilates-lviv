@@ -30,6 +30,11 @@ $page_description = $page_description ?? '';
 $header_over_hero = $header_over_hero ?? false;
 $header_theme = $header_theme ?? 'light';
 
+// Маркетингові попапи (промо-модалка, кутовий інформер) показуємо лише на
+// головній — на внутрішніх сторінках вони перебивають те, по що людина
+// прийшла. Прапорець читають footer.php (розмітка) і js/main.js (таймер).
+$is_home = basename($_SERVER['SCRIPT_NAME']) === 'index.php';
+
 // Контакти студії — одне джерело правди на весь сайт (хедер, футер, модалки)
 $contact = [
   'phone'      => '+38 (063) 015-05-17',
@@ -109,7 +114,7 @@ $primary = [
   <link rel="stylesheet" href="css/main.css">
   <?php if (!empty($page_css)): ?>
     <!-- CSS однієї сторінки ($page_css перед include). У <head>, не в кінці
-         <body> як styles.css: власний CSS сторінки описує її перший екран,
+         <body<?= $is_home ? ' data-home' : '' ?>> як styles.css: власний CSS сторінки описує її перший екран,
          тобто критичний — deferred-лінк дав би блимання нестилізованого блоку. -->
     <link rel="stylesheet" href="<?= $page_css ?>">
   <?php endif; ?>

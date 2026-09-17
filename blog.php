@@ -188,7 +188,7 @@ include 'partials/header.php';
     </figure>
 
     <div class="split__body" data-anim="parallax" data-parallax="4">
-      <h2 data-reveal="lines">Прочитали — приходьте спробувати</h2>
+      <h2 data-reveal="lines">Прочитали&nbsp;— приходьте спробувати</h2>
       <p class="text--lead text--muted" data-reveal>
         Перше заняття — знайомство: подивитись зал, поговорити з тренером
         і спробувати тренажери.

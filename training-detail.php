@@ -32,6 +32,10 @@ $reviews = [
   ['Пробувала пілатес у трьох студіях. Тут єдині, де є Cadillac, і єдині, де мені пояснили, навіщо кожна вправа.', 'Оля', mb_strtolower($t['title']), '4.jpg'],
 ];
 
+// Відео-презентація. Окремого ролика на кожен напрямок клієнт ще не дав,
+// тому поки один спільний; 'video' у partials/trainings-data.php перебиває.
+$video_id = $t['video'] ?? 'dQw4w9WgXcQ';
+
 // Інші тренування каталогу — без поточного, до трьох
 $others = array_slice(array_diff_key($all_trainings, [$training_slug => 1]), 0, 3, true);
 
@@ -175,6 +179,27 @@ include 'partials/cta.php';
 $reviews_items = $reviews;
 include 'partials/reviews.php';
 ?>
+
+<!-- ============================================================
+     07b · Відео-презентація — голий <iframe> у .simple-text, як на
+     academy.php: aspect-ratio стоїть на самому iframe, обгортка не потрібна
+     ============================================================ -->
+<section class="section">
+  <div class="container container--narrow">
+    <div class="section-head section-head--center">
+      <h2 data-reveal="lines">Як проходить заняття</h2>
+    </div>
+
+    <div class="simple-text" data-reveal>
+      <figure>
+        <iframe src="https://www.youtube.com/embed/<?= $video_id ?>"
+                title="<?= htmlspecialchars($t['title']) ?> у студії «Пілатес Львів»"
+                loading="lazy" allowfullscreen></iframe>
+        <figcaption>Ціле заняття за півтори хвилини: як тренер ставить рух і що робить група</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <!-- ============================================================
      08 · FAQ

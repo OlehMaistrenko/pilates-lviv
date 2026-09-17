@@ -36,9 +36,9 @@ $groups = [
     ['Вхід (телефон+пароль)', 'auth'],
     ['Код із SMS', 'auth?step=code&phone=%2B380631234567'],
     ['Скидання пароля — телефон', 'auth?step=reset'],
+    // ?from=account на цьому кроці додає лише прихований input — верстка
+    // та сама, тож окремої кнопки під неї немає
     ['Скидання пароля — новий пароль', 'auth?step=reset-code&phone=%2B380631234567'],
-    ['Зміна пароля з кабінету', 'auth?step=reset-code&from=account&phone=%2B380631234567'],
-    ['Зміна пароля — надіслати код ще раз', 'auth?step=reset&from=account&phone=%2B380631234567'],
   ],
   'contact-change — зміна контактів у кабінеті' => [
     ['Змінити пошту', 'contact-change?field=email'],
@@ -46,9 +46,10 @@ $groups = [
     ['Змінити телефон', 'contact-change?field=phone'],
     ['Код підтвердження телефону', 'contact-change?field=phone&step=code'],
   ],
+  // ?direction= / ?format= лише підставляють значення в селект — верстка
+  // та сама, окремих кнопок під них немає
   'booking — запис на заняття' => array_filter([
-    ['Загальна заявка (без напрямку)', 'booking'],
-    ['Заявка з напрямком', 'booking?direction=yoga'],
+    ['Загальна заявка', 'booking'],
     $bookable_id ? ['Оплата заняття (залогінений)', 'booking?event=' . $bookable_id] : null,
     $past_id ? ['Запис закритий (минуле/без місць)', 'booking?event=' . $past_id] : null,
   ]),
@@ -64,12 +65,9 @@ $groups = [
   ],
   'partnership — запит на співпрацю' => [
     ['Загальний запит', 'partnership'],
-    ['Запит із форматом "оренда"', 'partnership?format=rent'],
   ],
-  'slot-details / thanks / example' => [
+  ' thanks / example' => [
     ['thanks — типовий текст', 'thanks'],
-    ['thanks — свій текст', 'thanks?title=' . rawurlencode('Дякуємо!') . '&text=' . rawurlencode('Це кастомний текст подяки.')],
-    ['example — заглушка з id', 'example?id=42'],
   ],
 ];
 
@@ -84,13 +82,8 @@ include 'partials/header.php';
 
 <section class="section section--tight-top">
   <div class="container container--narrow">
-    <h1 class="section-head__title mb-7">Модалки — прев'ю для розробки</h1>
-    <p class="text--muted mb-7">
-      Службова сторінка, ніде на сайті не лінкована. Кожна кнопка відкриває
-      реальний фрагмент через [data-modal] — той самий шлях, що на живих
-      сторінках, з тими самими параметрами.
-    </p>
-
+    <h1 class="section-head__title mb-7">Модалки</h1>
+ 
     <?php foreach ($groups as $title => $items): ?>
       <?php if (!$items) continue; ?>
       <h2 class="account-content__subtitle"><?= htmlspecialchars($title) ?></h2>

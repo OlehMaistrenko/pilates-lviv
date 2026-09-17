@@ -190,7 +190,7 @@ include 'partials/header.php';
       <h2 data-reveal="lines">Як проходять заняття для команди</h2>
     </div>
 
-    <a class="video-card" href="assets/video/hero.mp4" data-glightbox data-reveal
+    <a class="video-card" href="assets/video/hero.mp4" data-glightbox data-gallery="video-team" data-reveal
        aria-label="Дивитись відео про заняття для команди">
       <img src="assets/img/gallery/6.jpg" alt="Заняття в залі студії" loading="lazy">
       <span class="btn btn--icon btn--filled video-card__play" aria-hidden="true">

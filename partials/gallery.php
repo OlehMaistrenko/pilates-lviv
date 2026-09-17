@@ -45,11 +45,13 @@ if ($gallery_items):
           <?php /* Слайди після першого проходу — дублікати заради loop.
                    У лайтбокс потрапляє лише перший прохід (data-glightbox),
                    інакше той самий кадр ішов би в галереї по кілька разів;
-                   дублікат відкриває оригінал за спільним data-gl-index. */ ?>
+                   дублікат відкриває оригінал за спільним data-gl-index.
+                   data-gallery ізолює набір: інакше стрілки в лайтбоксі
+                   вели б із залів у сертифікати чи відеовідгук. */ ?>
           <figure class="swiper-slide gallery__item">
             <a class="gallery__zoom" href="assets/img/<?= $file ?>"
                data-gl-index="<?= $i % $unique ?>"
-               <?= $i < $unique ? 'data-glightbox' : '' ?>
+               <?= $i < $unique ? 'data-glightbox data-gallery="gallery"' : '' ?>
                aria-label="Відкрити фото на весь екран">
               <img src="assets/img/<?= $file ?>" alt="<?= htmlspecialchars($alt) ?>" loading="lazy">
             </a>

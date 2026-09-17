@@ -33,7 +33,10 @@
            схлопується — заголовку вистачає. */
         const tag = node.nodeType === 1 ? node.tagName.toLowerCase() : '';
         const attrs = tag ? [...node.attributes].map((a) => ` ${a.name}="${a.value}"`).join('') : '';
-        const words = (node.textContent || '').split(/\s+/).filter(Boolean).map(chars).join(' ');
+        /* Розділювач — будь-який пробіл, КРІМ нерозривного: ним у розмітці
+           привʼязане тире до попереднього слова (щоб не починало рядок), і
+           звичайний \s з'їв би цей звʼязок, замінивши його на join(' '). */
+        const words = (node.textContent || '').split(/[^\S\u00a0]+/).filter(Boolean).map(chars).join(' ');
         html.push(tag ? `<${tag}${attrs}>${words}</${tag}>` : words);
       });
       el.innerHTML = html.join(' ');
@@ -279,7 +282,7 @@
         /* Проміри — окремим класом (.line-probe, інлайновий), а не
            .line-mask: той у CSS block, і кожне слово стало б своїм рядком,
            тобто вимірювали б не той перенос, що буде насправді. */
-        el.innerHTML = textOf(el).split(/\s+/)
+        el.innerHTML = textOf(el).split(/[^\S\u00a0]+/)   // нерозривний — не розділювач (див. reveal="lines")
           .map((w) => `<span class="line-probe">${w}</span>`).join(' ');
         const words = [...el.children];
         /* Групуємо по offsetTop: слова одного рядка мають однаковий верх.
@@ -695,12 +698,17 @@
     const lightbox = bindScrollLock(GLightbox({ ...OPTIONS, selector: '[data-glightbox]' }));
 
     /* Loop-дублікати слайдера в галерею не входять (див. partials/gallery.php),
-       тож клік по них вендор не ловить — відкриваємо оригінал за їх індексом. */
+       тож клік по них вендор не ловить — переадресовуємо на оригінал.
+       Саме клік, а не lightbox.openAt(index): openAt відкриває без елемента,
+       тож вендор не бачить його data-gallery і бере весь список [data-glightbox]
+       сторінки (зали + сертифікати + відеовідгук) одним набором. */
     document.addEventListener('click', (e) => {
       const dup = e.target.closest('.gallery__zoom[data-gl-index]:not([data-glightbox])');
       if (!dup) return;
       e.preventDefault();
-      lightbox.openAt(Number(dup.dataset.glIndex));
+      dup.closest('.swiper-wrapper')
+        ?.querySelector(`.gallery__zoom[data-glightbox][data-gl-index="${dup.dataset.glIndex}"]`)
+        ?.click();
     });
 
     /* Для галерей, які не тримаються на посиланнях у розмітці (стос карток:
@@ -1167,6 +1175,7 @@
      повторний візит наступного дня має показати його знову. Незалежний від
      info-corner/topbar нижче — кожен своїм таймером (рішення проєкту). */
   (() => {
+    if (!document.body.dataset.home) return;   // маркетинг — лише на головній
     const KEY = 'promo-popup-seen';
     let seen = null;
     try { seen = sessionStorage.getItem(KEY); } catch { /* показуємо попап */ }
@@ -1201,6 +1210,31 @@
       el.addEventListener('transitionend', () => { el.hidden = true; }, { once: true });
     });
   })();
+
+  /* ---- «Надіслати код ще раз» у модалці auth: код шлеться на місці, без
+     переходу на інший екран — кнопка просто гасне на хвилину, щоб клієнт
+     не замовив десять SMS підряд. Делеговано на document: модалка
+     приходить AJAX-ом, вішати слухач при старті нема на що.
+     Реальний POST /auth/phone_reset_password/ додасть бек (data-auth). */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-resend]');
+    if (!btn || btn.disabled) return;
+    const label = btn.textContent.trim();
+    let left = 60;
+    const tick = () => {
+      btn.textContent = `Надіслати код ще раз (${String(left).padStart(2, '0')}\u00a0с)`;
+    };
+    btn.disabled = true;
+    tick();
+    const id = setInterval(() => {
+      // модалку могли закрити раніше — кнопки в DOM уже немає, рахувати нема для кого
+      if (!btn.isConnected) { clearInterval(id); return; }
+      if (--left > 0) { tick(); return; }
+      clearInterval(id);
+      btn.disabled = false;
+      btn.textContent = label;
+    }, 1000);
+  });
 
   /* ---- Сабміт будь-якої .form → модалка подяки замість реального POST
      (беку під форми поки немає). Делеговано на document: форми живуть у
