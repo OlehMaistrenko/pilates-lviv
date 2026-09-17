@@ -517,27 +517,103 @@ section { opacity: 1; }
    Підтримує: p h2 h3 h4 ul ol li blockquote cite figure figcaption img
    table thead tbody tr th td hr strong em a video iframe.
    ============================================================ */
-.simple-text { display: flex; flex-direction: column; gap: var(--sp-5);  }
+/* Відступи — margin між сусідами (X + Y), не спільний gap: у тексті
+   дистанція залежить від того, ЩО з ЧИМ межує (заголовок тісно тримає свій
+   абзац, абзаци між собою стоять далі), а gap дав би одне число на всі пари.
+   Порядок правил тут значущий: усі селектори однакової специфічності, тож
+   кожне наступне перебиває попереднє — від загального до окремого. */
+.simple-text { display: flex; flex-direction: column; }
+.simple-text > * { margin: 0; }
+.simple-text > * + * { margin-top: var(--sp-6); }
+/* абзац за абзацом — той самий потік думки, тісніше за зміну блоку */
+.simple-text > p + p, .simple-text > p + ul, .simple-text > p + ol { margin-top: var(--sp-4); }
+/* медіа, цитати й роздільник дихають ширше за суцільний текст */
+.simple-text > * + :is(blockquote, figure, hr, iframe, video, .simple-text__table-wrap, .simple-text__gallery-wrap),
+.simple-text > :is(blockquote, figure, hr, iframe, video, .simple-text__table-wrap, .simple-text__gallery-wrap) + * {
+  margin-top: var(--sp-7);
+}
+/* заголовок відштовхується від попереднього блоку сильніше, ніж притягує
+   свій текст: саме різниця цих двох чисел і читається як новий розділ */
+.simple-text > * + :is(h2, h3) { margin-top: var(--sp-8); }
+.simple-text > * + :is(h4, h5, h6) { margin-top: var(--sp-7); }
+/* останнім — щоб виграти в правила медіа вище: що завгодно одразу після
+   заголовка лишається притиснутим до нього */
+.simple-text > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: var(--sp-4); }
 .simple-text h2 { font-size: var(--fs-h3); font-weight: var(--fw-reg); }
 .simple-text h3 { font-size: var(--fs-h4); font-weight: var(--fw-reg); }
 .simple-text h4 { font-size: var(--fs-h5); font-weight: var(--fw-reg); }
-.simple-text ul, .simple-text ol { padding-left: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-2); }
-.simple-text ul { list-style: disc; }
-.simple-text ol { list-style: decimal; }
-.simple-text blockquote {
-  padding-left: var(--sp-5);
-  border-left: 2px solid var(--clr-line);
-  font-size: var(--fs-lead);
+.simple-text ul { padding-left: var(--sp-5); list-style: disc; }
+/* маркер золотом — акцент точкою, не заливкою */
+.simple-text ul > li::marker { color: var(--clr-accent); }
+/* крок між пунктами — margin, а не gap на flex-контейнері: gap однаково
+   розсовує і пункти, і вкладений список усередині пункту, тож вкладення
+   переставало читатись як частина свого пункту */
+.simple-text li + li { margin-top: var(--sp-2); }
+/* вкладений список тримається свого пункту: зверху крок менший, ніж між
+   пунктами, знизу більший — інакше останній підпункт злипається з
+   наступним пунктом верхнього рівня */
+.simple-text li > ul, .simple-text li > ol {
+  margin-top: var(--sp-1);
+  margin-bottom: var(--sp-3);
 }
-.simple-text cite { display: block; margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--clr-ink-mute); }
+.simple-text li > ul { padding-left: var(--sp-4); }
+
+/* Наскрізна нумерація 1 → 1.1 → 1.1.1: counters() замість list-style,
+   інакше вкладений рівень починає рахунок з «1.» і губиться звʼязок із
+   кроком, до якого він належить.
+   Колонка під номер — падінг самого пункту (--num-w), а не падінг списку:
+   номер стоїть від лівого краю, тож у межах рівня всі номери й увесь
+   текст починаються з однієї вертикалі, а перенесений рядок і вкладений
+   список ідуть по тексту, а не під цифрою. Ширина колонки росте з
+   глибиною: «1.1.1.» удвічі ширше за «1.». */
+.simple-text ol {
+  --num-w: 1.75rem;
+  list-style: none;
+  counter-reset: item;
+  padding-left: 0;
+}
+.simple-text ol ol     { --num-w: 2.75rem; }
+.simple-text ol ol ol  { --num-w: 3.75rem; }
+.simple-text ol > li {
+  position: relative;
+  counter-increment: item;
+  padding-left: var(--num-w);
+}
+.simple-text ol > li::before {
+  content: counters(item, ".") ".";
+  position: absolute;
+  left: 0;
+  /* моноширинні цифри: у пропорційних «1» вужча за «3», і номери сусідніх
+     пунктів стояли б різної ширини */
+  font-variant-numeric: tabular-nums;
+  color: var(--clr-accent);
+}
+.simple-text cite { display: block; margin-top: var(--sp-2); font-size: var(--fs-sm); font-style: normal; letter-spacing: normal; color: var(--clr-ink-mute); }
 .simple-text figure { display: flex; flex-direction: column; gap: var(--sp-2); }
 .simple-text figcaption { font-size: var(--fs-sm); color: var(--clr-ink-mute); }
-.simple-text img { border-radius: var(--r-card); width: 100%; height: auto; }
+.simple-text img,
+.simple-text video { display: block; border-radius: var(--r-card); width: 100%; height: auto; }
 .simple-text hr { border: 0; border-top: 1px solid var(--clr-line); }
-.simple-text a { text-decoration: underline; }
-.simple-text strong { font-weight: var(--fw-sb); }
-/* курсиву на сайті немає ніде — виділення через колір, а не нахил */
-.simple-text em { font-style: normal; color: var(--clr-accent); }
+/* Відступ лінії від букв: суцільна впритул ріже спуски (р, у, д).
+   Hover тут доречний — посилання клікабельне. */
+.simple-text a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color .2s var(--ease), text-decoration-color .2s var(--ease);
+}
+@media (min-width: 1081px) {
+  .simple-text a:hover { color: var(--clr-accent); }
+}
+/* b/i — те саме, що strong/em: кнопки панелі редактора ставлять то одне,
+   то інше (а вставлений із Word текст — майже завжди b/i) */
+.simple-text :is(strong, b) { font-weight: var(--fw-sb); }
+/* Курсив: у файлі Geologica курсивного накреслення немає (лише
+   font-style: normal, вага 300–700), тож браузер малює синтетичний нахил
+   прямого шрифту. em — смисловий наголос, тому ще й акцент кольором;
+   i — просто нахил (назва, термін, вставка з Word), без кольору. */
+.simple-text :is(em, i) { font-style: italic; }
+.simple-text em { color: var(--clr-accent); }
 
 .simple-text iframe {
   width: 100%;
@@ -546,7 +622,6 @@ section { opacity: 1; }
   border:none
 }
 
-.simple-text__gallery-wrap { margin-block: var(--sp-2); }
 /* slidesPerView: auto (глобальний дефолт initSwiper) — слайд не розтягує
    Swiper, ширину рахує сам за пропорцією фото, лише капається max-height/
    max-width, щоб вертикальні/дуже широкі кадри не ламали ряд */
@@ -763,13 +838,36 @@ section { opacity: 1; }
    на сайті немає ніде. Модифікатор --rule додає іконку лапок зліва
    від тексту замість вертикальної лінії.
    ============================================================ */
-.quote {
+/* .simple-text blockquote — той самий компонент: цитата з CMS не має
+   власного вигляду, інакше врізка в статті й цитата тренера читались би
+   як два різні елементи. */
+.quote,
+.simple-text blockquote {
   margin: 0;
   font-size: var(--fs-h3);
   font-weight: var(--fw-lt);
   font-style: normal;
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-tight);
+}
+/* Лапки перед цитатою з CMS — те саме, що .quote--rule робить розміткою,
+   але <blockquote> приходить голий. Іконка інлайном у data-URI, а не
+   sprite.svg#icon-quote: <symbol> сам по собі не рендериться, тож у mask
+   фрагмент спрайта не працює. */
+.simple-text blockquote {
+  position: relative;
+  padding-left: calc(1.5rem + var(--sp-3));
+}
+.simple-text blockquote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--clr-accent);
+  -webkit-mask: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'><path%20fill='%23000'%20d='M3%2013.5C3%208.8%205.6%205.6%2010%204v2.7c-2.3%201-3.5%202.7-3.7%204.8h3.7v6H3v-4Zm11%200c0-4.7%202.6-7.9%207-9.5v2.7c-2.3%201-3.5%202.7-3.7%204.8H21v6h-7v-4Z'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'><path%20fill='%23000'%20d='M3%2013.5C3%208.8%205.6%205.6%2010%204v2.7c-2.3%201-3.5%202.7-3.7%204.8h3.7v6H3v-4Zm11%200c0-4.7%202.6-7.9%207-9.5v2.7c-2.3%201-3.5%202.7-3.7%204.8H21v6h-7v-4Z'/></svg>") center / contain no-repeat;
 }
 .quote--rule {
   display: flex;

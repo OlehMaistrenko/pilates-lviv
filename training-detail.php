@@ -34,7 +34,7 @@ $reviews = [
 
 // Відео-презентація. Окремого ролика на кожен напрямок клієнт ще не дав,
 // тому поки один спільний; 'video' у partials/trainings-data.php перебиває.
-$video_id = $t['video'] ?? 'dQw4w9WgXcQ';
+$video_id = $t['video'] ?? 'MvjMk6BaMtc';
 
 // Інші тренування каталогу — без поточного, до трьох
 $others = array_slice(array_diff_key($all_trainings, [$training_slug => 1]), 0, 3, true);

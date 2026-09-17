@@ -176,7 +176,7 @@ include 'partials/header.php';
       </ol>
 
       <h2>Як це виглядає в залі</h2>
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Заняття на Reformer у студії Пілатес Львів"
+      <iframe src="https://www.youtube.com/embed/MvjMk6BaMtc" title="Заняття на Reformer у студії Пілатес Львів"
               loading="lazy" allowfullscreen></iframe>
 
       <h2>Кадри із зали</h2>

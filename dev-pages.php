@@ -65,6 +65,7 @@ $groups = [
     ['Політика конфіденційності', 'privacy.php'],
     ['404', '404.php'],
     ['Модалки — dev', 'dev-modals.php'],
+    ['simple-text — dev', 'dev-simple-text.php'],
   ],
 ];
 ?>

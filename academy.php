@@ -223,7 +223,7 @@ include 'partials/team-slider.php';
 
     <div class="simple-text" data-reveal>
       <figure>
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Заняття навчального центру студії Пілатес Львів"
+        <iframe src="https://www.youtube.com/embed/MvjMk6BaMtc" title="Заняття навчального центру студії Пілатес Львів"
                 loading="lazy" allowfullscreen></iframe>
         <figcaption>Розбір вправи на реформері: пружини, темп, де тренер тримає руку</figcaption>
       </figure>
