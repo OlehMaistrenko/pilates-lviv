@@ -2016,23 +2016,25 @@ section { opacity: 1; }
 .cert__zoom:focus-visible .cert__media { outline-color: var(--clr-accent); }
 
 /* ============================================================
-   About — Партнери: назви рядком під сертифікатами. Без рамок і без
-   hover: жодна клітинка не клікабельна, а межу між ними тримає
-   простір (CLAUDE.md).
+   About — Партнери: стрічка логотипів (Swiper, зациклена й автоматична).
+   Без рамок і без hover: логотип не клікабельний, це довідка «з ким
+   працюємо», а не перехід (CLAUDE.md).
    ============================================================ */
-.partners {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: var(--sp-7) var(--sp-6);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.partners { list-style: none; margin: 0; padding: 0; }
+.partner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* спільна висота рядка: логотипи приходять різних пропорцій, і без
+     фіксованої висоти слайда ряд стрибав би за найвищим файлом */
+  height: 5rem;
 }
-.partner__name {
-  display: block;
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-med);
-  line-height: var(--lh-tight);
+.partner__logo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 /* ============================================================

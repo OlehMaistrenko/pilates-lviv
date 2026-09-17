@@ -32,14 +32,14 @@ $certs = [
   ['Функціональний тренінг',                 'Міжнародна школа пілатесу', '2025', 'cert.jpeg'],
 ];
 
-// TODO: реальні партнери від клієнта — назви й логотипи. Логотипів поки
-// немає, тому назва набрана текстом: коли прийдуть файли, .partner__name
-// міняється на <img> і сітка лишається тією самою. [назва, хто це]
+// [назва, що саме нас повʼязує, файл логотипа в assets/img/partners/]
+// Реальні логотипи виробників тренажерів і сертифікаційних шкіл пілатесу —
+// TODO: підтвердити з клієнтом, чиє обладнання і чиї сертифікати саме тут.
 $partners = [
-  ['Balanced Body',                'Тренажери Cadillac, Reformer і Wall Unit у трьох залах'],
-  ['Міжнародна школа пілатесу',    'Сертифікаційні курси, які щороку проходять тренери'],
-  ['Клініка фізичної реабілітації','Скеровуємо одне одному клієнтів після травм і операцій'],
-  ['Львівський півмарафон',        'Відновлення й підготовка для учасників забігу'],
+  ['Balanced Body',   'Тренажери Cadillac, Reformer і Wall Unit у трьох залах',  'balanced-body'],
+  ['Align-Pilates',   'Обладнання для групових і персональних занять',           'align-pilates'],
+  ['Merrithew',       'Сертифікаційна програма STOTT PILATES для тренерів',      'merrithew'],
+  ['BASI Pilates',    'Міжнародна сертифікація тренерів студії',                 'basi'],
 ];
 
 // Цінності — як влаштоване заняття. Реальні кадри зі зйомки студії.
@@ -147,29 +147,6 @@ include 'partials/certs.php';
 ?>
 
 <!-- ============================================================
-     04b · Партнери й клієнти — з ким студія працює поза залом.
-     Одразу за сертифікатами, без верхнього падінга: обидва блоки про
-     те саме — на чому й з ким тут працюють.
-     ============================================================ -->
-<section class="section pt-0">
-  <div class="container">
-    <div class="section-head section-head--split">
-      <h2 data-reveal="lines">Партнери</h2>
-      <p class="text--lead text--muted" data-reveal>Обладнання, навчання і лікарі, з якими студія працює з першого року.</p>
-    </div>
-
-    <ul class="partners" data-reveal>
-      <?php foreach ($partners as [$name, $note]): ?>
-        <li>
-          <span class="partner__name"><?= $name ?></span>
-          <span class="card__note text--sm text--muted"><?= $note ?></span>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================================================
      05 · Досягнення — той самий банер із цифрами, що на головній
      ============================================================ -->
 <?php
@@ -244,6 +221,45 @@ include 'partials/gallery.php';
         <button type="button" class="btn btn--icon btn--outlined swiper-next" aria-label="Наступний напрямок">
           <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
         </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     08b · Партнери й клієнти — стрічка логотипів одразу під напрямками,
+     без верхнього падінга: напрямки — що тут роблять, партнери — на чому
+     й з ким. Слайдер зациклений і сам їде: рядів логотипів менше, ніж
+     видно за раз, тож набір дублюється, доки не вистачить на найширшу
+     розкладку (як у partials/gallery.php).
+     ============================================================ -->
+<?php $partner_slides = $partners; while (count($partner_slides) < 12) $partner_slides = array_merge($partner_slides, $partners); ?>
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <h2 data-reveal="lines">Наші партнери</h2>
+    </div>
+
+    <div class="swiper-wrap" data-reveal>
+      <!-- --swiper-wrapper-transition-timing-function: linear — стрічка їде
+           рівномірно, а не смугами прискорення/гальмування, як дає дефолтний
+           ease на кожен слайд. Без freeMode: swiper-bundle.min.css жорстко
+           ставить .swiper-free-mode>.swiper-wrapper на ease-out і перебиває
+           цю змінну — лінійний автоплей і freeMode тут несумісні.
+           delay:1 (не 0 — Swiper трактує 0 як «вимкнено») чергує наступний
+           перехід одразу по завершенню поточного, тож рух без видимих пауз. -->
+      <div class="swiper" style="--swiper-wrapper-transition-timing-function: linear"
+           data-swiper='{"slidesPerView":2,"spaceBetween":40,"loop":true,"grabCursor":true,"speed":3500,"autoplay":{"delay":1,"disableOnInteraction":false},"breakpoints":{"769":{"slidesPerView":3,"spaceBetween":56},"1081":{"slidesPerView":5,"spaceBetween":64}}}'>
+        <ul class="partners swiper-wrapper">
+          <?php /* дублікати заради loop — читалці вони не потрібні, тож
+                   підпис має лише перший прохід, решта декоративні */ ?>
+          <?php foreach ($partner_slides as $i => [$name, $note, $logo]): ?>
+            <li class="partner swiper-slide" <?= $i < count($partners) ? '' : 'aria-hidden="true"' ?>>
+              <img class="partner__logo" src="assets/img/partners/<?= $logo ?>.svg"
+                   alt="<?= $i < count($partners) ? htmlspecialchars("$name — $note") : '' ?>" loading="lazy">
+            </li>
+          <?php endforeach; ?>
+        </ul>
       </div>
     </div>
   </div>
