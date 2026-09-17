@@ -1,3 +1,4 @@
 info/
 customer-photos/
 api/config.local.php
+.DS_Store
