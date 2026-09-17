@@ -2121,6 +2121,20 @@ section { opacity: 1; }
    .glightbox-button-hidden (0,1,0) слабший за наш перемальований
    .glightbox-clean .gnext (0,2,0) — повторюємо правило в тій же вазі */
 .glightbox-clean .glightbox-button-hidden { display: none; }
+/* лічильник (js/main.js) — по висоті в один ряд із .gclose: той стоїть
+   на top:15px і має нашу висоту 3rem, тож ті самі числа центрують текст */
+.glightbox-container .gcounter {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  z-index: 99999;
+  display: inline-flex;
+  align-items: center;
+  height: 3rem;
+  color: var(--clr-page);
+  opacity: .7;
+}
+.glightbox-container .gcounter[hidden] { display: none; }
 @media (min-width: 1081px) {
   .glightbox-clean .gclose:hover,
   .glightbox-clean .gnext:hover,

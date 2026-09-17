@@ -689,10 +689,32 @@
     /* Lenis рухає сторінку через window.scrollTo — клас glightbox-open з
        overflow:hidden на це не впливає, і фон їхав би під відкритим
        лайтбоксом. Глушимо явно, як це роблять модалки через body overflow. */
+    /* Лічильника у вендора немає — дописуємо свій у .gcontainer (там же
+       живуть close/prev/next). Один елемент на інстанс, оновлюється на
+       open і на зміні слайда; у групі з одного кадру ховається, як і стрілки. */
+    const bindCounter = (lb) => {
+      const sync = () => {
+        const box = lb.modal?.querySelector('.gcontainer');
+        if (!box) return;
+        let el = box.querySelector('.gcounter');
+        if (!el) {
+          el = document.createElement('div');
+          el.className = 'gcounter label';
+          el.setAttribute('aria-hidden', 'true');
+          box.appendChild(el);
+        }
+        el.textContent = `${lb.index + 1} / ${lb.elements.length}`;
+        el.hidden = lb.elements.length < 2;
+      };
+      lb.on('open', sync);
+      lb.on('slide_changed', sync);
+      return lb;
+    };
+
     const bindScrollLock = (lb) => {
       lb.on('open', () => lenisInstance?.stop());
       lb.on('close', () => lenisInstance?.start());
-      return lb;
+      return bindCounter(lb);
     };
 
     const lightbox = bindScrollLock(GLightbox({ ...OPTIONS, selector: '[data-glightbox]' }));
