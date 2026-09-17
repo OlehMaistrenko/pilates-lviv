@@ -7,7 +7,8 @@
  *   $form_subjects — [ключ => назва] для селекта «Тема». [] прибирає селект.
  *   $form_hidden   — [name => value] прихованих полів (напр. локація).
  *   $form_foot     — рядок під формою зліва, HTML. '' прибирає.
- *   $form_class    — додатковий клас на <section> (напр. 'pt-0').
+ *   $form_class    — додатковий клас на <section> (напр. 'pt-0' або
+ *                    'section--moss patterned on-dark' — темний варіант).
  *
  * Адрес тут немає навмисно: і на contacts.php, і на детальній локації
  * адреса з маршрутом живе в карті поруч.
@@ -32,6 +33,9 @@ $form_subjects = $form_subjects ?? [
 $form_hidden = $form_hidden ?? [];
 $form_foot   = $form_foot   ?? 'Питання про заняття, абонементи чи курс — <a href="faq.php">у відповідях на часті питання</a>.';
 $form_class  = $form_class  ?? '';
+// На темному полі золотий контур губиться в патерні — соцкнопки стають
+// білими (.btn--light), як решта контролів на .on-dark.
+$btn_light = str_contains($form_class, 'on-dark') ? ' btn--light' : '';
 ?>
 <section class="section<?= $form_class ? ' ' . $form_class : '' ?>">
   <div class="container">
@@ -49,10 +53,10 @@ $form_class  = $form_class  ?? '';
         </address>
 
         <div class="contact__social mt-5">
-          <a class="btn btn--icon btn--sm btn--outlined" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
+          <a class="btn btn--icon btn--sm btn--outlined<?= $btn_light ?>" href="<?= $contact['instagram'] ?>" target="_blank" rel="noopener" aria-label="Instagram">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-instagram"></use></svg>
           </a>
-          <a class="btn btn--icon btn--sm btn--outlined" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
+          <a class="btn btn--icon btn--sm btn--outlined<?= $btn_light ?>" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
           </a>
         </div>
@@ -103,4 +107,4 @@ $form_class  = $form_class  ?? '';
     </div>
   </div>
 </section>
-<?php unset($form_title, $form_text, $form_phone, $form_phone_href, $form_subjects, $form_hidden, $form_foot, $form_class); ?>
+<?php unset($btn_light, $form_title, $form_text, $form_phone, $form_phone_href, $form_subjects, $form_hidden, $form_foot, $form_class); ?>

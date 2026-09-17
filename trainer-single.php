@@ -87,11 +87,8 @@ include 'partials/header.php';
         </dl>
 
         <div class="profile__actions" data-reveal style="--reveal-i: 4">
-          <button type="button" class="btn btn--filled" data-modal="booking?direction=pilates">
-            Записатись до Галини
-          </button>
-          <a class="btn btn--outlined" href="#schedule">
-            Розклад Галини
+          <a class="btn btn--filled" href="#schedule">
+            Розклад
           </a>
         </div>
       </div>
