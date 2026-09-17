@@ -28,6 +28,10 @@
  */
 $step  = $_GET['step'] ?? '';
 $phone = $_GET['phone'] ?? '';
+// from=account — та сама модалка, відкрита з account-password.php уже
+// залогіненим клієнтом: «Назад до входу» там безглузде, і телефон уже
+// підставлений із профілю, тож поле для нього ховаємо.
+$from_account = ($_GET['from'] ?? '') === 'account';
 ?>
 <?php if ($step === 'code'): ?>
 
@@ -57,24 +61,36 @@ $phone = $_GET['phone'] ?? '';
 <?php elseif ($step === 'reset'): ?>
 
   <div class="modal__head">
-    <h2 class="modal__title" id="modal-overlay-title">Відновити пароль</h2>
+    <h2 class="modal__title" id="modal-overlay-title">
+      <?= $from_account ? 'Змінити пароль' : 'Відновити пароль' ?>
+    </h2>
     <p class="text text--muted mt-3">
-      Введіть номер телефону — надішлемо код, і ви одразу задасте новий пароль.
+      <?= $from_account
+        ? 'Надішлемо код на ' . htmlspecialchars($phone ?: 'ваш номер') . ' — і ви одразу задасте новий пароль.'
+        : 'Введіть номер телефону — надішлемо код, і ви одразу задасте новий пароль.' ?>
     </p>
   </div>
 
   <!-- POST /auth/phone_reset_password/ {phone} -->
   <form class="form modal__body" action="" method="post" data-remote data-auth="reset">
-    <div class="form__row">
-      <label class="form__label" for="auth-reset-phone">Телефон</label>
-      <input class="form__input" type="tel" id="auth-reset-phone" name="phone"
-             autocomplete="tel" placeholder="+380 63 015 05 17"
-             value="<?= htmlspecialchars($phone) ?>" required>
-    </div>
+    <?php if ($from_account): ?>
+      <input type="hidden" name="phone" value="<?= htmlspecialchars($phone) ?>">
+    <?php else: ?>
+      <div class="form__row">
+        <label class="form__label" for="auth-reset-phone">Телефон</label>
+        <input class="form__input" type="tel" id="auth-reset-phone" name="phone"
+               autocomplete="tel" placeholder="+380 63 015 05 17"
+               value="<?= htmlspecialchars($phone) ?>" required>
+      </div>
+    <?php endif; ?>
 
     <div class="modal__foot">
       <button type="submit" class="btn btn--filled">Надіслати код</button>
-      <button type="button" class="btn btn--outlined" data-modal="auth">Назад до входу</button>
+      <?php if ($from_account): ?>
+        <button type="button" class="btn btn--outlined" data-modal-close>Скасувати</button>
+      <?php else: ?>
+        <button type="button" class="btn btn--outlined" data-modal="auth">Назад до входу</button>
+      <?php endif; ?>
     </div>
   </form>
 
@@ -93,6 +109,11 @@ $phone = $_GET['phone'] ?? '';
        окремого входу після цього не потрібно. -->
   <form class="form modal__body" action="" method="post" data-remote data-auth="reset-verify">
     <input type="hidden" name="phone" value="<?= htmlspecialchars($phone) ?>">
+    <?php if ($from_account): ?>
+      <!-- Бекенду: після 200 з новими токенами повертати клієнта в кабінет,
+           а не на вхід — він і так залогінений. -->
+      <input type="hidden" name="from" value="account">
+    <?php endif; ?>
     <div class="form__row">
       <label class="form__label" for="auth-reset-code">Код із SMS</label>
       <input class="form__input" type="text" id="auth-reset-code" name="code"
@@ -106,7 +127,7 @@ $phone = $_GET['phone'] ?? '';
 
     <div class="modal__foot">
       <button type="submit" class="btn btn--filled">Зберегти пароль</button>
-      <button type="button" class="btn btn--outlined" data-modal="auth?step=reset">Надіслати код ще раз</button>
+      <button type="button" class="btn btn--outlined" data-modal="auth?step=reset<?= $from_account ? '&from=account&phone=' . rawurlencode($phone) : '' ?>">Надіслати код ще раз</button>
     </div>
   </form>
 

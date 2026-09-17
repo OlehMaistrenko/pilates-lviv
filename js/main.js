@@ -1162,6 +1162,46 @@
     });
   })();
 
+  /* ---- Промо-попап (маркетинг): автопоказ через таймер, раз на сесію.
+     sessionStorage, не localStorage — на відміну від cookie-інформера вище,
+     повторний візит наступного дня має показати його знову. Незалежний від
+     info-corner/topbar нижче — кожен своїм таймером (рішення проєкту). */
+  (() => {
+    const KEY = 'promo-popup-seen';
+    let seen = null;
+    try { seen = sessionStorage.getItem(KEY); } catch { /* показуємо попап */ }
+    if (seen) return;
+
+    setTimeout(() => {
+      const overlay = document.getElementById('modal-overlay');
+      if (overlay && overlay.hidden === false) return; // вже відкрита інша модалка
+      try { sessionStorage.setItem(KEY, '1'); } catch { /* закриття не переживе перезавантаження */ }
+      window._functions.loadModal?.('promo');
+    }, 4000);
+  })();
+
+  /* ---- Info corner: маркетинговий попап у кутку екрана. Той самий
+     протокол, що й cookie-інформер вище, окремий sessionStorage-ключ. */
+  (() => {
+    const el = document.getElementById('info-corner');
+    if (!el) return;
+    const KEY = 'info-corner-seen';
+    let seen = null;
+    try { seen = sessionStorage.getItem(KEY); } catch { /* показуємо попап */ }
+    if (seen) return;
+
+    setTimeout(() => {
+      el.hidden = false;
+      requestAnimationFrame(() => el.classList.add('is-visible'));
+    }, 2000);
+
+    el.querySelector('[data-info-corner-close]')?.addEventListener('click', () => {
+      try { sessionStorage.setItem(KEY, '1'); } catch { /* закриття не переживе перезавантаження */ }
+      el.classList.remove('is-visible');
+      el.addEventListener('transitionend', () => { el.hidden = true; }, { once: true });
+    });
+  })();
+
   /* ---- Сабміт будь-якої .form → модалка подяки замість реального POST
      (беку під форми поки немає). Делеговано на document: форми живуть у
      модалках і в DOM на момент підписки ще не існують.

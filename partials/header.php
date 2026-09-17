@@ -118,6 +118,30 @@ $primary = [
 <body>
   <a class="skip-link" href="#main">Перейти до вмісту</a>
 
+  <?php
+  // Маркетингова полоска над шапкою. TODO: приклад акції, узгодити з клієнтом.
+  $topbar_text   = 'Знижка 20% на перший абонемент для нових клієнтів — дізнатися умови';
+  $topbar_href   = 'prices.php';
+  $topbar_label  = 'Знижка 20% на перший абонемент для нових клієнтів — дізнатися умови';
+  // Запас копій тексту в стрічці: на широкому екрані чи з короткою фразою
+  // двох копій може не вистачити на всю ширину — за одним проходом
+  // анімації буде видно порожнє місце. 8 — запас, що покриває будь-яку
+  // ширину вʼюпорта для фрази такої довжини.
+  $topbar_repeat = 8;
+  ?>
+  <!-- Без hidden/кнопки закриття — ховається/повертається разом зі
+       стиском хедера (--topbar-h у css/main.css), той самий скрол-тригер,
+       що й сам хедер. Уся смуга — посилання; текст дублюємо для безшовної
+       бігучої стрічки й ховаємо дублікати від скрінрідера, сенс — у
+       aria-label самого посилання. -->
+  <a class="topbar" href="<?= htmlspecialchars($topbar_href) ?>" aria-label="<?= htmlspecialchars($topbar_label) ?>">
+    <div class="topbar__track" aria-hidden="true" style="--topbar-repeat: <?= (int) $topbar_repeat ?>">
+      <?php for ($i = 0; $i < $topbar_repeat; $i++): ?>
+        <span class="topbar__text"><?= htmlspecialchars($topbar_text) ?></span>
+      <?php endfor; ?>
+    </div>
+  </a>
+
   <div class="header-fixed<?= $header_over_hero ? ' header-fixed--over' : '' ?><?= (!$header_over_hero && $header_theme === 'dark') ? ' header-fixed--dark' : '' ?>">
     <header class="site-header">
       <div class="site-header__row">
@@ -176,6 +200,7 @@ $primary = [
             'cards'    => ['Абонементи', 'account-cards.php'],
             'visits'   => ['Мої заняття', 'account-visits.php'],
             'deposits' => ['Рахунок і поповнення', 'account-deposits.php'],
+            'password' => ['Зміна паролю', 'account-password.php'],
           ];
           ?>
           <?php if ($hdr_logged): ?>

@@ -37,6 +37,8 @@ $groups = [
     ['Код із SMS', 'auth?step=code&phone=%2B380631234567'],
     ['Скидання пароля — телефон', 'auth?step=reset'],
     ['Скидання пароля — новий пароль', 'auth?step=reset-code&phone=%2B380631234567'],
+    ['Зміна пароля з кабінету', 'auth?step=reset-code&from=account&phone=%2B380631234567'],
+    ['Зміна пароля — надіслати код ще раз', 'auth?step=reset&from=account&phone=%2B380631234567'],
   ],
   'contact-change — зміна контактів у кабінеті' => [
     ['Змінити пошту', 'contact-change?field=email'],

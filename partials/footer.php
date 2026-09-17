@@ -144,6 +144,18 @@
     <button type="button" class="btn btn--sm btn--filled cookie__close" data-cookie-close>Зрозуміло</button>
   </div>
 
+  <!-- Маркетинговий попап у кутку екрана. hidden знімає js/main.js на
+       основі sessionStorage — не блимає до перевірки прапорця.
+       TODO: приклад акції, узгодити з клієнтом перед запуском. -->
+  <div class=" on-dark info-corner" id="info-corner" role="region" aria-label="Спецпропозиція" hidden>
+    <button type="button" class="btn btn--icon btn--sm btn--filled info-corner__close" data-info-corner-close aria-label="Закрити">
+      <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
+    </button>
+    <p class="info-corner__title">Перше заняття — знайомство</p>
+    <p class="text text--sm info-corner__text">30 хвилин з тренером: підбір програми на Reformer чи Cadillac.</p>
+    <a href="training-detail.php?training=intro" class="btn btn--filled btn--sm">Записатися</a>
+  </div>
+
   <!-- Deferred CSS: секції нижче першого екрана + повна стилізація модалок/
        мобільного меню. Вендорські стилі — перед цим лінком, за тією самою
        логікою. Swiper/Mapbox вантажаться лише там, де сторінка виставила

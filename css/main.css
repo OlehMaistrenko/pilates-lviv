@@ -111,6 +111,14 @@
   --header-h-min: 5rem;   /* після скролу, див. Header */
   --header-h: var(--header-h-max);   /* поточна висота — реагує на .is-scrolled/.menu-open */
 
+  /* --topbar-h-base — стала висота полоски (Topbar), не реагує на скрол:
+     для спейсера/паддінгів, які мають лишатись сталими, як і --header-h-max.
+     --topbar-h — поточна, схлопується в 0 разом зі стиском хедера. */
+  --topbar-h-base: 1.5rem;
+  --topbar-h: var(--topbar-h-base);
+  --header-offset-max: calc(var(--header-h-max) + var(--topbar-h-base));
+  --header-offset:     calc(var(--header-h)     + var(--topbar-h));
+
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
@@ -838,6 +846,66 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ============================================================
+   Topbar — вузька бігуча стрічка над шапкою (partials/header.php).
+   Above the fold, тому в main.css, не styles.css. Уся смуга — <a>: клік
+   будь-де веде за посиланням; видимий текст дублюємо для безшовного
+   зациклення й ховаємо дублікат від скрінрідера (aria-hidden), сенс
+   віддаємо один раз через aria-label на самому посиланні. Текст їде через
+   transform: translateX (не layout).
+   Без кнопки закриття й без JS/сховища навмисно — це не «попап», що
+   запам'ятовує закриття, а частина page chrome: ховається/повертається
+   разом зі стиском хедера (--topbar-h реагує на .is-scrolled/.menu-open
+   нижче), той самий тригер, що й сам хедер, тому окремий скрол-лістенер
+   не потрібен.
+   ============================================================ */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 101; /* над .header-fixed (100) — полоска йде над шапкою */
+  display: flex;
+  align-items: center;
+  background: var(--clr-surface);
+  color: var(--clr-page);
+  height: var(--topbar-h);
+  overflow: hidden; /* висота їде до 0 при скролі — вміст ховається без opacity */
+  transition: height .3s var(--ease), background-color .25s var(--ease);
+}
+@media (min-width: 1081px) {
+  .topbar:hover { background: color-mix(in srgb, var(--clr-surface) 82%, var(--clr-accent)); }
+}
+/* --topbar-repeat (inline style, partials/header.php) — скільки копій
+   тексту в треку: з великим запасом, щоб на будь-якій ширині екрана й при
+   будь-якій довжині фрази стрічка все одно перекривала viewport (інакше,
+   якщо копій замало для ширини вікна, за одним проходом анімації буде
+   видно порожнє місце до початку наступного повтору). Тривалість
+   масштабуємо разом із запасом (8s на копію) — щоб швидкість руху (px/с)
+   не залежала від того, скільки копій ми поставили. */
+.topbar__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: topbar-marquee calc(8s * var(--topbar-repeat, 2)) linear infinite;
+}
+.topbar__text {
+  flex: none;
+  margin-right: var(--sp-9);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-med);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* N ідентичних копій — зсув рівно на 50% ширини треку впритул стикує
+   останню копію з першою, без шва, незалежно від N (аби N було парним). */
+@keyframes topbar-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .topbar__track { animation: none; }
+}
+
+/* ============================================================
    Header — три колонки: тумблер меню · лого по центру · запис.
    Fixed поверх контенту; над моховим героєм прозорий (.header-fixed--over),
    після скролу — бежевий, нижчий, з меншим лого. Над відкритим
@@ -847,7 +915,7 @@ html.lenis, html.lenis body { height: auto; }
    ============================================================ */
 .header-fixed {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: var(--topbar-h); left: 0; right: 0;
   z-index: 100;
   background: var(--clr-page);
   color: var(--clr-ink);
@@ -855,7 +923,7 @@ html.lenis, html.lenis body { height: auto; }
      непроскроленій сторінці вона ділила б навпіл суцільне бежеве поле,
      тобто була б декоративним кордоном нізвідки. */
   border-bottom: 1px solid transparent;
-  transition: background-color .5s var(--ease), color .5s var(--ease), border-color .5s var(--ease);
+  transition: background-color .5s var(--ease), color .5s var(--ease), border-color .5s var(--ease), top .3s var(--ease);
 }
 /* Клас ставить сторінка ($header_over_hero перед include), а не JS — щоб
    не було кадру, у якому темний текст стоїть на темному фоні до першого
@@ -889,11 +957,13 @@ html.lenis, html.lenis body { height: auto; }
    інакше контент стрибав би на порозі скролу), береться прямо від
    --header-h-max. */
 .is-scrolled,
-.menu-open { --header-h: var(--header-h-min); }
+.menu-open { --header-h: var(--header-h-min); --topbar-h: 0px; }
 
 /* .header-fixed — position: fixed, без місця в потоці. Цей блок одразу
-   після нього резервує цей простір, щоб контент не ліз під хедер. */
-.header-spacer { height: var(--header-h-max); }
+   після нього резервує цей простір, щоб контент не ліз під хедер.
+   --header-offset-max = --header-h-max + --topbar-h-base, обидва сталі —
+   спейсер не стрибає, коли полоска згортається при скролі. */
+.header-spacer { height: var(--header-offset-max); transition: height .3s var(--ease); }
 
 .site-header__row {
   height: var(--header-h);
@@ -1098,7 +1168,7 @@ html.lenis, html.lenis body { height: auto; }
   min-height: 100svh;
   /* --sp-10 зверху ставить лінію приблизно на половину екрана — далі
      заголовок іде одразу під нею, тож знизу вистачає меншого кроку */
-  padding-top: calc(var(--header-h-max) + var(--sp-7));
+  padding-top: calc(var(--header-offset-max) + var(--sp-7));
   padding-bottom: var(--sp-7);
   background: var(--clr-surface);
   color: var(--clr-page);
@@ -1201,7 +1271,7 @@ html.lenis, html.lenis body { height: auto; }
    а стеля в rem не дає банеру рости на високих моніторах. */
 .hero--page {
   min-height: min(60svh, 36.25rem);
-  padding-top: calc(var(--header-h-max) + var(--sp-7));
+  padding-top: calc(var(--header-offset-max) + var(--sp-7));
   padding-bottom: var(--sp-7);
 }
 /* Крихти вгорі, заголовок із лідом — унизу. Проміжок між ними забирає
@@ -1270,14 +1340,14 @@ html.lenis, html.lenis body { height: auto; }
   .hero__lead { max-width: none; margin-bottom: 0; }
 }
 @media (max-width: 768px) {
-  .hero { padding-top: calc(var(--header-h-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
+  .hero { padding-top: calc(var(--header-offset-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
   /* той самий принцип, що на десктопі, але кроком нижче: на вузькому
      екрані --sp-7 з усіх боків з'їдає надто багато висоти банера.
      Мінімум теж нижчий — лід тут стоїть під заголовком, тож вміст
      і сам дає потрібну висоту, а більший min-height лишав би порожнечу. */
   .hero--page {
     min-height: min(46svh, 25rem);
-    padding-top: calc(var(--header-h-max) + var(--sp-6));
+    padding-top: calc(var(--header-offset-max) + var(--sp-6));
     padding-bottom: var(--sp-6);
   }
   .hero--page .hero__inner { gap: var(--sp-5); }

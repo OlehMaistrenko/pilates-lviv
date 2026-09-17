@@ -214,6 +214,23 @@ section { opacity: 1; }
 }
 
 /* ============================================================
+   Промо-попап (partials/modals/promo.php) — маркетинговий оверлей із
+   зображенням. Той самий :has()-прийом, що й у .slot-detail вище, тут
+   одноколонково: фото зверху в край, текст під ним.
+   ============================================================ */
+.modal-overlay__panel:has(.promo-popup__media) {
+  width: min(30rem, 100%);
+  padding: 0;
+  overflow: hidden;
+}
+.promo-popup__media { aspect-ratio: 16 / 10; background: var(--clr-surface); }
+.promo-popup__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.promo-popup__body { padding: var(--sp-7); }
+@media (max-width: 560px) {
+  .promo-popup__body { padding: var(--sp-5); }
+}
+
+/* ============================================================
    Form — .form/.form__row поля
    ============================================================ */
 .form { display: flex; flex-direction: column; gap: var(--sp-4); }
@@ -291,7 +308,7 @@ section { opacity: 1; }
   gap: var(--sp-8) var(--sp-9);
   align-content: space-between;
   min-height: 100%;
-  padding-top: calc(var(--header-h) + var(--sp-7));
+  padding-top: calc(var(--header-offset) + var(--sp-7));
   padding-bottom: var(--sp-7);
 }
 
@@ -2475,6 +2492,52 @@ section { opacity: 1; }
 }
 
 /* ============================================================
+   Info corner — маркетинговий попап у кутку екрана (footer.php).
+   Той самий протокол, що й .cookie вище (hidden → .is-visible → sessionStorage
+   у js/main.js), інший якір і власний ключ сховища.
+   z-index 190: під модалкою (200), над хедером (100) — той самий рівень,
+   що й .cookie.
+   ============================================================ */
+.info-corner {
+  --clr-accent: var(--clr-accent-light);
+  position: fixed;
+  z-index: 190;
+  right: var(--sp-4);
+  bottom: var(--sp-4);
+  width: min(22rem, calc(100vw - var(--sp-4) * 2));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--clr-surface);
+  color: var(--clr-page);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.info-corner[hidden] { display: none; }
+.info-corner.is-visible { opacity: 1; transform: none; }
+.info-corner__close { position: absolute; top: var(--sp-3); right: var(--sp-3); }
+.info-corner__title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-lt);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-tight);
+  padding-right: var(--sp-8);
+}
+.info-corner__text a { color: var(--clr-accent); text-decoration: underline; text-underline-offset: .2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .info-corner { transition: none; transform: none; }
+}
+@media (max-width: 560px) {
+  /* На вузькому екрані 22rem-стеля лишає в'ялі поля з обох боків — той
+     самий шов «до країв», що й у .cookie на цій ширині. */
+  .info-corner { left: var(--sp-4); width: auto; }
+}
+
+/* ============================================================
    Component: .schedule — календар занять (partials/schedule.php).
    Один компонент на чотири сторінки: розклад, тренер, напрямок,
    локація. Стан (вид, дата, фільтри) живе в URL, тож перемикачі —
@@ -3393,7 +3456,7 @@ section { opacity: 1; }
    (--header-h-max, той самий, що й .header-spacer). Інші сторінки
    .page-open (тренер, кабінет) без модифікатора висоту по контенту
    не втрачають. */
-.page-open--full { display: flex; flex-direction: column; min-height: calc(100svh - var(--header-h-max)); }
+.page-open--full { display: flex; flex-direction: column; min-height: calc(100svh - var(--header-offset-max)); }
 .page-open--full > .container { display: flex; flex-direction: column; flex: 1; }
 .error-404 {
   margin: auto;   /* auto по обох осях центрує блок у флекс-контейнері контейнера */

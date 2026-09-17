@@ -5,14 +5,15 @@
  */
 $account_nav = $account_nav ?? '';
 
-// Пункту «Зміна паролю» тут навмисно немає: скидання пароля йде через
-// SMS-код у модалці входу (partials/modals/auth.php?step=reset), окрема
-// сторінка кабінету для цього не потрібна.
+// «Зміна паролю» веде на той самий флоу, що й «Забули пароль?» у модалці
+// входу (SMS-код): окремого ендпоінта зміни пароля в InstaSport немає —
+// пояснення в account-password.php.
 $account_menu = [
   'profile'  => ['Персональна інформація', 'account.php',          'icon-user'],
   'cards'    => ['Абонементи',             'account-cards.php',    'icon-card'],
   'visits'   => ['Мої заняття',            'account-visits.php',   'icon-calendar'],
   'deposits' => ['Рахунок і поповнення',   'account-deposits.php', 'icon-wallet'],
+  'password' => ['Зміна паролю',           'account-password.php', 'icon-lock'],
 ];
 ?>
 <nav class="account-nav" aria-label="Розділи кабінету">
