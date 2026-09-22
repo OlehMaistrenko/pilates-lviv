@@ -103,7 +103,7 @@ $options = $show_payment ? booking_payment_options($bk_slot) : [];
 <?php else: ?>
 
   <div class="modal__head">
-    <h2 class="modal__title" id="modal-overlay-title">Записатись на заняття</h2>
+    <h2 class="modal__title" id="modal-overlay-title">Записатися на тренування</h2>
     <p class="text text--muted mt-3">
       <?php if ($bk_slot): ?>
         <?= htmlspecialchars($bk_slot['title']) ?>,

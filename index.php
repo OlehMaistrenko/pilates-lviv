@@ -120,7 +120,7 @@ include 'partials/header.php';
         <h1 class="hero__title" data-reveal="lines"><em>ПІЛАТЕС</em> У ЛЬВОВІ</h1>
 
         <div class="hero__actions" data-reveal style="--reveal-i: 1">
-          <button type="button" class="btn btn--filled" data-modal="booking">Записатись на заняття</button>
+          <button type="button" class="btn btn--filled" data-modal="booking">Записатися на тренування</button>
           <a class="btn btn--filled btn--light" href="schedule.php">Дивитись розклад</a>
           <a class="btn btn--outlined btn--light" href="academy.php">Хочу стати тренером</a>
         </div>

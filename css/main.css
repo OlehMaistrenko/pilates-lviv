@@ -1275,11 +1275,12 @@ html.lenis, html.lenis body { height: auto; }
    під ним одразу список, тож 100svh зайві — під банером має бути видно
    початок контенту. Заголовок на крок дрібніший за --fs-mega головної:
    тут він заголовок сторінки, а не плакат.
-   Висоту тримає min-height, а не вміст: самого заголовка з лінією замало,
-   щоб кадр читався кадром. 60svh лишає внизу смугу наступної секції,
-   а стеля в rem не дає банеру рости на високих моніторах. */
+   Висоту тримає min-height у vw, а не svh/rem: стара стеля не залежала
+   від ширини вʼюпорта, тож на широких екранах контейнер ставав набагато
+   ширшим за кадр і object-fit:cover обрізав фото/відео зверху-знизу.
+   40vw = 100/2.5 — банерна пропорція 2.5:1. */
 .hero--page {
-  min-height: min(60svh, 36.25rem);
+  min-height: 40vw;
   padding-top: calc(var(--header-offset-max) + var(--sp-7));
   padding-bottom: var(--sp-7);
 }
@@ -1344,7 +1345,6 @@ html.lenis, html.lenis body { height: auto; }
   .hero--page .hero__title { font-size: var(--fs-hero); }
 }
 @media (max-width: 1080px) {
-  .hero--page { min-height: min(55svh, 31.25rem); }
   .hero--page .hero__title { max-width: none; }
   .hero__lead { max-width: none; margin-bottom: 0; }
 }
@@ -1352,10 +1352,12 @@ html.lenis, html.lenis body { height: auto; }
   .hero { padding-top: calc(var(--header-offset-max) + var(--sp-9)); padding-bottom: var(--sp-6); }
   /* той самий принцип, що на десктопі, але кроком нижче: на вузькому
      екрані --sp-7 з усіх боків з'їдає надто багато висоти банера.
-     Мінімум теж нижчий — лід тут стоїть під заголовком, тож вміст
-     і сам дає потрібну висоту, а більший min-height лишав би порожнечу. */
+     100vw (1:1) замість 45.83vw: на ширині телефона панорамна пропорція
+     дає смужку заввишки кілька рядків тексту — квадрат лишає банер
+     кадром, а не рядком, і обрізає з боків порожню стіну на банерних
+     фото, а не постать зліва. */
   .hero--page {
-    min-height: min(46svh, 25rem);
+    min-height: 100vw;
     padding-top: calc(var(--header-offset-max) + var(--sp-6));
     padding-bottom: var(--sp-6);
   }
