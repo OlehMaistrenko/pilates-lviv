@@ -25,7 +25,7 @@ $event_id  = (int)($_GET['event'] ?? 0);
 $is_logged = account_is_logged();
 
 $directions = [
-  'pilates'  => 'Пілатес на тренажерах',
+  'pilates'  => 'Пілатес на обладнанні',
   'recovery' => 'Функціональне відновлення',
   'yoga'     => 'Йога',
   'dance'    => 'Танці',

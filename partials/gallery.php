@@ -12,7 +12,7 @@
  * успадковували налаштування один одного.
  */
 $gallery_items = $gallery_items ?? [];
-$gallery_title = $gallery_title ?? 'Зали та тренажери';
+$gallery_title = $gallery_title ?? 'Зали та обладнання';
 $gallery_link  = $gallery_link  ?? null;
 $gallery_class = $gallery_class ?? '';
 

@@ -17,7 +17,7 @@
  * на одній сторінці не успадковували налаштування один одного.
  */
 $stack_items = $stack_items ?? [];
-$stack_title = $stack_title ?? 'Зали та тренажери';
+$stack_title = $stack_title ?? 'Зали та обладнання';
 $stack_lead  = $stack_lead  ?? null;
 $stack_link  = $stack_link  ?? null;
 $stack_class = $stack_class ?? '';

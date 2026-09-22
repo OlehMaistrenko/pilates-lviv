@@ -120,7 +120,7 @@ include 'partials/header.php';
         Якщо болить спина або є грижа — перше заняття краще на реформері:
         пружина не дає зірватись у різкий рух. Якщо мета — витривалість
         і контроль дихання без обладнання, починають з мата й переходять
-        на тренажер пізніше.
+        на обладнання пізніше.
       </p>
 
       <blockquote>
@@ -211,7 +211,7 @@ include 'partials/header.php';
               </figure>
               <figure class="swiper-slide">
                 <a class="gallery__zoom" href="assets/img/gallery/6.jpg" data-glightbox data-gallery="post" aria-label="Відкрити фото на весь екран">
-                  <img src="assets/img/gallery/6.jpg" alt="Зал студії з тренажерами" loading="lazy">
+                  <img src="assets/img/gallery/6.jpg" alt="Зал студії з обладнанням" loading="lazy">
                 </a>
               </figure>
               <figure class="swiper-slide">

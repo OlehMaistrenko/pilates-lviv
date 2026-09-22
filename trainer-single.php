@@ -1,7 +1,7 @@
 <?php
 $nav = 'team';
-$page_title = 'Галина — пілатес на тренажерах | Студія «Пілатес Львів»';
-$page_description = 'Галина, тренерка пілатесу на тренажерах. 12 років досвіду, робота зі спиною і поставою на Cadillac і Reformer. Розклад занять і сертифікати.';
+$page_title = 'Галина — пілатес на обладнанні | Студія «Пілатес Львів»';
+$page_description = 'Галина, тренерка пілатесу на обладнанні. 12 років досвіду, робота зі спиною і поставою на Cadillac і Reformer. Розклад занять і сертифікати.';
 $vendor_swiper = true;   // галерея занять
 $vendor_lightbox = true; // клік по кадру галереї
 // хедер звичайний, зі спейсером: сторінка починається світлою шапкою,
@@ -23,7 +23,7 @@ $gallery = [
 // TODO: реальні скани від клієнта — поки в усіх картках один бланк-заглушка
 // (assets/img/cert.jpeg), як на about.php. [назва, організація, рік, скан]
 $certs = [
-  ['Пілатес на тренажерах — базовий курс інструктора', 'Школа інструкторів пілатесу', '2013', 'cert.jpeg'],
+  ['Пілатес на обладнанні — базовий курс інструктора', 'Школа інструкторів пілатесу', '2013', 'cert.jpeg'],
   ['Reformer та Cadillac: робота з обладнанням', 'Polestar Pilates', '2015', 'cert.jpeg'],
   ['Пілатес при протрузіях і грижах хребта', 'Український центр реабілітації', '2018', 'cert.jpeg'],
   ['Пілатес після пологів: відновлення тазового дна', 'BALLance® Method', '2021', 'cert.jpeg'],
@@ -50,14 +50,14 @@ include 'partials/header.php';
 
     <div class="profile">
       <figure class="profile__media">
-        <img src="assets/img/team/halyna.jpg" alt="Галина, тренерка пілатесу на тренажерах"
+        <img src="assets/img/team/halyna.jpg" alt="Галина, тренерка пілатесу на обладнанні"
              width="900" height="1200" loading="eager">
       </figure>
 
       <div class="profile__body">
         <div class="profile__head">
           <h1 class="post-header__title" data-reveal="lines">Галина</h1>
-          <p class="text--lead text--muted" data-reveal>Пілатес на тренажерах</p>
+          <p class="text--lead text--muted" data-reveal>Пілатес на обладнанні</p>
         </div>
 
         <!-- Конкретика замість гасел: з чим саме до неї приходять і на

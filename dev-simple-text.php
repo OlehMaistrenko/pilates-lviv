@@ -107,7 +107,7 @@ include 'partials/header.php';
       <hr>
 
       <figure>
-        <img src="assets/img/location-1/1.jpg" alt="Зала студії з тренажерами" loading="lazy">
+        <img src="assets/img/location-1/1.jpg" alt="Зала студії з обладнанням" loading="lazy">
         <figcaption>Підпис до кадру — figcaption під зображенням</figcaption>
       </figure>
 
