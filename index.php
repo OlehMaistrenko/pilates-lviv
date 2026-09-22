@@ -121,7 +121,8 @@ include 'partials/header.php';
 
         <div class="hero__actions" data-reveal style="--reveal-i: 1">
           <button type="button" class="btn btn--filled" data-modal="booking">Записатись на заняття</button>
-          <a class="btn btn--outlined btn--light" href="schedule.php">Дивитись розклад</a>
+          <a class="btn btn--filled btn--light" href="schedule.php">Дивитись розклад</a>
+          <a class="btn btn--outlined btn--light" href="academy.php">Хочу стати тренером</a>
         </div>
       </div>
       <p class="hero__rule label" data-reveal>
