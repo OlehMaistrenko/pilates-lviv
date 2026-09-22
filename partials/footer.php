@@ -170,7 +170,7 @@
     <button type="button" class="btn btn--icon btn--sm btn--filled info-corner__close" data-info-corner-close aria-label="Закрити">
       <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-close"></use></svg>
     </button>
-    <p class="info-corner__title">Перше заняття&nbsp;— знайомство</p>
+    <p class="info-corner__title">Стартова пропозиція</p>
     <p class="text text--sm info-corner__text">30 хвилин з тренером: підбір програми на Reformer чи Cadillac.</p>
     <a href="training-detail.php?training=intro" class="btn btn--filled btn--sm">Записатися</a>
   </div>

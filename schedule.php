@@ -33,7 +33,7 @@ include 'partials/header.php';
 
         <p class="text--lead hero__lead" data-reveal style="--reveal-i: 1">
           Оберіть локацію, напрямок або тренера — покажемо, коли є заняття.
-          Перше заняття — знайомство.
+          Отримайте стартову пропозицію на перше заняття.
         </p>
       </div>
     </div>
