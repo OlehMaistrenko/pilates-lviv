@@ -171,7 +171,7 @@ include 'partials/why.php';
      ============================================================ -->
 <?php
 $gallery_items = $gallery;
-$gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
+// $gallery_link  = ['3D-тур студією', 'https://app.lapentor.com/sphere/pilates-2'];
 include 'partials/gallery.php';
 ?>
 
