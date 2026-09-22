@@ -22,13 +22,13 @@
       ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
       ['Персональне', 'training-detail.php?training=personal'],
       ['Спліт', 'training-detail.php?training=split'],
-      ['Навчальний центр', 'academy.php'],
     ],
     'Студія' => [
       ['Про студію', 'about.php'],
       ['Наша команда', 'team.php'],
       ['Локації', 'locations.php'],
-      ['Події', 'events.php'],
+      ['Навчальний центр', 'academy.php'],
+      ['Події та воркшопи', 'events.php'],
     ],
     'Клієнтам' => [
       ['Розклад', 'schedule.php'],

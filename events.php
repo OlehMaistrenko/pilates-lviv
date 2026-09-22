@@ -32,11 +32,11 @@ include 'partials/header.php';
       <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
         <a href="index.php">Головна</a>
         <span aria-hidden="true">·</span>
-        <span aria-current="page">Події</span>
+        <span aria-current="page">Події та воркшопи</span>
       </nav>
 
       <div class="hero__bottom">
-        <h1 class="hero__title" data-reveal="lines">ПОДІЇ</h1>
+        <h1 class="hero__title" data-reveal="lines">ПОДІЇ ТА ВОРКШОПИ</h1>
 
         <p class="text--lead hero__lead" data-reveal style="--reveal-i: 1">
           Воркшопи, відкриті заняття й потоки навчального центру.

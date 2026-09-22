@@ -60,8 +60,8 @@ $contact = [
 // Каталог напрямків: Реформер/Персональне/Спліт — реальні, з діючого
 // pilateslviv.com; Ознайомче/Кадилак/Wunda Chair і Barrel — формати за
 // зразком секції WHAT WE DO на exhalepilateslondon.com, TODO уточнити з
-// клієнтом. Навчальний центр тут же — Події й Співпраця (теж пункти
-// WHAT WE DO) уже мають свій пункт нижче, у «Про нас».
+// клієнтом. Події та воркшопи — дочірній пункт Навчального центру,
+// Співпраця (теж пункт WHAT WE DO) лишається в «Про нас».
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
     'training-intro'        => ['Ознайомче заняття', 'training-detail.php?training=intro'],
@@ -70,7 +70,6 @@ $primary = [
     'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
     'training-personal'     => ['Персональне', 'training-detail.php?training=personal'],
     'training-split'        => ['Спліт', 'training-detail.php?training=split'],
-    'academy'               => ['Навчальний центр', 'academy.php'],
   ]],
   'schedule'  => ['Розклад', 'schedule.php'],
   'prices'    => ['Ціни', 'prices.php'],
@@ -82,12 +81,14 @@ $primary = [
   'team'      => ['Команда', 'team.php'],
   'about'     => ['Про нас', 'about.php', [
     'about'       => ['Про студію', 'about.php'],
-    'events'      => ['Події', 'events.php'],
     'partnership' => ['Співпраця', 'partnership.php'],
     'blog'        => ['Блог', 'blog.php'],
     'faq'         => ['Питання та відповіді', 'faq.php'],
   ]],
   'contacts'  => ['Контакти', 'contacts.php'],
+  'academy'   => ['Навчальний центр', 'academy.php', [
+    'events'      => ['Події та воркшопи', 'events.php'],
+  ]],
 ];
 
 ?>

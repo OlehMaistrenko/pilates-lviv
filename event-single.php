@@ -31,7 +31,7 @@ include 'partials/header.php';
       <nav class="breadcrumbs breadcrumbs--rule text--sm" aria-label="Хлібні крихти">
         <a href="index.php">Головна</a>
         <span aria-hidden="true">·</span>
-        <a href="events.php">Події</a>
+        <a href="events.php">Події та воркшопи</a>
         <span aria-hidden="true">·</span>
         <span aria-current="page"><?= $ev['crumb'] ?></span>
       </nav>
