@@ -11,7 +11,7 @@ $vendor_lightbox = true;    // клік по кадру галереї
 // уточнити з клієнтом. Фото — реальні кадри студії з customer-photos,
 // підібрані під кожен напрямок за назвою (assets/img/directions/{slug}.jpg).
 $directions = [
-  ['Ознайомче заняття', 'training-detail.php?training=intro', 'Знайомство з тренажерами, технікою і термінологією — перед першим повноцінним заняттям.', 'intro'],
+  ['Стартова пропозиція', 'training-detail.php?training=intro', 'Знайомство з тренажерами, технікою і термінологією — перед першим повноцінним заняттям.', 'intro'],
   ['Пілатес-Реформер', 'training-detail.php?training=reformer', 'На реформерах і Wall Unit. Точне дозування навантаження, робота з усім тілом.', 'reformer'],
   ['Кадилак', 'training-detail.php?training=cadillac', 'Мат-робота на Cadillac: витягнення хребта у висі на стропах, робота на все тіло.', 'cadillac'],
   ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel', 'Складніший рівень на двох тренажерах одразу: баланс, концентрація, сила.', 'chair-barrel'],

@@ -131,7 +131,7 @@ include 'partials/header.php';
           </thead>
           <tbody>
             <tr>
-              <th>Ознайомче</th>
+              <th>Стартова пропозиція</th>
               <td>60 хв</td>
               <td>1</td>
               <td>Reformer</td>

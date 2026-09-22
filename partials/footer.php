@@ -16,7 +16,7 @@
   // включно з тими, яких у хедері немає (кабінет, політика, галерея).
   $sitemap = [
     'Тренування' => [
-      ['Ознайомче заняття', 'training-detail.php?training=intro'],
+      ['Стартова пропозиція', 'training-detail.php?training=intro'],
       ['Пілатес-Реформер', 'training-detail.php?training=reformer'],
       ['Кадилак', 'training-detail.php?training=cadillac'],
       ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],

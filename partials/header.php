@@ -64,7 +64,7 @@ $contact = [
 // Співпраця (теж пункт WHAT WE DO) лишається в «Про нас».
 $primary = [
   'trainings' => ['Тренування', 'trainings.php', [
-    'training-intro'        => ['Ознайомче заняття', 'training-detail.php?training=intro'],
+    'training-intro'        => ['Стартова пропозиція', 'training-detail.php?training=intro'],
     'training-reformer'     => ['Пілатес-Реформер', 'training-detail.php?training=reformer'],
     'training-cadillac'     => ['Кадилак', 'training-detail.php?training=cadillac'],
     'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
