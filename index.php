@@ -148,7 +148,7 @@ include 'partials/header.php';
           <div data-reveal="lines">
           <p>Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</p>
           </div>
-          <cite class="text--sm text--accent" data-reveal>Джозеф Пілатес</cite>
+          <cite class="text--body text--accent" data-reveal>Джозеф Пілатес</cite>
         </div>
       </blockquote>
     </div>

@@ -65,7 +65,7 @@
   --tracking-mono:   0.14em;  /* uppercase лейбли/лічильники */
 
   /* fluid display sizes */
-  --fs-xs:      0.72rem;
+  --fs-xs:      11.52px;
   --fs-sm:      0.875rem;
   --fs-body:    1rem;
   --fs-lead:    clamp(1.05rem, 1.0136rem + 0.1553vw, 1.2rem);

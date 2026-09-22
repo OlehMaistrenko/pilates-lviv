@@ -93,7 +93,7 @@
               <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
             </a>
             <!-- TODO: замінити href на реальні посилання App Store / Google Play, коли застосунок буде готовий -->
-            <div class="site-footer__apps">
+            <div class="app-links">
               <a class="btn btn--outlined btn--light btn--sm" href="#" target="_blank" rel="noopener">
                 <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-apple"></use></svg>
                 App Store

@@ -286,6 +286,17 @@ $primary = [
           <a class="btn btn--icon btn--sm btn--outlined btn--light" href="<?= $contact['facebook'] ?>" target="_blank" rel="noopener" aria-label="Facebook">
             <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-facebook"></use></svg>
           </a>
+          <!-- TODO: замінити href на реальні посилання App Store / Google Play, коли застосунок буде готовий -->
+          <div class="app-links">
+            <a class="btn btn--outlined btn--light btn--sm" href="#" target="_blank" rel="noopener">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-apple"></use></svg>
+              App Store
+            </a>
+            <a class="btn btn--outlined btn--light btn--sm" href="#" target="_blank" rel="noopener">
+              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-google-play"></use></svg>
+              Google Play
+            </a>
+          </div>
         </div>
       </div>
     </nav>
