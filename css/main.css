@@ -73,7 +73,7 @@
   --fs-h4:      clamp(1.25rem, 1.165rem + 0.3625vw, 1.6rem);
   --fs-h3:      clamp(1.35rem, 1.168rem + 0.7767vw, 2.1rem);
   --fs-h2:      clamp(2.2rem, 1.6014rem + 2.554vw, 3.9rem);
-  --fs-hero:    clamp(2.6rem, 1.6777rem + 3.9353vw, 6.4rem);
+  --fs-hero:    clamp(2.4rem, 1.5262rem + 3.7282vw, 6rem);
   --fs-display: clamp(2.2rem, 0.7922rem + 6.0065vw, 8rem);
   --fs-mega:    clamp(3.4rem, 1.9727rem + 5.8562vw, 9rem);
 
