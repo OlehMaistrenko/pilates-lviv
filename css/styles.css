@@ -2712,6 +2712,27 @@ section { opacity: 1; }
 }
 
 /* ============================================================
+   Back to top — кнопка повернення нагору (footer.php, показує js/main.js)
+   Той самий протокол, що й .cookie/.info-corner: hidden → .is-visible.
+   ============================================================ */
+.back-to-top {
+  position: fixed;
+  z-index: 190;
+  right: var(--sp-4);
+  bottom: var(--sp-9);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.back-to-top[hidden] { display: none; }
+.back-to-top.is-visible { opacity: 1; transform: none; }
+.back-to-top .icon { transform: rotate(-90deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top { transition: none; transform: none; }
+}
+
+/* ============================================================
    Component: .schedule — календар занять (partials/schedule.php).
    Один компонент на чотири сторінки: розклад, тренер, напрямок,
    локація. Стан (вид, дата, фільтри) живе в URL, тож перемикачі —

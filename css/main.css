@@ -1197,7 +1197,7 @@ html.lenis, html.lenis body { height: auto; }
 .hero__tint {
   position: absolute;
   inset: 0;
-  /* background: color-mix(in srgb, black 60%, transparent); */
+  background: color-mix(in srgb, black 60%, transparent);
 }
 /* Додатковий градієнт зверху, поверх рівного .hero__tint — підсилює контраст
    під прозорим хедером незалежно від того, що саме там на фото/відео.

@@ -990,6 +990,41 @@
     apply();   // перезавантаження посеред сторінки зберігає позицію скролу
   })();
 
+  /* ---- Back to top: з'являється після двох екранів скролу, лишається
+     видимою до кінця сторінки. Той самий hidden → is-visible протокол,
+     що й cookie/info-corner нижче. */
+  (() => {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    let visible = false;
+    let ticking = false;
+    const apply = () => {
+      const shouldShow = window.scrollY > innerHeight * 2;
+      if (shouldShow !== visible) {
+        visible = shouldShow;
+        if (visible) {
+          btn.hidden = false;
+          requestAnimationFrame(() => btn.classList.add('is-visible'));
+        } else {
+          btn.classList.remove('is-visible');
+          btn.addEventListener('transitionend', () => { btn.hidden = true; }, { once: true });
+        }
+      }
+      ticking = false;
+    };
+    addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(apply);
+    }, { passive: true });
+    apply();
+
+    btn.addEventListener('click', () => {
+      if (lenisInstance) lenisInstance.scrollTo(0, { duration: 2.4, easing: (t) => 1 - Math.pow(1 - t, 4) });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+
   /* ---- Dropdown (<details class="dropdown">): закриття кліком повз і по
      Escape. Саме відкриття, клавіатура й ARIA — нативні, JS тут лише
      доповнює те, чого <details> не вміє. --------------------------------- */

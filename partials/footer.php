@@ -122,6 +122,12 @@
     </div>
   </footer>
 
+  <!-- Кнопка «Нагору». hidden знімає js/main.js після двох екранів скролу —
+       той самий hidden → is-visible протокол, що й .cookie/.info-corner нижче. -->
+  <button type="button" class="btn btn--filled btn--icon back-to-top" id="back-to-top" aria-label="Нагору" hidden>
+    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-arrow-right"></use></svg>
+  </button>
+
   <!-- Спільний overlay для AJAX-модалок (info/help) — контент вантажиться в __content -->
   <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-overlay-title" data-lenis-prevent hidden>
     <div class="modal-overlay__backdrop" data-modal-close></div>
