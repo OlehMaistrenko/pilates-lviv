@@ -1424,6 +1424,141 @@ section { opacity: 1; }
 }
 
 /* ============================================================
+   Home alt 02 — Три опори (index_alt.php): картки-плашки на бежі,
+   наведена розширюється і вмикає відео. Картки некликабельні, тож
+   hover лише розкриває вміст — сусіди не приглушуються й не підсвічуються.
+   ============================================================ */
+.pillars__list {
+  display: flex;
+  gap: var(--sp-5);
+  height: clamp(32rem, 29.5728rem + 10.356vw, 42rem);
+  margin: var(--sp-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pillar {
+  --grow: 1;
+  position: relative;
+  display: flex;
+  flex: var(--grow) 1 0;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: var(--sp-6);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--clr-ink) 7%, transparent);
+  border-radius: var(--r-card);
+  /* шортхенд перебив би transition від [data-reveal] (main.css) — тому
+     його opacity/transform із затримкою повторено тут */
+  transition:
+    opacity .7s var(--ease) calc(var(--reveal-i, 0) * 90ms),
+    transform .7s var(--ease) calc(var(--reveal-i, 0) * 90ms),
+    flex-grow .7s var(--ease),
+    color .5s var(--ease);
+}
+/* асиметрія в спокої: ряд не ділиться на три рівні колонки */
+.pillar:nth-child(1) { --grow: 1.25; }
+.pillar:nth-child(3) { --grow: .8; }
+
+.pillar__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path .8s var(--ease);
+}
+/* рівне затемнення поверх відео (не градієнт) — світлий текст читається
+   на будь-якому кадрі */
+.pillar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--clr-ink) 45%, transparent);
+  opacity: 0;
+  transition: opacity .6s var(--ease);
+}
+.pillar__num,
+.pillar__body { position: relative; z-index: 1; }
+.pillar__num { color: var(--clr-accent); }
+
+.pillar__title {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-lt);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+.pillar__body > .text--sm { margin-top: var(--sp-2); }
+
+/* 0fr → 1fr: деталь не займає висоти, поки картка згорнута. Ширина
+   фіксована в rem, щоб текст не перебудовувався, поки картка росте. */
+.pillar__detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    grid-template-rows .6s var(--ease),
+    opacity .4s var(--ease),
+    transform .6s var(--ease);
+}
+.pillar__detail > p { width: 26rem; max-width: 100%; min-height: 0; overflow: hidden; }
+
+@media (hover: hover) and (min-width: 1081px) {
+  /* без наведення розкрита перша — секція не стоїть «порожньою».
+     Токени — ті самі, що дає .on-dark: картка з відео стає темним полем */
+  .pillars__list:not(:hover) .pillar:first-child,
+  .pillar:hover {
+    --grow: 3.2;
+    --clr-ink-mute: color-mix(in srgb, var(--clr-page) 68%, transparent);
+    --clr-accent:   var(--clr-accent-light);
+    color: var(--clr-page);
+  }
+
+  .pillars__list:not(:hover) .pillar:first-child .pillar__video,
+  .pillar:hover .pillar__video { clip-path: inset(0); }
+
+  .pillars__list:not(:hover) .pillar:first-child::after,
+  .pillar:hover::after { opacity: 1; }
+
+  .pillars__list:not(:hover) .pillar:first-child .pillar__detail,
+  .pillar:hover .pillar__detail {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: none;
+    transition-delay: .15s;
+  }
+  .pillars__list:not(:hover) .pillar:first-child .pillar__detail > p,
+  .pillar:hover .pillar__detail > p { margin-top: var(--sp-4); }
+}
+
+/* без hover (тач) і на вузьких — стек, усе розкрито, відео лишається
+   постером-кадром угорі картки */
+@media (hover: none), (max-width: 1080px) {
+  .pillars__list { flex-direction: column; height: auto; }
+  .pillar { flex: none; padding: 0; }
+  .pillar__video {
+    position: static;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    clip-path: none;
+  }
+  .pillar__num { position: absolute; top: var(--sp-4); left: var(--sp-4); color: var(--clr-accent-light); }
+  .pillar__body { padding: var(--sp-5); }
+  .pillar__detail { grid-template-rows: 1fr; opacity: 1; transform: none; }
+  .pillar__detail > p { width: auto; margin-top: var(--sp-3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar,
+  .pillar__video,
+  .pillar::after,
+  .pillar__detail { transition: none; }
+}
+
+/* ============================================================
    Home 03 — Напрямки: картка = напрямок, 4 у ряд, скруглений кадр зверху,
    підпис під ним по центру (той самий патерн, що в Тренерах нижче).
    ============================================================ */

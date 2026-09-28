@@ -1419,6 +1419,36 @@
 
   document.querySelectorAll('[data-tabs]').forEach(initTabs);
 
+  /* ---- Pillars — відео в розкритій картці (index_alt.php) ---------------
+     Розкриття робить CSS (:hover); тут лише play/pause, щоб грало одне
+     відео — те, що видно. Без наведення розкрита перша, тож і грає вона.
+     На тачі/вузьких картки стоять стосом із постером — відео не чіпаємо
+     (preload="none"), трафік не витрачається. */
+  (() => {
+    const list = document.querySelector('[data-pillars]');
+    if (!list) return;
+    const mq = window.matchMedia('(hover: hover) and (min-width: 1081px)');
+    const cards = [...list.children];
+    let inView = false;
+
+    const playOnly = (card) => {
+      cards.forEach((c) => {
+        const v = c.querySelector('video');
+        if (c === card && inView && mq.matches) v.play().catch(() => {});
+        else v.pause();
+      });
+    };
+
+    cards.forEach((c) => c.addEventListener('mouseenter', () => playOnly(c)));
+    list.addEventListener('mouseleave', () => playOnly(cards[0]));
+    mq.addEventListener('change', () => playOnly(list.matches(':hover') ? null : cards[0]));
+
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      playOnly(cards.find((c) => c.matches(':hover')) || cards[0]);
+    }).observe(list);
+  })();
+
   /* ---- Pattern — нерозривна плитка патерну між сусідніми полями ------
      mask-position у .patterned рахується від власного боксу елемента, тож
      кожне поле починає плитку заново — і на межі двох сусідніх
