@@ -22,6 +22,7 @@
       ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
       ['Персональне', 'training-detail.php?training=personal'],
       ['Спліт', 'training-detail.php?training=split'],
+      ['Пілатес на маті', 'training-detail.php?training=mat'],
     ],
     'Студія' => [
       ['Про студію', 'about.php'],

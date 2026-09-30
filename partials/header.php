@@ -70,6 +70,7 @@ $primary = [
     'training-chair-barrel' => ['Wunda Chair і Barrel', 'training-detail.php?training=chair-barrel'],
     'training-personal'     => ['Персональне', 'training-detail.php?training=personal'],
     'training-split'        => ['Спліт', 'training-detail.php?training=split'],
+    'training-mat'          => ['Пілатес на маті', 'training-detail.php?training=mat'],
   ]],
   'schedule'  => ['Розклад', 'schedule.php'],
   'prices'    => ['Ціни', 'prices.php'],
