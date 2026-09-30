@@ -74,14 +74,13 @@
           </a>
 
           <address class="site-footer__contacts">
-            <a class="icon-link" href="<?= $contact['map'] ?>" target="_blank" rel="noopener">
-              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-pin"></use></svg>
-              <?= $contact['address'] ?>
-            </a>
-            <a class="icon-link" href="<?= $contact['phone_href'] ?>">
-              <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
-              <?= $contact['phone'] ?>
-            </a>
+            <?php // Телефони беремо з локацій: поки в усіх один номер, виводиться один рядок ?>
+            <?php foreach (array_column($contact['locations'], 'phone', 'phone_href') as $href => $phone): ?>
+              <a class="icon-link" href="<?= $href ?>">
+                <svg class="icon icon--sm" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-phone"></use></svg>
+                <?= $phone ?>
+              </a>
+            <?php endforeach; ?>
           </address>
 
           <button type="button" class="btn btn--outlined btn--light btn--sm" data-modal="callback">Замовити дзвінок</button>
