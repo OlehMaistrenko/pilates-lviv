@@ -2522,14 +2522,6 @@ section { opacity: 1; }
   width: 12rem;
   height: auto;
 }
-.site-footer__contacts {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  font-style: normal;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-}
 .site-footer__social { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 
 .site-footer__nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-6); }
