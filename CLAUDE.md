@@ -235,7 +235,7 @@ WP без переписування. Читати цілком перед ро�
 - **Анімації** — тільки через `transform`/`opacity`/`clip-path`, нічого що
   тригерить layout. Прості reveal-и — наявний `[data-reveal]`
   (IntersectionObserver + CSS, дешево для PageSpeed). GSAP ScrollTrigger — лише
-  там, де потрібен scrub або pin: `data-anim="words|pin|parallax|zoom|odometer|focus"`.
+  там, де потрібен scrub або pin: `data-anim="words|parallax|pinstack"`.
   Вендори (Lenis/GSAP/ScrollTrigger) підключені глобально в `footer.php`,
   `defer`, без гейта — плавний скрол є на всіх сторінках.
 - **JS** — vanilla, IIFE для локальної логіки, вже підключений `main.js` бере на себе все стандартне

@@ -149,99 +149,10 @@
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    /* Одометр і фокус живуть лише на десктопі (≥901px): на вужчих екранах
-       CSS ховає одометр і показує цифру в кожному кроці, твінів там не
-       треба. matchMedia, а не одноразовий чек: при resize через брейкпоінт
-       він сам revert-ить твіни/тригери й інлайн-стилі та створює їх
-       наново — без цього колонка застрягла б зі старим зсувом. */
+    /* Паралакс живе лише на десктопі (≥901px). matchMedia, а не одноразовий
+       чек: при resize через брейкпоінт він сам revert-ить твіни й створює їх
+       наново. */
     gsap.matchMedia().add('(min-width: 901px)', () => {
-      /* data-anim="pin" — елемент стоїть на місці, поки повз нього проходить
-         увесь трек із data-pin-track. Не position:sticky: sticky рахує
-         відступ від верху, а одометр перемикає цифру по center center кроку —
-         цифра мінялась не там, куди дивиться око.
-         start 'center center' по самій цифрі: пін ловить її рівно тоді, коли
-         вона доходить до середини екрана, і там і тримає. Тому CSS не
-         мусить центрувати її сам — 100vh-бокс, що це робив, лишав цифру
-         пів екрана нижче, поки секція ще не доскролила до верху.
-         end рахується від низу треку до НИЗУ цифри (див. нижче): вона
-         приморожена центром, тож звисає на пів висоти нижче середини.
-         Створюємо ДО одометра, щоб ScrollTrigger порахував pin раніше за
-         scrub-твін усередині того самого треку. */
-      document.querySelectorAll('[data-anim="pin"]').forEach((el) => {
-        const track = document.querySelector(el.dataset.pinTrack);
-        if (!track) return;
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'center center',
-          endTrigger: track,
-          /* Цифра приморожена центром на середині екрана, тож її низ звисає
-             на пів своєї висоти нижче. Відпускати треба тоді, коли низ треку
-             дійде саме до цього низу, — інакше цифра ще стоїть на місці,
-             поки наступна секція вже наїхала, і вони накладаються.
-             Функція, а не рядок: висота цифри залежить від vw (26vw). */
-          end: () => `bottom ${window.innerHeight / 2 + el.offsetHeight / 2}px`,
-          pin: el,
-          pinSpacing: false,   // трек уже має власну висоту; spacer додав би порожній екран
-        });
-      });
-
-      /* data-anim="odometer" — стовпчик із N цифр у масці висотою в одну
-         (CSS); скрол зсуває його на N-1 позицій уздовж списку з
-         data-odometer-for — від центру першого кроку до центру останнього,
-         щоб ціла цифра стояла рівно тоді, коли її крок посередині екрана. */
-      document.querySelectorAll('[data-anim="odometer"]').forEach((el) => {
-        const items = document.querySelector(el.dataset.odometerFor)?.children;
-        if (!items || items.length < 2) return;
-        gsap.to(el, {
-          yPercent: -100 * (items.length - 1) / items.length,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: items[0], start: 'center center',
-            endTrigger: items[items.length - 1], end: 'center center',
-            scrub: true,
-          },
-        });
-      });
-
-      /* data-anim="blinds" — стос кадрів, де кожен наступний відкривається
-         жалюзі: одна секція на всю висоту, тож це не N планок, а одна
-         горизонтальна щілина, що росте зверху вниз. Робимо clip-path'ом по
-         inset: анімується композитором, layout не чіпає (див. CLAUDE.md).
-         Той самий відрізок скролу, що й в одометра (центр першого кроку →
-         центр останнього), — кадр міняється рівно тоді, коли клацає цифра. */
-      document.querySelectorAll('[data-anim="blinds"]').forEach((el) => {
-        const items = document.querySelector(el.dataset.blindsFor)?.children;
-        const shots = el.children;
-        if (!items || items.length < 2 || shots.length < 2) return;
-
-        /* прогрес ділиться на (N-1) переходів; кожен наступний кадр
-           відкривається на своєму відрізку, решту часу — повністю
-           закритий (100%) або повністю відкритий (0%) */
-        const steps = shots.length - 1;
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: items[0], start: 'center center',
-            endTrigger: items[items.length - 1], end: 'center center',
-            scrub: true,
-          },
-        }).fromTo([...shots].slice(1),
-          { clipPath: 'inset(100% 0 0 0)' },
-          {
-            clipPath: 'inset(0% 0 0 0)',
-            ease: 'none',
-            stagger: { each: 1 / steps },
-            duration: 1 / steps,
-          }, 0);
-      });
-
-      /* data-anim="focus" — блок у повний колір, поки проходить центр
-         екрана; вище й нижче — приглушений */
-      document.querySelectorAll('[data-anim="focus"]').forEach((el) => {
-        gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 75%', end: 'bottom 25%', scrub: true } })
-          .fromTo(el, { opacity: 0.25 }, { opacity: 1, ease: 'none' })
-          .to(el, { opacity: 0.25, ease: 'none' });
-      });
-
       /* data-anim="parallax" — шар їде повільніше за скрол. Силу (у % власної
          висоти) задає data-parallax, тож два шари в одній секції з різними
          значеннями дають глибину. Тригер — секція, а не сам шар: інакше

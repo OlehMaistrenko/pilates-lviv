@@ -23,12 +23,18 @@ $directions = [
   ['Співпраця', 'partnership.php', 'Для студій, брендів і спеціалістів, які хочуть працювати разом.', 'partnership'],
 ];
 
-// Три точки — з цитати Джозефа Пілатеса (10/20/30); тексти під кожну — наші.
-// Третій елемент — alt кадру; сам файл по індексу (assets/img/path/PROMPTS.md)
-$path = [
-  ['10', 'Спина менше втомлюється за столом, поставу тримати легше без нагадувань. Вправи з першого заняття вже робите на важчій пружині.', 'Заняття на реформері: інструктор рукою поправляє положення тазу'],
-  ['20', 'Різницю помічають інші: рівніші плечі, інша хода. Ви знаєте вправи по назвах і самі відчуваєте, коли пружина стоїть не та.', 'Робота на Cadillac: витягнення хребта у висі на стропах'],
-  ['30', 'Рухи, які на старті збирали по частинах, ідуть одним цілим. Біль, з яким прийшли, — уже не причина приходити.', 'Стійка на реформері в повний зріст, зібраний рух'],
+// Три опори — інтро-секція. Тексти наші, обладнання — реальне (Reformer,
+// Cadillac, Wall Unit, Wunda Chair, Barrel). Постер — кадр із assets/img/path.
+$pillars = [
+  ['Без болю в спині', 'Пружина замість ваги',
+   'Опір пружини на Reformer і Cadillac дозується від дуже легкого до сильного — це мʼякше для суглобів, ніж вільна вага. Тренер бачить кожен рух і поправляє техніку одразу, а не після заняття.',
+   'path/1.jpeg'],
+  ['Сильний центр', 'Глибокі мʼязи корпусу',
+   'На Reformer і Wall Unit працюють мʼязи, що тримають хребет і таз: глибокий прес, спина, тазове дно. Від них залежить постава — за столом, у ходьбі, з дитиною на руках.',
+   'path/2.jpeg'],
+  ['Увага в русі', 'Кожен рух — свідомо',
+   'Wunda Chair і Barrel вимагають балансу: без концентрації вправа просто не вийде. Година, коли думаєте лише про дихання й положення тіла, — і голова відпочиває разом зі спиною.',
+   'path/3.jpeg'],
 ];
 
 // Тренери й цитати — дослівно з діючого сайту. Напрямок перших чотирьох
@@ -137,73 +143,40 @@ include 'partials/header.php';
 </section>
 
 <!-- ============================================================
-     02 · Шлях новичка — цитата Джозефа Пілатеса як теза, і три кроки
-     10 · 20 · 30 занять. Цифра-одометр на пів екрана стоїть тлом по центру
-     вʼюпорта (pin + scrub), кроки з кадрами йдуть поверх неї.
+     02 · Три опори — інтро: три картки-плашки на бежі, наведена
+     розширюється й вмикає відео заняття. Картки некликабельні навмисно:
+     розширення — мікровзаємодія інтро, сусіди не приглушуються.
      ============================================================ -->
-<section class="section path">
-  <div class="container container--wide">
-    <div class="section-head">
-      <blockquote class="path__title quote--rule" >
-        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#icon-quote"></use></svg>
-        <div >
-          <div data-reveal="lines">
-          <p>Через <em>10</em> занять ви відчуєте різницю, через <em>20</em> — побачите її, а через <em>30</em> — отримаєте нове тіло</p>
-          </div>
-          <cite class="text--body text--accent" data-reveal>Джозеф Пілатес</cite>
-        </div>
-      </blockquote>
+<section class="section pillars">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <h2 data-reveal="lines">З чим приходять на пілатес</h2>
+      <p class="text--lead text--muted" data-reveal>
+        Найчастіше — з болем у спині. Лишаються заради сильного корпусу
+        й години, коли голова відпочиває.
+      </p>
     </div>
 
-    <div class="path__grid">
-      <!-- одометр: три цифри в масці, скрол зсуває стовпчик (js/main.js,
-           data-anim="odometer"), а pin тримає його по центру екрана. На
-           мобілці прихований — там цифру показує кожен крок сам. -->
-      <div class="path__counter" data-anim="pin" data-pin-track=".path__list" aria-hidden="true">
-        <div class="path__roll">
-          <div data-anim="odometer" data-odometer-for=".path__list">
-            <?php foreach ($path as [$n]): ?><span><?= $n ?></span><?php endforeach; ?>
+    <ul class="pillars__list" data-pillars>
+      <?php foreach ($pillars as $i => [$title, $short, $detail, $poster]): ?>
+        <li class="pillar" data-reveal style="--reveal-i: <?= $i ?>">
+          <!-- TODO: заглушка hero.mp4 на всіх трьох — чекаємо ролики вправ від клієнта -->
+          <video class="pillar__video" src="assets/video/hero.mp4" poster="assets/img/<?= $poster ?>"
+                 muted loop playsinline preload="none" aria-hidden="true"></video>
+          <span class="pillar__num label">0<?= $i + 1 ?></span>
+          <div class="pillar__body">
+            <h3 class="pillar__title"><?= $title ?></h3>
+            <p class="text--sm text--muted"><?= $short ?></p>
+            <div class="pillar__detail">
+              <p class="text--body"><?= $detail ?></p>
+            </div>
           </div>
-        </div>
-        <!-- лейбл котиться тим самим одометром, що й цифра: якщо крок задає
-             свій підпис (3-й елемент $path), він доїде разом зі своїм числом -->
-        <div class="path__roll path__roll--label">
-          <div data-anim="odometer" data-odometer-for=".path__list">
-            <?php foreach ($path as $row): ?><span class="label"><?= $row[3] ?? 'занять' ?></span><?php endforeach; ?>
-          </div>
-        </div>
-      </div>
-
-      <!-- кадри винесені зі списку в один вертикальний пін між одометром і
-           текстом: усі три лежать стосом, скрол відкриває наступний
-           жалюзі-витиранням (js/main.js, data-anim="blinds") -->
-      <div class="path__stage" data-anim="pin" data-pin-track=".path__list" aria-hidden="true">
-        <div class="path__shots" data-anim="blinds" data-blinds-for=".path__list">
-          <?php foreach ($path as $i => [$n, $text, $alt]): ?>
-            <figure class="path__shot">
-              <img src="assets/img/path/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>"
-                   width="3264" height="1312" loading="<?= $i ? 'lazy' : 'eager' ?>">
-            </figure>
-          <?php endforeach; ?>
-        </div>
-      </div>
-
-      <ol class="path__list">
-        <?php foreach ($path as $i => $row): ?>
-          <?php [$n, $text, $alt] = $row; ?>
-          <li class="path__item" data-reveal style="--reveal-i: <?= $i ?>">
-            <span class="path__num"><?= $n ?> <span class="label"><?= $row[3] ?? 'занять' ?></span></span>
-            <p class="path__text"><?= $text ?></p>
-            <figure class="path__shot path__shot--inline">
-              <img src="assets/img/path/<?= $i + 1 ?>.jpeg" alt="<?= htmlspecialchars($alt) ?>"
-                   width="3264" height="1312" loading="lazy">
-            </figure>
-          </li>
-        <?php endforeach; ?>
-      </ol>
-    </div>
+        </li>
+      <?php endforeach; ?>
+    </ul>
   </div>
 </section>
+
 <!-- ============================================================
      06 · Чому саме ми — банер: фонове фото з паралаксом, ряд цифр,
      пунктирний розділювач, три аргументи знизу.
